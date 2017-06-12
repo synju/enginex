@@ -57,9 +57,6 @@ public class Node extends GameObject {
 					g.drawImage(state.rectWhite, at, null);
 				
 				g.drawImage(state.rectGray, at, null);
-				
-				System.out.println(rotation);
-				
 			}
 			else {
 				g.setColor(Color.white);
