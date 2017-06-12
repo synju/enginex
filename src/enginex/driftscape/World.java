@@ -89,20 +89,6 @@ public class World extends GameObject {
 			n.render(g);
 	}
 	
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		super.mouseWheelMoved(e);
-		mousePosition = getPlayState().mousePosition;
-		
-		if(e.getWheelRotation() < 0)
-			zoomIn();
-		else
-			zoomOut();
-		
-		for(Node n:nodes) {
-			n.scale = scale;
-		}
-	}
-	
 	public void zoomIn() {
 		System.out.println("mx:" + game.getMousePosition().getX());
 		if(scale < max) {
@@ -136,6 +122,20 @@ public class World extends GameObject {
 	
 	public PlayState getPlayState() {
 		return (PlayState)game.stateMachine.getCurrentState();
+	}
+	
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		super.mouseWheelMoved(e);
+		mousePosition = getPlayState().mousePosition;
+		
+		if(e.getWheelRotation() < 0)
+			zoomIn();
+		else
+			zoomOut();
+		
+		for(Node n:nodes) {
+			n.scale = scale;
+		}
 	}
 	
 	public void mousePressed(MouseEvent e) {
