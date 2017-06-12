@@ -33,6 +33,12 @@ public class EngineX implements Runnable {
 	
 	private boolean				running						= true;
 	
+	protected EngineX() {
+		this.gameName = "EngineX App";
+		
+		construct();
+	}
+	
 	protected EngineX(String gameName) {
 		this.gameName = gameName;
 		

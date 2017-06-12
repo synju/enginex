@@ -31,12 +31,12 @@ public class PlayState extends State {
 		w = new World(game);
 	}
 	
-	protected void update() {
+	public void update() {
 		mousePosition = game.getMousePosition();
 		w.update(mousePosition);
 	}
 	
-	protected void render(Graphics2D g) {
+	public void render(Graphics2D g) {
 		w.render(g);
 	}
 	

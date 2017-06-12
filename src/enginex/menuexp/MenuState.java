@@ -39,13 +39,13 @@ public class MenuState extends State {
 		catch(Exception e) {}
 	}
 
-	protected void update() {
+	public void update() {
 		for(Button b:buttons) {
 			b.update();
 		}
 	}
 
-	protected void render(Graphics2D g) {
+	public void render(Graphics2D g) {
 		g.drawImage(blue_sky, 0, 0, null);
 		for(Button b:buttons) {
 			b.render(g);

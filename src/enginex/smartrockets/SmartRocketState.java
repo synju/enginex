@@ -51,7 +51,7 @@ public class SmartRocketState extends State {
 			rockets.add(new Rocket(game, start.x, start.y, maxMoves,speed));
 	}
 
-	protected void update() {
+	public void update() {
 		if(normal) {
 			updateRockets();
 		}
@@ -156,7 +156,7 @@ public class SmartRocketState extends State {
 		return dna;
 	}
 
-	protected void render(Graphics2D g) {
+	public void render(Graphics2D g) {
 		g.setColor(Color.WHITE);
 		g.fillRect(target.x, target.y, target.width, target.height);
 		g.fillRect(wall.x, wall.y, wall.width, wall.height);

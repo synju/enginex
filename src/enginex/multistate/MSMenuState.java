@@ -12,7 +12,7 @@ public class MSMenuState extends State {
 		this.game = game;
 	}
 
-	protected void update() {
+	public void update() {
 		System.out.println("Menu");
 	}
 

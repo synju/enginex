@@ -46,7 +46,7 @@ public class PathfinderState extends State {
 		catch(Exception e) {}
 	}
 
-	protected void render(Graphics2D g) {
+	public void render(Graphics2D g) {
 		try {
 			for(Node n:nodes)
 				n.render(g);
