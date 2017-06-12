@@ -25,6 +25,8 @@ public class World extends GameObject {
 	double					moveSpeed			= 10;
 	Point						o							= null;
 	boolean					middleDown		= false;
+	boolean					leftDown			= false;
+	boolean					rightDown			= false;
 	double					x							= 0;
 	double					y							= 0;
 	Point						mousePosition	= game.getMousePosition();
@@ -60,6 +62,20 @@ public class World extends GameObject {
 			n.update(m);
 	}
 	
+	public void mouseLeftClick() {
+		if(leftDown)
+			System.out.println("Left Pressed!");
+		else
+			System.out.println("Left Released!");
+	}
+	
+	public void mouseRightClick() {
+		if(rightDown)
+			System.out.println("Right Pressed!");
+		else
+			System.out.println("Right Released!");
+	}
+	
 	public void middleDrag(Point m) {
 		if(m != null && middleDown) {
 			if(o.x != m.x || o.y != m.x) {
@@ -90,15 +106,11 @@ public class World extends GameObject {
 	}
 	
 	public void zoomIn() {
-		System.out.println("mx:" + game.getMousePosition().getX());
 		if(scale < max) {
 			scale += zoom;
 		}
 		else
 			scale = max;
-		
-		this.x -= (Node.w * scale);
-		this.y -= (Node.h * scale);
 	}
 	
 	public void zoomOut() {
@@ -112,11 +124,11 @@ public class World extends GameObject {
 	private void adjustNodeRotation(String s) {
 		if(s == "increase") {
 			for(Node n:nodes)
-				n.rotation++;
+				n.rotation+=5;
 		}
 		else if(s == "decrease") {
 			for(Node n:nodes)
-				n.rotation--;
+				n.rotation-=5;
 		}
 	}
 	
@@ -139,15 +151,35 @@ public class World extends GameObject {
 	}
 	
 	public void mousePressed(MouseEvent e) {
-		if(e.getButton() == MouseEvent.BUTTON2) {
-			o = game.getMousePosition();
+		o = game.getMousePosition();
+		
+		if(e.getButton() == MouseEvent.BUTTON1) {
+			leftDown = true;
+			mouseLeftClick();
+		}
+		
+		if(e.getButton() == MouseEvent.BUTTON2)
 			middleDown = true;
+		
+		if(e.getButton() == MouseEvent.BUTTON3) {
+			rightDown = true;
+			mouseRightClick();
 		}
 	}
 	
 	public void mouseReleased(MouseEvent e) {
+		if(e.getButton() == MouseEvent.BUTTON1) {
+			leftDown = false;
+			mouseLeftClick();
+		}
+		
 		if(e.getButton() == MouseEvent.BUTTON2)
 			middleDown = false;
+		
+		if(e.getButton() == MouseEvent.BUTTON3) {
+			rightDown = false;
+			mouseRightClick();
+		}
 	}
 	
 	public void keyPressed(KeyEvent e) {
@@ -169,7 +201,7 @@ public class World extends GameObject {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
 			game.exit();
 	}
-
+	
 	public void keyReleased(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W)
 			up = false;
