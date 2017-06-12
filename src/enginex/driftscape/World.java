@@ -124,11 +124,11 @@ public class World extends GameObject {
 	private void adjustNodeRotation(String s) {
 		if(s == "increase") {
 			for(Node n:nodes)
-				n.rotation++;
+				n.rotation+=5;
 		}
 		else if(s == "decrease") {
 			for(Node n:nodes)
-				n.rotation--;
+				n.rotation-=5;
 		}
 	}
 	
