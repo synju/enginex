@@ -123,6 +123,17 @@ public class World extends GameObject {
 			scale = min;
 	}
 	
+	private void adjustNodeRotation(String s) {
+		if(s == "increase") {
+			for(Node n:nodes)
+				n.rotation++;
+		}
+		else if(s == "decrease") {
+			for(Node n:nodes)
+				n.rotation--;
+		}
+	}
+	
 	public PlayState getPlayState() {
 		return (PlayState)game.stateMachine.getCurrentState();
 	}
@@ -149,22 +160,14 @@ public class World extends GameObject {
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D)
 			right = true;
 		
-		if(e.getKeyCode() == KeyEvent.VK_ADD)
+		if(e.getKeyCode() == KeyEvent.VK_PERIOD)
 			adjustNodeRotation("increase");
 		
-		if(e.getKeyCode() == KeyEvent.VK_MINUS)
+		if(e.getKeyCode() == KeyEvent.VK_COMMA)
 			adjustNodeRotation("decrease");
-	}
-	
-	private void adjustNodeRotation(String s) {
-		if(s == "increase") {
-			for(Node n:nodes)
-				n.rotation++;
-		}
-		else if(s == "decrease") {
-			for(Node n:nodes)
-				n.rotation--;
-		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+			game.exit();
 	}
 
 	public void keyReleased(KeyEvent e) {
