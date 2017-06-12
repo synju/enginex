@@ -29,7 +29,7 @@ public class State extends PApplet implements KeyListener, MouseListener, MouseW
 		gameObjects.add(go);
 	}
 
-	protected void update() {
+	public void update() {
 		for(Iterator<GameObject> it = gameObjects.iterator(); it.hasNext();) {
 			GameObject go = it.next();
 			if(go.isDisposable()) {
@@ -45,7 +45,7 @@ public class State extends PApplet implements KeyListener, MouseListener, MouseW
 		}
 	}
 
-	protected void render(Graphics2D g) {
+	public void render(Graphics2D g) {
 		for(GameObject go:gameObjects) {
 			if(go.renderEnabled) {
 				go.render(g);

@@ -95,7 +95,7 @@ public class PlayState extends State {
 		return (int)(getTime() - tStart);
 	}
 	
-	protected void update() {
+	public void update() {
 		if(!paused) {
 			if(player.alive) {
 				timeSpent++;
@@ -107,7 +107,7 @@ public class PlayState extends State {
 		}
 	}
 	
-	protected void render(Graphics2D g) {
+	public void render(Graphics2D g) {
 		renderGrass(g);
 		renderBloods(g);
 		player.render(g);

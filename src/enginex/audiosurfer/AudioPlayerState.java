@@ -17,7 +17,7 @@ public class AudioPlayerState extends State {
 		}
 	}
 
-	protected void update() {}
+	public void update() {}
 
-	protected void render(Graphics2D g) {}
+	public void render(Graphics2D g) {}
 }

@@ -14,11 +14,11 @@ public class GameState extends State {
 		addGameObject(p);
 	}
 
-	protected void update() {
+	public void update() {
 		p.update();
 	}
 	
-	protected void render(Graphics2D g) {
+	public void render(Graphics2D g) {
 		p.render(g);
 	}
 }
