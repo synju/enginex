@@ -7,7 +7,7 @@ public class Replicants extends EngineX {
 	RGameState gameState;
 	
 	public static final int MENU = 0;
-	public static final int GAME = 0;
+	public static final int GAME = 1;
 	
 	Replicants() {
 		super("Replicants");
