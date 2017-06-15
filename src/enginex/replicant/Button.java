@@ -8,6 +8,7 @@ import java.awt.Point;
 import javax.swing.ImageIcon;
 
 import enginex.core.GameObject;
+import enginex.core.SoundEngine;
 
 @SuppressWarnings("serial")
 public class Button extends GameObject {
@@ -53,7 +54,7 @@ public class Button extends GameObject {
 		if((m != null) && (m.x > this.x && m.x < this.x + this.w) && (m.y > this.y && m.y < this.y + this.h)) {
 			hover = true;
 			if(soundPlayed == false) {
-				new AePlayWave(soundPath).run();
+				SoundEngine.play(soundPath);
 				soundPlayed = true;
 			}
 		}
