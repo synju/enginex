@@ -11,22 +11,15 @@ import javax.sound.sampled.SourceDataLine;
 public class SoundEngine {
 	public static void play(String path) {
 		try {
-			File soundFile = new File(path);
-			if(!soundFile.exists()) throw new Exception("Wave file not found: " + path);
-			
-			AudioInputStream audioInputStream = null;
-			audioInputStream = AudioSystem.getAudioInputStream(soundFile);
-			
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(path));			
 			AudioFormat format = audioInputStream.getFormat();
-			SourceDataLine auline = null;
-			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+			SourceDataLine auline = (SourceDataLine)AudioSystem.getLine(new DataLine.Info(SourceDataLine.class, format));
 			
-			auline = (SourceDataLine)AudioSystem.getLine(info);
 			auline.open(format);
 			auline.start();
 			
 			int nBytesRead = 0;
-			byte[] abData = new byte[524288]; // 128Kb
+			byte[] abData = new byte[524288*100]; // 128Kb
 			
 			while(nBytesRead != -1) {
 				nBytesRead = audioInputStream.read(abData, 0, abData.length);
