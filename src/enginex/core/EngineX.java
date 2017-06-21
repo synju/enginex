@@ -7,10 +7,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import org.lwjgl.openal.AL;
 
 public class EngineX implements Runnable {
 	public JFrame					window;
@@ -18,7 +22,7 @@ public class EngineX implements Runnable {
 	private BufferedImage	image;
 	private Graphics2D		g;
 	public StateMachine		stateMachine;
-	public boolean autoAdjust = false;
+	public boolean				autoAdjust				= false;
 	
 	public int						width							= 800;
 	public int						height						= 600;
@@ -84,7 +88,11 @@ public class EngineX implements Runnable {
 		window.pack();
 		window.setVisible(true);
 		window.setLocationRelativeTo(null);
-		
+		window.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				exit();
+			}
+		});
 	}
 	
 	void updateWindow() {
@@ -176,10 +184,14 @@ public class EngineX implements Runnable {
 	
 	public void exit(String msg) {
 		System.out.println(msg);
-		System.exit(0);
+		exit();
 	}
 	
 	public void exit() {
+		// Release All Sound Resources
+		AL.destroy();
+		
+		// Exit app...
 		System.exit(0);
 	}
 	
