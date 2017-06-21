@@ -19,6 +19,7 @@ public class Button extends GameObject {
 	Point				m;
 	boolean			soundPlayed	= false;
 	Sound				sound;
+	boolean hasSound = false;
 	
 	public Button(Replicants game, int x, int y, int w, int h, String defaultImagePath, String hoverImagePath) {
 		super(game);
@@ -50,6 +51,16 @@ public class Button extends GameObject {
 		
 		// Sound
 		sound = new Sound(soundPath);
+		hasSound = true;
+	}
+	
+	public boolean contains(Point mousePosition) {
+		Point m = mousePosition;
+		
+		if(m.x > this.x && m.x < this.x + this.w && m.y > this.y && m.y < this.y + this.h)
+			return true;
+		
+		return false;
 	}
 	
 	public void update() {
@@ -59,8 +70,10 @@ public class Button extends GameObject {
 		if((m != null) && (m.x > this.x && m.x < this.x + this.w) && (m.y > this.y && m.y < this.y + this.h)) {
 			hover = true;
 			if(soundPlayed == false) {
-				sound.play();
-				soundPlayed = true;
+				if(hasSound) {
+					sound.play(1f,1f,false);
+					soundPlayed = true;
+				}
 			}
 		}
 		else {

@@ -5,15 +5,12 @@ import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 public class Sound {
-	Audio		soundEffect;
-	String	soundPath;
-	float		position;
+	Audio	audio;
+	float	position	= 0;
 	
 	public Sound(String path) {
-		this.soundPath = path;
-		
 		try {
-			soundEffect = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(path));
+			audio = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(path));
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -21,24 +18,28 @@ public class Sound {
 	}
 	
 	public void play() {
-		soundEffect.playAsSoundEffect(1.0f, 1.0f, false);
+		if(!audio.isPlaying()) {
+			audio.playAsSoundEffect(1.0f, 1.0f, false);
+			audio.setPosition(position);
+		}
 	}
 	
 	public void play(float pitch, float gain, boolean loop) {
-		soundEffect.playAsMusic(pitch, gain, loop);
+		if(!audio.isPlaying()) {
+			audio.playAsSoundEffect(pitch, gain, loop);
+			audio.setPosition(position);
+		}
 	}
 	
 	public void pause() {
-		if(soundEffect.isPlaying()) {
-			position = soundEffect.getPosition();
-			soundEffect.stop();
+		if(audio.isPlaying()) {
+			position = audio.getPosition();
+			audio.stop();
 		}
 	}
 	
-	public void resume() {
-		if(!soundEffect.isPlaying()) {
-			soundEffect.setPosition(position);
-			play();
-		}
+	public void stop() {
+		audio.stop();
+		position = 0;
 	}
 }
