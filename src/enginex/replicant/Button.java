@@ -8,7 +8,7 @@ import java.awt.Point;
 import javax.swing.ImageIcon;
 
 import enginex.core.GameObject;
-import enginex.core.SoundEngine;
+import enginex.core.Sound;
 
 @SuppressWarnings("serial")
 public class Button extends GameObject {
@@ -16,12 +16,13 @@ public class Button extends GameObject {
 	boolean			hover				= false;
 	Image				defaultImage;
 	Image				hoverImage;
-	String			soundPath;
 	Point				m;
 	boolean			soundPlayed	= false;
+	Sound				sound;
 	
 	public Button(Replicants game, int x, int y, int w, int h, String defaultImagePath, String hoverImagePath) {
 		super(game);
+		
 		this.game = game;
 		
 		this.x = x;
@@ -37,14 +38,18 @@ public class Button extends GameObject {
 		super(game);
 		this.game = game;
 		
+		// Position & Dimension
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 		
+		// Images
 		defaultImage = new ImageIcon(defaultImagePath).getImage();
 		hoverImage = new ImageIcon(hoverImagePath).getImage();
-		this.soundPath = soundPath;
+		
+		// Sound
+		sound = new Sound(soundPath);
 	}
 	
 	public void update() {
@@ -54,7 +59,7 @@ public class Button extends GameObject {
 		if((m != null) && (m.x > this.x && m.x < this.x + this.w) && (m.y > this.y && m.y < this.y + this.h)) {
 			hover = true;
 			if(soundPlayed == false) {
-				SoundEngine.play(soundPath);
+				sound.play();
 				soundPlayed = true;
 			}
 		}
