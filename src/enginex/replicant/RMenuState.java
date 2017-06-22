@@ -50,6 +50,24 @@ public class RMenuState extends State {
 		// Exit Game...
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
 			game.exit();
+		
+		if(e.getKeyCode() == KeyEvent.VK_ADD) {
+			sound.increaseVolume();
+			System.out.println(sound.gain);
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_SUBTRACT) {
+			sound.decreaseVolume();
+			System.out.println(sound.gain);
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			if(!sound.isPlaying())
+				sound.play();
+			else
+				sound.pause();
+				
+		}
 	}
 	
 	public void mousePressed(MouseEvent e) {

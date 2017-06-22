@@ -71,7 +71,7 @@ public class Button extends GameObject {
 			hover = true;
 			if(soundPlayed == false) {
 				if(hasSound) {
-					sound.play(1f,1f,false);
+					sound.play(0.1f);
 					soundPlayed = true;
 				}
 			}
