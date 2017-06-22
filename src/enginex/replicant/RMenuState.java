@@ -81,5 +81,8 @@ public class RMenuState extends State {
 		
 		if(stopButton.contains(m))
 			sound.stop();
+		
+		if(powerButton.contains(m))
+			game.exit();
 	}
 }
