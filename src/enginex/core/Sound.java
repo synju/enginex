@@ -5,15 +5,15 @@ import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 public class Sound {
-	Audio		soundEffect;
-	String	soundPath;
-	float		position;
+	Audio						audio;
+	float						position	= 0f;
+	float						pitch			= 1.0f;
+	public float		gain			= 1.0f;
+	public boolean	loop			= false;
 	
 	public Sound(String path) {
-		this.soundPath = path;
-		
 		try {
-			soundEffect = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(path));
+			audio = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(path));
 		}
 		catch(Exception e) {
 			e.printStackTrace();
@@ -21,24 +21,74 @@ public class Sound {
 	}
 	
 	public void play() {
-		soundEffect.playAsSoundEffect(1.0f, 1.0f, false);
+		if(!audio.isPlaying()) {
+			audio.playAsSoundEffect(pitch, gain, false);
+			audio.setPosition(position);
+		}
+	}
+	
+	public void play(float gain) {
+		if(!audio.isPlaying()) {
+			audio.playAsSoundEffect(pitch, gain, loop);
+			audio.setPosition(position);
+		}
 	}
 	
 	public void play(float pitch, float gain, boolean loop) {
-		soundEffect.playAsMusic(pitch, gain, loop);
+		if(!audio.isPlaying()) {
+			audio.playAsSoundEffect(pitch, gain, loop);
+			audio.setPosition(position);
+		}
 	}
 	
 	public void pause() {
-		if(soundEffect.isPlaying()) {
-			position = soundEffect.getPosition();
-			soundEffect.stop();
+		if(audio.isPlaying()) {
+			position = audio.getPosition();
+			audio.stop();
 		}
 	}
 	
-	public void resume() {
-		if(!soundEffect.isPlaying()) {
-			soundEffect.setPosition(position);
-			play();
+	public void stop() {
+		audio.stop();
+		position = 0;
+	}
+	
+	public void increaseVolume() {
+		if(gain < 1.0f)
+			gain += 0.1f;
+		
+		if(gain > 1.0f)
+			gain = 1.0f;
+		
+		if(audio.isPlaying()) {
+			pause();
+			audio.playAsSoundEffect(pitch, gain, false);
+			audio.setPosition(position);
 		}
+	}
+	
+	public void decreaseVolume() {
+		if(gain > 0f)
+			gain -= 0.1f;
+		
+		if(gain < 0f)
+			gain = 0f;
+		
+		if(audio.isPlaying()) {
+			pause();
+			audio.playAsSoundEffect(1.0f, gain, false);
+			audio.setPosition(position);
+		}
+	}
+	
+	public boolean isPlaying() {
+		return audio.isPlaying();
+	}
+	
+	public boolean isPaused() {
+		if(position > 0 && !isPlaying())
+			return true;
+		
+		return false;
 	}
 }
