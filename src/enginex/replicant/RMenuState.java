@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import enginex.core.Sound;
+import enginex.core.SoundMachine;
 import enginex.core.State;
 
 public class RMenuState extends State {
@@ -17,18 +18,21 @@ public class RMenuState extends State {
 	Button						pauseButton;
 	Button						stopButton;
 	
-	static final int	WIDTH		= 1280;
-	static final int	HEIGHT	= 720;
+	static final int	MUSIC	= 0;
 	
 	public RMenuState(Replicants game) {
 		super(game);
 		this.game = game;
+		
 		powerButton = new Button(game, game.width - 32 - 10, 0 + 10, 32, 32, "res/replicants/powerOn.png", "res/replicants/powerHover.png", "res/replicants/sfx/buttonHover.ogg");
 		
-		sound = new Sound("res/replicants/sfx/doom_e1m8_sign_of_evil.ogg");
 		playButton = new Button(game, 10, 10, 50, 50, "res/replicants/play.png", "res/replicants/playHover.png");
 		pauseButton = new Button(game, 65, 10, 50, 50, "res/replicants/pause.png", "res/replicants/pauseHover.png");
 		stopButton = new Button(game, 120, 10, 50, 50, "res/replicants/stop.png", "res/replicants/stopHover.png");
+		
+		new Thread(()-> {
+			game.soundMachine.add(new Sound("res/replicants/sfx/doom_e1m8_sign_of_evil.ogg"), MUSIC);
+		}).start();
 	}
 	
 	public void update() {
@@ -51,36 +55,30 @@ public class RMenuState extends State {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
 			game.exit();
 		
-		if(e.getKeyCode() == KeyEvent.VK_ADD) {
-			sound.increaseVolume();
-			System.out.println(sound.gain);
-		}
+		if(e.getKeyCode() == KeyEvent.VK_ADD)
+			game.soundMachine.increaseVolume(MUSIC);
 		
-		if(e.getKeyCode() == KeyEvent.VK_SUBTRACT) {
-			sound.decreaseVolume();
-			System.out.println(sound.gain);
-		}
+		if(e.getKeyCode() == KeyEvent.VK_SUBTRACT)
+			game.soundMachine.decreaseVolume(MUSIC);
 		
-		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-			if(!sound.isPlaying())
-				sound.play();
-			else
-				sound.pause();
-				
-		}
+		if(e.getKeyCode() == KeyEvent.VK_SPACE)
+			game.soundMachine.pause(MUSIC);
+		
+		if(e.getKeyCode() == KeyEvent.VK_ENTER)
+			game.soundMachine.play(MUSIC);
 	}
 	
 	public void mousePressed(MouseEvent e) {
 		Point m = game.getMousePosition();
 		
 		if(playButton.contains(m))
-			sound.play();
+			game.soundMachine.play(MUSIC);
 		
 		if(pauseButton.contains(m))
-			sound.pause();
+			game.soundMachine.pause(MUSIC);
 		
 		if(stopButton.contains(m))
-			sound.stop();
+			game.soundMachine.stop(MUSIC);
 		
 		if(powerButton.contains(m))
 			game.exit();

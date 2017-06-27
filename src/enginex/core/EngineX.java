@@ -22,6 +22,7 @@ public class EngineX implements Runnable {
 	private BufferedImage	image;
 	private Graphics2D		g;
 	public StateMachine		stateMachine;
+	public SoundMachine soundMachine;
 	public boolean				autoAdjust				= false;
 	
 	public int						width							= 800;
@@ -76,6 +77,7 @@ public class EngineX implements Runnable {
 		image = new BufferedImage(width * scale, height * scale, BufferedImage.TYPE_INT_RGB);
 		g = (Graphics2D)image.getGraphics();
 		stateMachine = new StateMachine(this);
+		soundMachine = new SoundMachine(this);
 		
 		window.addKeyListener(stateMachine);
 		window.addMouseListener(stateMachine);
