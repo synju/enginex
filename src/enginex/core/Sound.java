@@ -10,6 +10,7 @@ public class Sound {
 	float						pitch			= 1.0f;
 	public float		gain			= 1.0f;
 	public boolean	loop			= false;
+	public int			group;
 	
 	public Sound(String path) {
 		try {
@@ -18,6 +19,10 @@ public class Sound {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void setGroup(int group) {
+		this.group = group;
 	}
 	
 	public void play() {
