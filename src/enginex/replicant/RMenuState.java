@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 
 import enginex.core.Sound;
-import enginex.core.SoundMachine;
 import enginex.core.State;
 
 public class RMenuState extends State {
