@@ -7,37 +7,76 @@ import java.util.ArrayList;
 import enginex.core.State;
 
 public class PlayState extends State {
-	Platformer game;
-	Player p;
-	ArrayList<Collidable> clist = new ArrayList<>();
+	public Platformer							game;
+	public Player									p;
+	public LevGen									lg;
+	public ArrayList<Collidable>	clist;
 	
-	protected PlayState(Platformer game) {
+	boolean												initialized	= false;
+	
+	public PlayState(Platformer game) {
 		super(game);
 		this.game = game;
-		
-		clist.add(new Collidable(game, 100, 400, game.width-200, 50));
-		p = new Player(game,150,200);
+		clist = new ArrayList<>();
+		lg = new LevGen(game);
+	}
+	
+	public void postInit() {
+		lg.generateLevel();
+		initialized = true;
 	}
 	
 	public void update() {
-		p.update();
+		if(!initialized)
+			postInit();
+		
+		try {
+			p.update();
+		}
+		catch(Exception e) {}
 	}
 	
 	public void render(Graphics2D g) {
-		for(Collidable c:clist)
-			c.render(g);
-		p.render(g);
+		try {
+			for(Collidable c:clist)
+				c.render(g);
+			p.render(g);
+		}
+		catch(Exception e) {}
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		// Exit Game...
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
-			game.exit();
-		
-		p.keyPressed(e);
+		try {
+			// Exit Game...
+			if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+				game.exit();
+			
+			// Save Game
+			if(e.getKeyCode() == KeyEvent.VK_F1) {
+				p.save();
+				System.out.println("Game Saved");
+			}
+			
+			// Load Game
+			if(e.getKeyCode() == KeyEvent.VK_F12) {
+				System.out.println("Game Loaded");
+				p.load();
+			}
+			
+			// Reset Game
+			if(e.getKeyCode() == KeyEvent.VK_R) {
+				lg.generateLevel();
+			}
+			
+			p.keyPressed(e);
+		}
+		catch(Exception ex) {}
 	}
 	
 	public void keyReleased(KeyEvent e) {
-		p.keyReleased(e);
+		try {
+			p.keyReleased(e);
+		}
+		catch(Exception ex) {}
 	}
 }

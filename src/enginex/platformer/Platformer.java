@@ -6,7 +6,7 @@ public class Platformer extends EngineX {
 	PlayState playState;
 	
 	Platformer() {
-		super("Platformer");
+		super("Platformer", 10 * 50, 8 * 50);
 	}
 	
 	public void init() {

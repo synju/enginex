@@ -35,8 +35,7 @@ public class Node extends GameObject {
 	
 	void updateHover(Point m) {
 		if(m != null)
-			if((m.x > getWorld().x * scale + x * w * scale) && (m.x < getWorld().x * scale + x * w * scale + w * scale)
-					&& (m.y > getWorld().y * scale + y * h * scale) && (m.y < getWorld().y * scale + y * h * scale + h * scale))
+			if((m.x > getWorld().x * scale + x * w * scale) && (m.x < getWorld().x * scale + x * w * scale + w * scale) && (m.y > getWorld().y * scale + y * h * scale) && (m.y < getWorld().y * scale + y * h * scale + h * scale))
 				this.hover = true;
 			else
 				this.hover = false;

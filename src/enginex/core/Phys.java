@@ -1,4 +1,4 @@
-package enginex.platformer;
+package enginex.core;
 
 import java.awt.Rectangle;
 

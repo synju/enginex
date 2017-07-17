@@ -29,17 +29,15 @@ public class RMenuState extends State {
 		pauseButton = new Button(game, 65, 10, 50, 50, "res/replicants/pause.png", "res/replicants/pauseHover.png");
 		stopButton = new Button(game, 120, 10, 50, 50, "res/replicants/stop.png", "res/replicants/stopHover.png");
 		
-		new Thread(()-> {
-			game.soundMachine.add(new Sound("res/replicants/sfx/doom_e1m8_sign_of_evil.ogg"), MUSIC);
-		}).start();
+		game.soundMachine.add(new Sound("res/replicants/sfx/doom_e1m8_sign_of_evil.ogg"), MUSIC);
 	}
 	
 	public void update() {
-		powerButton.update();
-		
 		playButton.update();
 		pauseButton.update();
 		stopButton.update();
+		
+		powerButton.update();
 	}
 	
 	public void render(Graphics2D g) {

@@ -190,8 +190,13 @@ public class EngineX implements Runnable {
 	}
 	
 	public void exit() {
-		// Release All Sound Resources
-		AL.destroy();
+		try{
+			// Release All Sound Resources
+			AL.destroy();
+		}
+		catch(Exception e) {
+//			e.printStackTrace();
+		}
 		
 		// Exit app...
 		System.exit(0);

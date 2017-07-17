@@ -3,7 +3,7 @@ package enginex.core;
 import java.util.ArrayList;
 
 public class SoundMachine {
-	public EngineX					game;
+public EngineX					game;
 	
 	public ArrayList<Sound>	sounds					= new ArrayList<Sound>();
 	
@@ -12,6 +12,8 @@ public class SoundMachine {
 	public static final int	STOP						= 2;
 	public static final int	INCREASEVOLUME	= 3;
 	public static final int	DECREASEVOLUME	= 4;
+	
+	public static final int	MUSIC						= 5;
 	
 	public SoundMachine(EngineX game) {
 		this.game = game;

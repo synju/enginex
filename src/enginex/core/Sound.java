@@ -5,7 +5,7 @@ import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 public class Sound {
-	Audio						audio;
+	Audio						audio			= null;
 	float						position	= 0f;
 	float						pitch			= 1.0f;
 	public float		gain			= 1.0f;
@@ -17,7 +17,7 @@ public class Sound {
 			audio = AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream(path));
 		}
 		catch(Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 	}
 	
@@ -26,6 +26,7 @@ public class Sound {
 	}
 	
 	public void play() {
+		if(audio != null)
 		if(!audio.isPlaying()) {
 			audio.playAsSoundEffect(pitch, gain, false);
 			audio.setPosition(position);
@@ -33,6 +34,7 @@ public class Sound {
 	}
 	
 	public void play(float gain) {
+		if(audio != null)
 		if(!audio.isPlaying()) {
 			audio.playAsSoundEffect(pitch, gain, loop);
 			audio.setPosition(position);
@@ -40,6 +42,7 @@ public class Sound {
 	}
 	
 	public void play(float pitch, float gain, boolean loop) {
+		if(audio != null)
 		if(!audio.isPlaying()) {
 			audio.playAsSoundEffect(pitch, gain, loop);
 			audio.setPosition(position);
@@ -47,6 +50,7 @@ public class Sound {
 	}
 	
 	public void pause() {
+		if(audio != null)
 		if(audio.isPlaying()) {
 			position = audio.getPosition();
 			audio.stop();
@@ -54,8 +58,10 @@ public class Sound {
 	}
 	
 	public void stop() {
+		if(audio != null) {
 		audio.stop();
 		position = 0;
+		}
 	}
 	
 	public void increaseVolume() {
@@ -65,6 +71,7 @@ public class Sound {
 		if(gain > 1.0f)
 			gain = 1.0f;
 		
+		if(audio != null)
 		if(audio.isPlaying()) {
 			pause();
 			audio.playAsSoundEffect(pitch, gain, false);
@@ -79,6 +86,7 @@ public class Sound {
 		if(gain < 0f)
 			gain = 0f;
 		
+		if(audio != null)
 		if(audio.isPlaying()) {
 			pause();
 			audio.playAsSoundEffect(1.0f, gain, false);
@@ -87,10 +95,13 @@ public class Sound {
 	}
 	
 	public boolean isPlaying() {
+		if(audio != null)
 		return audio.isPlaying();
+		return false;
 	}
 	
 	public boolean isPaused() {
+		if(audio != null)
 		if(position > 0 && !isPlaying())
 			return true;
 		

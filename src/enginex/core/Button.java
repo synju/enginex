@@ -1,113 +1,141 @@
 package enginex.core;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.awt.Point;
+
+import javax.swing.ImageIcon;
 
 @SuppressWarnings("serial")
 public class Button extends GameObject {
-	int	x;
-	int	y;
-	int	w;
-	int	h;
-
-	Image	upImage;
-	Image	hoverImage;
-	Image	downImage;
-	Image	currentImage;
-
-	String label = "";
-
-	boolean down = false;
-
-	Rectangle bounds;
-
-	ArrayList<ActionListener> actionListeners = new ArrayList<>();
-
-	public Button(EngineX game, Image upImage, Image hoverImage, Image downImage) {
+	EngineX	game;
+	
+	boolean	hover				= false;
+	
+	boolean	hasSound		= false;
+	boolean	soundPlayed	= false;
+	Sound		sound;
+	
+	boolean	hasImages		= false;
+	Image		defaultImage;
+	Image		hoverImage;
+	
+	Point		m;
+	
+	public Button(EngineX game, int x, int y, int w, int h) {
 		super(game);
-		setImages(upImage, hoverImage, downImage);
-	}
-
-	private void setImages(Image upImage, Image hoverImage, Image downImage) {
-		if(upImage != null && hoverImage != null && downImage != null) {
-			this.upImage = upImage;
-			this.hoverImage = hoverImage;
-			this.downImage = downImage;
-			currentImage = upImage;
-		}
-	}
-
-	public void init(int x, int y) {
-		setLocation(x, y);
-		bounds = new Rectangle(x, y, getWidth(), getHeight());
-	}
-
-	public void update() {
-		try {
-			if(bounds.contains(game.getMousePosition())) {
-				if(down)
-					currentImage = downImage;
-				else
-					currentImage = hoverImage;
-			}
-			else {
-				if(down)
-					currentImage = downImage;
-				else
-					currentImage = upImage;
-			}
-		}
-		catch(Exception e) {}
-	}
-
-	public void render(Graphics2D g) {
-		g.drawImage(currentImage, x, y, null);
-	}
-
-	public void addActionListener(ActionListener actionListener) {
-		actionListeners.add(actionListener);
-	}
-
-	public void action(ActionEvent e) {
-		for(ActionListener al:actionListeners) {
-			al.actionPerformed(e);
-		}
-	}
-
-	public void setLocation(int x, int y) {
+		this.game = game;
+		
+		// Position & Dimension
 		this.x = x;
 		this.y = y;
+		this.w = w;
+		this.h = h;
 	}
-
-	public int getWidth() {
-		return currentImage.getWidth(null);
+	
+	public Button(EngineX game, int x, int y, int w, int h, String defaultImagePath, String hoverImagePath) {
+		super(game);
+		this.game = game;
+		
+		// Position & Dimension
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		
+		// Images
+		setImages(defaultImagePath, hoverImagePath);
 	}
-
-	public int getHeight() {
-		return currentImage.getHeight(null);
+	
+	public Button(EngineX game, int x, int y, int w, int h, String defaultImagePath, String hoverImagePath, String soundPath) {
+		super(game);
+		this.game = game;
+		
+		// Position & Dimension
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		
+		// Images
+		setImages(defaultImagePath, hoverImagePath);
+		
+		// Sound
+		setSound(soundPath);
 	}
-
-	public void mousePressed(MouseEvent e) {
-		super.mousePressed(e);
-
-		if(bounds.contains(game.getMousePosition()))
-			down = true;
-	}
-
-	public void mouseReleased(MouseEvent e) {
-		super.mouseReleased(e);
-
-		down = false;
-
-		try {
-			if(bounds.contains(game.getMousePosition()))
-				action(new ActionEvent(e, 0, null));
+	
+	public void update() {
+		hover = false;
+		m = game.getMousePosition();
+		if((m != null) && contains(m)) {
+			hover = true;
+			// do Actions...
+			playSound();
 		}
-		catch(Exception ex) {}
+		else {
+			soundPlayed = false;
+		}
+	}
+	
+	public void setImages(String defaultImagePath, String hoverImagePath) {
+		// Images
+		defaultImage = new ImageIcon(defaultImagePath).getImage();
+		hoverImage = new ImageIcon(hoverImagePath).getImage();
+		hasImages = true;
+	}
+	
+	public void setSound(String soundPath) {
+		sound = new Sound(soundPath);
+		hasSound = true;
+	}
+	
+	public boolean contains(Point mousePosition) {
+		Point m = mousePosition;
+		
+		if(m.x > this.x && m.x < this.x + this.w && m.y > this.y && m.y < this.y + this.h)
+			return true;
+		
+		return false;
+	}
+	
+	public boolean containsMouse() {
+		Point m = game.getMousePosition();
+		
+		if(m.x > this.x && m.x < this.x + this.w && m.y > this.y && m.y < this.y + this.h)
+			return true;
+		
+		return false;
+	}
+	
+	public void playSound() {
+		if(soundPlayed == false) {
+			if(hasSound) {
+				sound.play(0.1f);
+				soundPlayed = true;
+			}
+		}
+	}
+	
+	public void render(Graphics2D g) {
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+		
+		if(hasImages) {
+			if(!hover)
+				g.drawImage(defaultImage, (int)x, (int)y, null);
+			else
+				g.drawImage(hoverImage, (int)x, (int)y, null);
+		}
+		else {
+			if(!hover) {
+				g.setColor(Color.GREEN);
+				g.fillRect((int)x, (int)y, (int)w, (int)h);
+			}
+			else {
+				g.setColor(Color.RED);
+				g.fillRect((int)x, (int)y, (int)w, (int)h);
+			}
+		}
 	}
 }
