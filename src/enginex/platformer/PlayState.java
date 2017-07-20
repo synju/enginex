@@ -52,13 +52,13 @@ public class PlayState extends State {
 				game.exit();
 			
 			// Save Game
-			if(e.getKeyCode() == KeyEvent.VK_F1) {
+			if(e.getKeyCode() == KeyEvent.VK_F5) {
 				p.save();
 				System.out.println("Game Saved");
 			}
 			
 			// Load Game
-			if(e.getKeyCode() == KeyEvent.VK_F12) {
+			if(e.getKeyCode() == KeyEvent.VK_F6) {
 				System.out.println("Game Loaded");
 				p.load();
 			}

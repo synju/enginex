@@ -125,9 +125,11 @@ public class LevGen {
 					int rw = room.x * game.width;
 					int rh = room.y * game.height;
 					
+					// Add Collision Tile
 					if(c == '#')
 						getState().clist.add(new Collidable(game, j * 50 + rw, i * 50 + rh));
 					
+					// Add Player
 					if(c == '$')
 						getState().p = new Player(game, j * 50 + rw, i * 50 + rh);
 				}

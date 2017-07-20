@@ -24,7 +24,7 @@ public class Player extends GameObject {
 	boolean								moveRight						= false;
 	boolean								moveUp							= false;
 	boolean								moveDown						= false;
-	boolean								upDownMovement			= true;
+	boolean								upDownMovement			= false;
 	
 	boolean								renderJumpCollider	= false;
 	int										speed								= 5;
@@ -40,7 +40,7 @@ public class Player extends GameObject {
 	
 	ArrayList<Collidable>	clist								= new ArrayList<>();
 	
-	boolean								renderMC						= true;
+	boolean								renderMC						= false;
 	MovementContainer			mc									= null;
 	boolean								mcCorrection				= false;
 	boolean								correction					= true;
@@ -204,9 +204,32 @@ public class Player extends GameObject {
 		return false;
 	}
 	
+	void grabLedge() {
+		
+	}
+	
 	void jump() {
 		if(onGround() && gravityEnabled)
 			velocityY = -jumpSpeed;
+	}
+	
+	void jumpRelease() {
+		if(velocityY < -(jumpSpeed / 2))
+			velocityY += jumpSpeed / 2;
+	}
+	
+	void duck() {
+		if(h > 25 && onGround()) {
+			h = 25;
+			y += h;
+		}
+	}
+	
+	void duckRelease() {
+		if(h == 25) {
+			h = 50;
+			y -= 25;
+		}
 	}
 	
 	void move() {
@@ -286,8 +309,10 @@ public class Player extends GameObject {
 		if(e.getKeyCode() == KeyEvent.VK_W)
 			moveUp = true;
 		
-		if(e.getKeyCode() == KeyEvent.VK_S)
+		if(e.getKeyCode() == KeyEvent.VK_S) {
 			moveDown = true;
+			duck();
+		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_A)
 			moveLeft = true;
@@ -308,6 +333,7 @@ public class Player extends GameObject {
 		if(e.getKeyCode() == KeyEvent.VK_S) {
 			velocityY = 0;
 			moveDown = false;
+			duckRelease();
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_A) {
@@ -320,7 +346,11 @@ public class Player extends GameObject {
 			moveRight = false;
 		}
 		
-		if(e.getKeyCode() == KeyEvent.VK_C) {
+		// Release Jump....
+		if(e.getKeyCode() == KeyEvent.VK_NUMPAD0)
+			jumpRelease();
+		
+		if(e.getKeyCode() == KeyEvent.VK_F1) {
 			if(mcCorrection) {
 				mcCorrection = false;
 				System.out.println("Correction Disabled");
@@ -329,6 +359,13 @@ public class Player extends GameObject {
 				mcCorrection = true;
 				System.out.println("Correction Enabled");
 			}
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_F2) {
+			if(renderMC)
+				renderMC = false;
+			else
+				renderMC = true;
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_G) {
@@ -343,7 +380,7 @@ public class Player extends GameObject {
 			}
 		}
 		
-		if(e.getKeyCode() == KeyEvent.VK_M) {
+		if(e.getKeyCode() == KeyEvent.VK_F3) {
 			if(upDownMovement) {
 				upDownMovement = false;
 				System.out.println("UpDown Disabled");
