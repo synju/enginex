@@ -72,6 +72,8 @@ public class Game {
 	// Lights..
 	ArrayList<Light> lights;
 
+	public boolean placingLamp = false;
+
 	// Main Function (Where it all begins...)
 	public static void main(String[] args) {
 		new Game().run();
@@ -103,32 +105,37 @@ public class Game {
 		generateFerns();
 		generateGrass();
 		generateLights();
-		player = new Player(new TexturedModel(OBJLoader.loadObjModel("bulbasaur", loader), new ModelTexture(loader.loadTexture("bbs"))), new Vector3f(5,terrain.getHeightOfTerrain(5,5),5),0,0,0,1, this);
+		player = new Player(new TexturedModel(OBJLoader.loadObjModel("bulbasaur", loader), new ModelTexture(loader.loadTexture("bbs"))), new Vector3f(5, terrain.getHeightOfTerrain(5, 5), 5), 0, 0, 0, 1, this);
 
 		camera = new Camera(this);
-		picker = new MousePicker(camera,renderer.getProjectionMatrix(), terrain);
+		picker = new MousePicker(camera, renderer.getProjectionMatrix(), terrain);
 	}
+
 	void update() {
 		checkInput();
-		bulbasaur.increaseRotation(0.0f,0.25f,0.0f);
+		bulbasaur.increaseRotation(0.0f, 0.25f, 0.0f);
 		player.update();
 		lamps.get(0).update();
 		camera.update();
 
 		picker.update();
-		if(picker.getCurrentTerrainPoint()!=null)
-			lamps.get(0).setPosition(picker.getCurrentTerrainPoint());
 	}
+
 	void render() {
 		renderer.density = density;
 		renderer.gradient = gradient;
 
 		renderer.processTerrain(terrain);
-		renderer.processEntity(lamps.get(0).getEntity());
+
+		for(Lamp l : lamps) {
+			renderer.processEntity(l.getEntity());
+		}
+//		renderer.processEntity(lamps.get(0).getEntity());
+
 		renderer.processEntity(bulbasaur);
 		renderer.processEntity(player);
-		for(Entity e:fernEntities) renderer.processEntity(e);
-		for(Entity g:grassEntities) renderer.processEntity(g);
+		for(Entity e : fernEntities) renderer.processEntity(e);
+		for(Entity g : grassEntities) renderer.processEntity(g);
 
 		renderer.render(lights, camera);
 
@@ -138,6 +145,7 @@ public class Game {
 		// Update the Display
 		DisplayManager.updateDisplay();
 	}
+
 	void exit() {
 		guiRenderer.cleanUp();
 		renderer.cleanUp();
@@ -148,11 +156,16 @@ public class Game {
 
 	// Input
 	private void checkInput() {
+		checkMouseInput();
+
+		placingLamp = false;
+		if(Keyboard.isKeyDown(Keyboard.KEY_F1)) placingLamp = true;
+
 		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) || Keyboard.isKeyDown(Keyboard.KEY_X))
 			exit();
 
 		if(Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-			resolutionMultiplier/=1.2;
+			resolutionMultiplier /= 1.2;
 			if(resolutionMultiplier < 16) {
 				resolutionMultiplier = 16;
 				return;
@@ -162,7 +175,7 @@ public class Game {
 				int width = resolutionMultiplier * baseWidth;
 				int height = resolutionMultiplier * baseHeight;
 				Display.setDisplayMode(new DisplayMode(width, height));
-				GL11.glViewport(0,0,width, height);
+				GL11.glViewport(0, 0, width, height);
 			}
 			catch(Exception e) {
 				// Do nothing...
@@ -170,13 +183,13 @@ public class Game {
 		}
 
 		if(Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
-			resolutionMultiplier*=1.2;
+			resolutionMultiplier *= 1.2;
 
 			try {
 				int width = resolutionMultiplier * baseWidth;
 				int height = resolutionMultiplier * baseHeight;
 				Display.setDisplayMode(new DisplayMode(width, height));
-				GL11.glViewport(0,0,width, height);
+				GL11.glViewport(0, 0, width, height);
 			}
 			catch(Exception e) {
 				// Do nothing...
@@ -188,7 +201,7 @@ public class Game {
 				int width = 640;
 				int height = 480;
 				Display.setDisplayMode(new DisplayMode(width, height));
-				GL11.glViewport(0,0,width, height);
+				GL11.glViewport(0, 0, width, height);
 			}
 			catch(Exception e) {
 				// Do nothing...
@@ -197,22 +210,39 @@ public class Game {
 
 		if(Keyboard.isKeyDown(Keyboard.KEY_F)) {
 			density += 0.0001f;
-			System.out.println("density:"+density);
+			System.out.println("density:" + density);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_V)) {
 			density -= 0.0001f;
-			System.out.println("density:"+density);
+			System.out.println("density:" + density);
 		}
 
 		float gradientModifier = 0.001f;
 //		float gradientModifier = 0.1f;
 		if(Keyboard.isKeyDown(Keyboard.KEY_G)) {
 			gradient += gradientModifier;
-			System.out.println("gradient:"+gradient);
+			System.out.println("gradient:" + gradient);
 		}
 		if(Keyboard.isKeyDown(Keyboard.KEY_B)) {
 			gradient -= gradientModifier;
-			System.out.println("gradient:"+gradient);
+			System.out.println("gradient:" + gradient);
+		}
+	}
+
+	private void checkMouseInput() {
+		while(Mouse.next() && placingLamp) {
+			if(Mouse.getEventButtonState()) {
+				if(Mouse.getEventButton() == 0) {
+//					System.out.println("Left button pressed");
+				}
+			}
+			else {
+				if(Mouse.getEventButton() == 0) {
+					System.out.println("Left button released");
+					addLamp();
+					System.out.println("Lamp Added");
+				}
+			}
 		}
 	}
 
@@ -245,13 +275,22 @@ public class Game {
 			e.printStackTrace();
 		}
 	}
+
 	public void hideMouse() {
 		try {
 			Cursor invisibleCursor = new Cursor(1, 1, 0, 0, 1, BufferUtils.createIntBuffer(1), null);
 			Mouse.setNativeCursor(invisibleCursor);
 		}
-		catch (Exception e) {
+		catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void addLamp() {
+		if(picker.getCurrentTerrainPoint() != null) {
+			Lamp lamp = new Lamp(picker.getCurrentTerrainPoint(), loader, Lamp.ORANGE);
+			lamps.add(new Lamp(picker.getCurrentTerrainPoint(), loader, Lamp.ORANGE));
+			lights.add(lamps.get(lamps.size() - 1).getLight());
 		}
 	}
 
@@ -259,19 +298,22 @@ public class Game {
 	private void generateGui() {
 		guiRenderer = new GuiRenderer(loader);
 		guis = new ArrayList<>();
-		gui = new GuiTexture(loader.loadTexture("bulbasaur"), new Vector2f(0.5f,0.5f), new Vector2f(0.15f,0.25f));
+		gui = new GuiTexture(loader.loadTexture("bulbasaur"), new Vector2f(0.5f, 0.5f), new Vector2f(0.15f, 0.25f));
 		guis.add(gui);
-		guis.add(new GuiTexture(loader.loadTexture("bulbasaur"), new Vector2f(0.6f,0.4f), new Vector2f(0.15f,0.25f)));
+		guis.add(new GuiTexture(loader.loadTexture("bulbasaur"), new Vector2f(0.6f, 0.4f), new Vector2f(0.15f, 0.25f)));
 	}
+
 	private void generateLamps() {
 		lamps = new ArrayList<>();
-		lamps.add(new Lamp(new Vector3f(0,0,0), loader, Lamp.ORANGE));
+		lamps.add(new Lamp(new Vector3f(0, 0, 0), loader, Lamp.ORANGE));
 	}
+
 	private void generateBulbasaur() {
-		bulbasaur = new Entity(new TexturedModel(OBJLoader.loadObjModel("bulbasaur", loader),new ModelTexture(loader.loadTexture("bbs"))), new Vector3f(0,0,-15),0,0,0,1);
+		bulbasaur = new Entity(new TexturedModel(OBJLoader.loadObjModel("bulbasaur", loader), new ModelTexture(loader.loadTexture("bbs"))), new Vector3f(0, 0, -15), 0, 0, 0, 1);
 		bulbasaur.getModel().getTexture().setShineDamper(10);
 		bulbasaur.getModel().getTexture().setReflectivity(1);
 	}
+
 	private void generateFerns() {
 		fernEntities = new ArrayList<>();
 		ModelTexture fernTextureAtlas = new ModelTexture(loader.loadTexture("ferns"));
@@ -283,46 +325,49 @@ public class Game {
 			int max = 800;
 			int x = random.nextInt((max - min) + 1) + min;
 			int z = random.nextInt((max - min) + 1) + min;
-			float y = (terrain.getHeightOfTerrain(x,z)-0.1f);
+			float y = (terrain.getHeightOfTerrain(x, z) - 0.1f);
 
-			Entity e = new Entity(fernModel, random.nextInt(4), new Vector3f(x,y,z),0,random.nextInt(360),0,1);
+			Entity e = new Entity(fernModel, random.nextInt(4), new Vector3f(x, y, z), 0, random.nextInt(360), 0, 1);
 			e.getModel().getTexture().setHasTransparency(true);
 			e.getModel().getTexture().setUseFakeLighting(true);
 			fernEntities.add(e);
 		}
 	}
+
 	private void generateGrass() {
 		grassEntities = new ArrayList<>();
-		TexturedModel grassModel = new TexturedModel(OBJLoader.loadObjModel("grassModel", loader),new ModelTexture(loader.loadTexture("bush")));
+		TexturedModel grassModel = new TexturedModel(OBJLoader.loadObjModel("grassModel", loader), new ModelTexture(loader.loadTexture("bush")));
 		for(int i = 0; i < 1000; i++) {
 			Random random = new Random();
 			int min = 0;
 			int max = 800;
 			int x = random.nextInt((max - min) + 1) + min;
 			int z = random.nextInt((max - min) + 1) + min;
-			float y = (terrain.getHeightOfTerrain(x,z)-0.1f);
+			float y = (terrain.getHeightOfTerrain(x, z) - 0.1f);
 
 			int maxRot = 360;
 			int rotY = random.nextInt(maxRot);
 
-			Entity g = new Entity(grassModel, new Vector3f(x,y,z),0,rotY,0,1);
+			Entity g = new Entity(grassModel, new Vector3f(x, y, z), 0, rotY, 0, 1);
 			g.getModel().getTexture().setHasTransparency(true);
 			g.getModel().getTexture().setUseFakeLighting(true);
 			grassEntities.add(g);
 		}
 	}
+
 	private void generateTerrain() {
 		stoneTexture = new TerrainTexture(loader.loadTexture("stone"));
 		rTexture = new TerrainTexture(loader.loadTexture("tx1"));
 		gTexture = new TerrainTexture(loader.loadTexture("tx2"));
 		bTexture = new TerrainTexture(loader.loadTexture("tx3"));
-		texturePack = new TerrainTexturePack(stoneTexture,rTexture,gTexture,bTexture);
+		texturePack = new TerrainTexturePack(stoneTexture, rTexture, gTexture, bTexture);
 		blendMap = new TerrainTexture(loader.loadTexture("blendmap"));
-		terrain = new Terrain(0,0,loader, texturePack, blendMap, "heightmap");
+		terrain = new Terrain(0, 0, loader, texturePack, blendMap, "heightmap");
 	}
+
 	private void generateLights() {
 		lights = new ArrayList<>();
-		lights.add(new Light(new Vector3f(0,0,-7000), new Vector3f(0.4f,0.4f,0.4f)));
+		lights.add(new Light(new Vector3f(0, 0, -7000), new Vector3f(0.4f, 0.4f, 0.4f)));
 //		lights.add(new Light(new Vector3f(0,100,0), new Vector3f(1f,1f,1f), new Vector3f(0.00001f,0.00001f,0.00001f)));
 		lights.add(lamps.get(0).getLight());
 	}
