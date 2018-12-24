@@ -70,7 +70,7 @@ public class Game {
 	public Player player;
 
 	// Lights..
-	ArrayList<Light> lights;
+	public ArrayList<Light> lights;
 
 	public boolean placingLamp = false;
 
@@ -97,6 +97,7 @@ public class Game {
 		loader = new Loader();
 		renderer = new MasterRenderer(loader);
 
+		generateLights();
 		customMouse();
 		generateGui();
 		generateTerrain();
@@ -104,7 +105,6 @@ public class Game {
 		generateBulbasaur();
 		generateFerns();
 		generateGrass();
-		generateLights();
 		player = new Player(new TexturedModel(OBJLoader.loadObjModel("bulbasaur", loader), new ModelTexture(loader.loadTexture("bbs"))), new Vector3f(5, terrain.getHeightOfTerrain(5, 5), 5), 0, 0, 0, 1, this);
 
 		camera = new Camera(this);
@@ -288,9 +288,7 @@ public class Game {
 
 	public void addLamp() {
 		if(picker.getCurrentTerrainPoint() != null) {
-			Lamp lamp = new Lamp(picker.getCurrentTerrainPoint(), loader, Lamp.ORANGE);
-			lamps.add(new Lamp(picker.getCurrentTerrainPoint(), loader, Lamp.ORANGE));
-			lights.add(lamps.get(lamps.size() - 1).getLight());
+			lamps.add(new Lamp(picker.getCurrentTerrainPoint(), loader, Lamp.ORANGE,this));
 		}
 	}
 
@@ -305,7 +303,7 @@ public class Game {
 
 	private void generateLamps() {
 		lamps = new ArrayList<>();
-		lamps.add(new Lamp(new Vector3f(0, 0, 0), loader, Lamp.ORANGE));
+		lamps.add(new Lamp(new Vector3f(0, 0, 0), loader, Lamp.ORANGE, this));
 	}
 
 	private void generateBulbasaur() {
@@ -362,13 +360,13 @@ public class Game {
 		bTexture = new TerrainTexture(loader.loadTexture("tx3"));
 		texturePack = new TerrainTexturePack(stoneTexture, rTexture, gTexture, bTexture);
 		blendMap = new TerrainTexture(loader.loadTexture("blendmap"));
+
 		terrain = new Terrain(0, 0, loader, texturePack, blendMap, "heightmap");
 	}
 
 	private void generateLights() {
 		lights = new ArrayList<>();
-		lights.add(new Light(new Vector3f(0, 0, -7000), new Vector3f(0.4f, 0.4f, 0.4f)));
-//		lights.add(new Light(new Vector3f(0,100,0), new Vector3f(1f,1f,1f), new Vector3f(0.00001f,0.00001f,0.00001f)));
-		lights.add(lamps.get(0).getLight());
+//		lights.add(new Light(new Vector3f(400,1600,400), 		new Vector3f(1f,1f,1f), 					new Vector3f(0.00000075f,0.00000075f,0.00000075f)));
+//		lights.add(lamps.get(0).getLight());
 	}
 }

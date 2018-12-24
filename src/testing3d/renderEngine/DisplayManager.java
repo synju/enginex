@@ -16,12 +16,15 @@ public class DisplayManager {
 //	private static final int HEIGHT = 50 * 9;
 
 	// Medium
-	private static final int WIDTH = 70 * 16;
-	private static final int HEIGHT = 70 * 9;
+//	private static final int WIDTH = 70 * 16;
+//	private static final int HEIGHT = 70 * 9;
 
 	// Large
 //	private static final int WIDTH = 100 * 16;
 //	private static final int HEIGHT = 100 * 9;
+
+	private static final int WIDTH = 1200;
+	private static final int HEIGHT = 768;
 
 	private static long lastFrameTime;
 	private static float delta;

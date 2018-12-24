@@ -116,7 +116,7 @@ public class Camera {
 
 		if(Mouse.isButtonDown(MOUSE_RIGHT_BUTTON)) {
 			// Hide the mouse
-			game.hideMouse();
+//			game.hideMouse();
 
 			// Update Player
 			player.turning = false;
