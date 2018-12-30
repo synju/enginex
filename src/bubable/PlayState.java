@@ -7,18 +7,23 @@ import java.awt.event.KeyEvent;
 
 public class PlayState extends State {
 	Player p;
+	Resources resources;
+	Map map;
 
 	protected PlayState(Game game) {
 		super(game);
+		resources = new Resources();
+		map = new Map(game);
 		p = new Player(game);
 	}
 
 	public void update() {
-		p.update();
+//		p.update();
 	}
 
 	public void render(Graphics2D g) {
-		p.render(g);
+		map.render(g);
+//		p.render(g);
 	}
 
 	public void keyPressed(KeyEvent e) {

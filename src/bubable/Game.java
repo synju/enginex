@@ -8,7 +8,7 @@ public class Game extends EngineX {
 	PlayState playState;
 
 	Game() {
-		super("Bubable", 1360, 768, false, false);
+		super("Infinity Dungeon", 1024, 768, false, false);
 		window.setVisible(true);
 	}
 

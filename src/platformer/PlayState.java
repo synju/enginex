@@ -7,24 +7,24 @@ import java.util.ArrayList;
 
 import enginex.State;
 
-@SuppressWarnings(value = { "all" })
+@SuppressWarnings(value = {"all"})
 public class PlayState extends State {
-	Platformer						game;
-	Player								p;
-	public ArrayList<Collidable>	clist;
-	LevelGenerator				lg;
+	Platformer game;
+	Player p;
+	public ArrayList<Collidable> clist;
+	LevelGenerator lg;
 
 	// Stage Origin
-	int										ox	= 0;
-	int										oy	= 0;
-	
+	int ox = 0;
+	int oy = 0;
+
 	boolean initialized = false;
 
 	protected PlayState(Platformer game) {
 		super(game);
 		this.game = game;
 	}
-	
+
 	public void postInit() {
 		if(!initialized) {
 			lg = new LevelGenerator(game);
@@ -39,7 +39,7 @@ public class PlayState extends State {
 	}
 
 	public void render(Graphics2D g) {
-		for(Collidable c:clist)
+		for(Collidable c : clist)
 			c.render(g);
 		p.render(g);
 	}
