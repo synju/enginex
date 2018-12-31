@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="80ba61d3-a7c5-49fd-887b-358b71a44dc4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/bubable/Map.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bubable/Resources.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bubable/Tile.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/bubable/level.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/bubable/Game.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bubable/Game.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/bubable/PlayState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bubable/PlayState.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/platformer/PlayState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/platformer/PlayState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bubable/Map.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bubable/Map.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bubable/Resources.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bubable/Resources.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/bubable/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/bubable/Tile.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -156,33 +153,34 @@
         <counts>
           <entry key="project.closed" value="4" />
           <entry key="project.open.time.13" value="1" />
+          <entry key="project.open.time.7" value="1" />
           <entry key="project.open.time.8" value="1" />
           <entry key="project.open.time.9" value="2" />
-          <entry key="project.opened" value="4" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="java" value="973" />
+          <entry key="java" value="2150" />
           <entry key="txt" value="216" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="973" />
+          <entry key="JAVA" value="2150" />
           <entry key="PLAIN_TEXT" value="216" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="java" value="23" />
-          <entry key="txt" value="4" />
+          <entry key="java" value="32" />
+          <entry key="txt" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="JAVA" value="23" />
-          <entry key="PLAIN_TEXT" value="4" />
+          <entry key="JAVA" value="32" />
+          <entry key="PLAIN_TEXT" value="5" />
         </counts>
       </usages-collector>
     </session>
@@ -228,37 +226,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/bubable/PlayState.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="17" column="3" lean-forward="true" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="method#update#0;class#PlayState#0" />
-                <element signature="e#472#473#0" expanded="true" />
-                <element signature="e#495#496#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/bubable/Game.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="230">
-              <caret line="10" column="27" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/bubable/Map.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-69">
-              <caret line="23" column="32" lean-forward="true" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="32" />
+            <state relative-caret-position="138">
+              <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
               <folding>
-                <element signature="method#Map#0;class#Map#0" />
+                <element signature="method#Game#0;class#Game#0" expanded="true" />
+                <element signature="method#init#0;class#Game#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -267,10 +242,12 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/bubable/Tile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="322">
-              <caret line="27" column="104" lean-forward="true" selection-start-line="27" selection-start-column="104" selection-end-line="27" selection-end-column="104" />
+            <state relative-caret-position="438">
+              <caret line="40" column="3" lean-forward="true" selection-start-line="40" selection-start-column="3" selection-end-line="40" selection-end-column="3" />
               <folding>
-                <element signature="method#Tile#0;class#Tile#0" />
+                <element signature="imports" expanded="true" />
+                <element signature="method#Tile#0;class#Tile#0" expanded="true" />
+                <element signature="method#render#0;class#Tile#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -287,9 +264,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>WHITE</find>
-      <find>updateWin</find>
-      <find>run</find>
       <find>fps</find>
       <find>millis</find>
       <find>pathNodes</find>
@@ -317,6 +291,9 @@
       <find>29</find>
       <find>skyColor</find>
       <find>originX</find>
+      <find>forest</find>
+      <find>getImages</find>
+      <find>scale</find>
     </findStrings>
     <replaceStrings>
       <replace>30</replace>
@@ -352,7 +329,6 @@
         <option value="$PROJECT_DIR$/src/audiosurfer/AudioSurfer.java" />
         <option value="$PROJECT_DIR$/src/critters/Game.java" />
         <option value="$PROJECT_DIR$/src/driftscape/Node.java" />
-        <option value="$PROJECT_DIR$/src/mapMaker/PlayState.java" />
         <option value="$PROJECT_DIR$/src/critters/PlayState.java" />
         <option value="$PROJECT_DIR$/src/critters/Map.java" />
         <option value="$PROJECT_DIR$/src/critters/Node.java" />
@@ -380,9 +356,10 @@
         <option value="$PROJECT_DIR$/src/testing3d/terrains/Terrain.java" />
         <option value="$PROJECT_DIR$/src/bubable/level.txt" />
         <option value="$PROJECT_DIR$/src/platformer/PlayState.java" />
-        <option value="$PROJECT_DIR$/src/bubable/Map.java" />
         <option value="$PROJECT_DIR$/src/bubable/PlayState.java" />
+        <option value="$PROJECT_DIR$/src/mapMaker/PlayState.java" />
         <option value="$PROJECT_DIR$/src/bubable/Resources.java" />
+        <option value="$PROJECT_DIR$/src/bubable/Map.java" />
         <option value="$PROJECT_DIR$/src/bubable/Tile.java" />
         <option value="$PROJECT_DIR$/src/bubable/Game.java" />
       </list>
@@ -394,9 +371,9 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="-7" />
-    <option name="width" value="1569" />
+    <option name="width" value="1567" />
     <option name="height" value="1057" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -511,13 +488,11 @@
     <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -525,16 +500,28 @@
               <item name="enginex" type="b2602c69:ProjectViewProjectNode" />
               <item name="enginex" type="462c0819:PsiDirectoryNode" />
             </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="AndroidView" />
+      <pane id="Scope">
+        <subPane subId="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope">
+          <expand>
             <path>
-              <item name="enginex" type="b2602c69:ProjectViewProjectNode" />
-              <item name="enginex" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="enginex" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="EngineX" type="2674bda8:ScopeViewTreeModel$GroupNode" />
             </path>
             <path>
-              <item name="enginex" type="b2602c69:ProjectViewProjectNode" />
-              <item name="enginex" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="bubable" type="462c0819:PsiDirectoryNode" />
+              <item name="enginex" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="EngineX" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="enginex" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="EngineX" type="2674bda8:ScopeViewTreeModel$GroupNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="titanclones" type="9f88c78c:ScopeViewTreeModel$FileNode" />
             </path>
           </expand>
           <select />
@@ -544,7 +531,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://D:/Projects/private/java/EngineX/src/testing3d/engineTester/Game.java" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546208313392" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1546263630076" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
@@ -677,10 +664,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
+    <frame x="-7" y="0" width="1567" height="1057" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49945828" visible="true" weight="0.19364598" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49945828" visible="true" weight="0.24286662" />
       <window_info id="Structure" order="1" sideWeight="0.50107294" side_tool="true" weight="0.1603631" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
@@ -698,7 +685,7 @@
       <window_info anchor="bottom" id="Terminal" order="7" weight="0.32903227" />
       <window_info anchor="bottom" id="Event Log" order="8" sideWeight="0.50195056" side_tool="true" weight="0.24702059" />
       <window_info anchor="bottom" id="Messages" order="9" weight="0.32096773" />
-      <window_info anchor="bottom" x="622" y="312" width="289" height="224" id="Run" order="10" sideWeight="0.4980494" weight="0.26935485" />
+      <window_info active="true" anchor="bottom" x="1920" y="201" width="1440" height="847" id="Run" order="10" sideWeight="0.4980494" visible="true" weight="0.27410617" />
       <window_info anchor="bottom" id="Inspection Results" order="11" weight="0.32939914" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.24962178" />
@@ -730,40 +717,6 @@
     <option name="FILTER_TARGETS" value="true" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/critters/PlayState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="33" column="32" lean-forward="true" selection-start-line="33" selection-start-column="32" selection-end-line="33" selection-end-column="32" />
-          <folding>
-            <element signature="method#PlayState#0;class#PlayState#0" />
-            <element signature="method#init#0;class#PlayState#0" />
-            <element signature="method#render#0;class#PlayState#0" />
-            <element signature="method#keyPressed#0;class#PlayState#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pathfinding/Pathfinding.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pathfinding/PathFinder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="127" column="18" lean-forward="true" selection-start-line="127" selection-start-column="16" selection-end-line="127" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/pathfinding/PathfinderState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="77" column="46" selection-start-line="77" selection-start-column="37" selection-end-line="77" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/critters/Map.java" />
     <entry file="file://$PROJECT_DIR$/src/pathfinding/Node.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -979,13 +932,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/bubable/level.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="4" column="3" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/platformer/Platformer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="207">
@@ -1098,53 +1044,100 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/bubable/Resources.java">
+    <entry file="file://$PROJECT_DIR$/src/mapMaker/Textures.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="37">
-          <caret line="8" column="31" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
+        <state relative-caret-position="46">
+          <caret line="2" column="22" lean-forward="true" selection-start-line="2" selection-start-column="22" selection-end-line="2" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/mapMaker/PlayState.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2409">
+          <caret line="340" column="3" lean-forward="true" selection-start-line="319" selection-start-column="2" selection-end-line="340" selection-end-column="3" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#2045#2060#0" />
+            <element signature="e#3162#3177#0" />
+            <element signature="e#5060#5091#0" />
+            <element signature="e#7433#7965#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/bubable/Map.java">
+    <entry file="file://$PROJECT_DIR$/src/enginex/EngineX.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-69">
-          <caret line="23" column="32" lean-forward="true" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="32" />
+        <state relative-caret-position="302">
+          <caret line="69" column="12" selection-start-line="69" selection-start-column="12" selection-end-line="69" selection-end-column="12" />
           <folding>
-            <element signature="method#Map#0;class#Map#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/bubable/Tile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="322">
-          <caret line="27" column="104" lean-forward="true" selection-start-line="27" selection-start-column="104" selection-end-line="27" selection-end-column="104" />
-          <folding>
-            <element signature="method#Tile#0;class#Tile#0" />
+            <element signature="e#5345#5380#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/bubable/PlayState.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="17" column="3" lean-forward="true" selection-start-line="17" selection-start-column="3" selection-end-line="17" selection-end-column="3" />
+        <state relative-caret-position="368">
+          <caret line="21" column="3" selection-start-line="21" selection-start-column="3" selection-end-line="21" selection-end-column="3" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#update#0;class#PlayState#0" />
+            <element signature="method#update#0;class#PlayState#0" expanded="true" />
             <element signature="e#472#473#0" expanded="true" />
             <element signature="e#495#496#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/bubable/level.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="1" column="5" lean-forward="true" selection-start-line="1" selection-start-column="5" selection-end-line="1" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/titanclones/Collidable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="437">
+          <caret line="30" column="30" lean-forward="true" selection-start-line="27" selection-start-column="4" selection-end-line="30" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bubable/Map.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="47" lean-forward="true" selection-start-line="47" selection-end-line="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bubable/Resources.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="58" column="20" selection-start-line="58" selection-start-column="20" selection-end-line="58" selection-end-column="20" />
+          <folding>
+            <element signature="method#loadWallImages#0;class#Resources#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/bubable/Tile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="438">
+          <caret line="40" column="3" lean-forward="true" selection-start-line="40" selection-start-column="3" selection-end-line="40" selection-end-column="3" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="method#Tile#0;class#Tile#0" expanded="true" />
+            <element signature="method#render#0;class#Tile#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/bubable/Game.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="230">
-          <caret line="10" column="27" selection-start-line="10" selection-start-column="27" selection-end-line="10" selection-end-column="27" />
+        <state relative-caret-position="138">
+          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
+          <folding>
+            <element signature="method#Game#0;class#Game#0" expanded="true" />
+            <element signature="method#init#0;class#Game#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

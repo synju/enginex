@@ -12,11 +12,11 @@ public class Map {
 	Map(Game game) {
 		this.game = game;
 		mapFile = new char[][]{
-				{'#', '#', '#', '#', '#'},
-				{'#', ' ', ' ', ' ', '#'},
-				{'#', ' ', '#', ' ', '#'},
-				{'#', ' ', ' ', ' ', '#'},
-				{'#', '#', '#', '#', '#'}
+				{'#', '#', '#', ' ', '#'},
+				{'#', '#', '#', ' ', '#'},
+				{'#', '#', '#', ' ', '#'},
+				{' ', ' ', ' ', ' ', ' '},
+				{'#', '#', '#', ' ', '#'}
 		};
 		generateTiles();
 	}
@@ -30,11 +30,12 @@ public class Map {
 
 				// tile is wall
 				if(c == '#') {
-					if(checkForWall(x,y-1)) tileAssignment += 1;
-					if(checkForWall(x+1,y)) tileAssignment += 2;
-					if(checkForWall(x,y+1)) tileAssignment += 4;
-					if(checkForWall(x-1,y)) tileAssignment += 8;
+					if(checkForWall(x, y - 1)) tileAssignment += 1;
+					if(checkForWall(x + 1, y)) tileAssignment += 2;
+					if(checkForWall(x, y + 1)) tileAssignment += 4;
+					if(checkForWall(x - 1, y)) tileAssignment += 8;
 
+					if(tileAssignment == 1) System.out.println("found");
 					tiles.add(new Tile(game, x, y, Tile.WALL, tileAssignment));
 				}
 
@@ -59,7 +60,7 @@ public class Map {
 	}
 
 	public void render(Graphics2D g) {
-		for(Tile t:tiles)
+		for(Tile t : tiles)
 			t.render(g);
 	}
 }

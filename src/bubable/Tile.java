@@ -1,6 +1,7 @@
 package bubable;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class Tile {
 	// Types
@@ -24,7 +25,18 @@ public class Tile {
 
 	// Render
 	public void render(Graphics2D g) {
-		if(type == WALL)
-			g.drawImage(((PlayState) (game.stateMachine.getCurrentState())).resources.wallImages[assignment], x*256, y*256, null);
+		try {
+			if(type == WALL) {
+				AffineTransform at = new AffineTransform();
+				at.scale(game.scale, game.scale);
+				at.translate(x*8, y*8);
+				g.drawImage(((PlayState) (game.stateMachine.getCurrentState())).resources.dungeonSet[assignment], at, null);
+
+//				g.drawImage(((PlayState) (game.stateMachine.getCurrentState())).resources.dungeonSet[assignment], (int)(x * 8 * game.scale), (int)(y * 8 * game.scale), null);
+			}
+		}
+		catch(Exception e) {
+//			e.printStackTrace();
+		}
 	}
 }

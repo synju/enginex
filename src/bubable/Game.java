@@ -8,11 +8,12 @@ public class Game extends EngineX {
 	PlayState playState;
 
 	Game() {
-		super("Infinity Dungeon", 1024, 768, false, false);
+		super("Infinity Dungeon", 640, 480, false, false);
 		window.setVisible(true);
 	}
 
 	public void init() {
+		this.scale = 6;
 		playState = new PlayState(this);
 		stateMachine.pushState(playState);
 		stateMachine.states.get(PLAY).init();
