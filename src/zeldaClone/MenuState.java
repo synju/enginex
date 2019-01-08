@@ -2,10 +2,17 @@ package zeldaClone;
 
 import enginex.Button;
 import enginex.State;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.input.Cursor;
+import org.lwjgl.input.Mouse;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.nio.IntBuffer;
 
 
 public class MenuState extends State {
@@ -24,6 +31,8 @@ public class MenuState extends State {
 	static final int QUIT_POSITION = 350;
 	int previousPostion = PLAY_POSITION;
 	int currentPostion = PLAY_POSITION;
+
+	Image currentMouse;
 
 	public MenuState(Game game) {
 		super(game);
@@ -49,6 +58,10 @@ public class MenuState extends State {
 		quitButton.setImage(game.resources.quitButton);
 		quitButton.hasImages = true;
 		quitButton.hasHoverImage = false;
+
+		// Custom Mouse
+		currentMouse = game.resources.normalMouse;
+		game.hideDefaultCursor();
 
 		// State Initialized
 		initialized = true;
@@ -101,6 +114,17 @@ public class MenuState extends State {
 		else {
 			g.drawImage(game.resources.byebye, game.width / 2 - game.resources.byebye.getWidth(null) / 2, game.height / 2 - game.resources.byebye.getHeight(null) / 2, null);
 		}
+
+		renderMouse(g);
+	}
+
+	void renderMouse(Graphics2D g) {
+		try {
+			Point p = game.getMousePosition();
+			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+			g.drawImage(currentMouse, (int)p.getX() - 10, (int)p.getY() - 10, null);
+		}
+		catch(Exception e) {}
 	}
 
 	public void quitButtonClicked() {
@@ -127,6 +151,9 @@ public class MenuState extends State {
 
 		// Left Click
 		if(e.getButton() == MouseEvent.BUTTON1) {
+			// Change Mouse Back
+			currentMouse = game.resources.normalMouse;
+
 			// Play Button Click!!
 			if(playButton.containsMouse())
 				game.stateMachine.setState(Game.PLAY);
@@ -134,6 +161,17 @@ public class MenuState extends State {
 			// Quit Button Click!!
 			if(quitButton.containsMouse())
 				quitButtonClicked();
+		}
+	}
+
+	public void mousePressed(MouseEvent e) {
+		// Check if already quitting
+		if(quiting) return;
+
+		// Check if left click pressed
+		if(e.getButton() == MouseEvent.BUTTON1) {
+			// Change Mouse
+			currentMouse = game.resources.clickMouse;
 		}
 	}
 

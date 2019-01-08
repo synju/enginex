@@ -12,6 +12,8 @@ public class Resources {
 	public Image quitButton = new ImageIcon("src/zeldaClone/res/quitButton.png").getImage();
 	public Image selector = new ImageIcon("src/zeldaClone/res/selector.png").getImage();
 	public Image byebye = new ImageIcon("src/zeldaClone/res/byebye.png").getImage();
+	public Image normalMouse = new ImageIcon("src/zeldaClone/res/normalMouse.png").getImage();
+	public Image clickMouse = new ImageIcon("src/zeldaClone/res/clickMouse.png").getImage();
 
 	// Sounds
 //	public Sound menuMusic = new Sound("src/zeldaClone/res/button_change.ogg");
