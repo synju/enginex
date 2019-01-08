@@ -73,6 +73,10 @@ public class SoundMachine {
 		}).start();
 	}
 
+	public void playSound(Sound s) {
+		new Thread(() -> s.playSound()).start();
+	}
+
 	public void play(int group) {
 		new Thread(() -> {
 			for(Sound s:sounds)

@@ -21,7 +21,8 @@ public class Button extends GameObject {
 	boolean	soundPlayed	= false;
 	Sound	sound;
 
-	boolean	hasImages	= false;
+	public boolean	hasImages	= false;
+	public boolean hasHoverImage = true;
 	Image	defaultImage;
 	Image	hoverImage;
 
@@ -130,6 +131,10 @@ public class Button extends GameObject {
 		this.x = x;
 		this.y = y;
 	}
+
+	public void setImage(Image defaultImage) {
+		this.defaultImage = defaultImage;
+	}
 	
 	public void setImages(String defaultImagePath, String hoverImagePath) {
 		defaultImage = new ImageIcon(defaultImagePath).getImage();
@@ -150,15 +155,20 @@ public class Button extends GameObject {
 	}
 
 	public boolean containsMouse() {
-		Point m = game.getMousePosition();
-		if(m.x > this.x && m.x < this.x + this.w && m.y > this.y && m.y < this.y + this.h)
-			return true;
+		try {
+			Point m = game.getMousePosition();
+			if(m.x > this.x && m.x < this.x + this.w && m.y > this.y && m.y < this.y + this.h)
+				return true;
+		}
+		catch(Exception e) {
+			// Do Nothing..
+		}
 		return false;
 	}
 
 	public void playSound() {
-		if(soundPlayed == false) {
-			if(hasSound) {
+		if(hasSound) {
+			if(soundPlayed == false) {
 				sound.play(0.1f);
 				soundPlayed = true;
 			}
@@ -172,10 +182,10 @@ public class Button extends GameObject {
 	public void render(Graphics2D g) {
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 		if(hasImages) {
-			if(!hover)
-				g.drawImage(defaultImage, (int)x, (int)y, null);
+			if(hover && hasHoverImage)
+				g.drawImage(hoverImage, (int) x, (int) y, null);
 			else
-				g.drawImage(hoverImage, (int)x, (int)y, null);
+				g.drawImage(defaultImage, (int)x, (int)y, null);
 		}
 		else {
 			if(!hover) {
