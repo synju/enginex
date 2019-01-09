@@ -2,17 +2,10 @@ package zeldaClone;
 
 import enginex.Button;
 import enginex.State;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Mouse;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.nio.IntBuffer;
 
 
 public class MenuState extends State {
@@ -31,8 +24,6 @@ public class MenuState extends State {
 	static final int QUIT_POSITION = 350;
 	int previousPostion = PLAY_POSITION;
 	int currentPostion = PLAY_POSITION;
-
-	Image currentMouse;
 
 	public MenuState(Game game) {
 		super(game);
@@ -60,7 +51,6 @@ public class MenuState extends State {
 		quitButton.hasHoverImage = false;
 
 		// Custom Mouse
-		currentMouse = game.resources.normalMouse;
 		game.hideDefaultCursor();
 
 		// State Initialized
@@ -122,18 +112,21 @@ public class MenuState extends State {
 		try {
 			Point p = game.getMousePosition();
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-			g.drawImage(currentMouse, (int)p.getX() - 10, (int)p.getY() - 10, null);
+			g.drawImage(game.resources.normalMouse, (int) p.getX() - 10, (int) p.getY() - 10, null);
 		}
-		catch(Exception e) {}
+		catch(Exception e) {
+		}
 	}
 
-	public void quitButtonClicked() {
+	private void quitGame() {
+		if(quiting) return;
+
 		// Shutdown Sound
 		game.soundMachine.playSound(game.resources.quitSound);
 
 		quiting = true;
 
-		// Delayed Quit
+		// Delayed Quit... 1531 = exit sound time in milliseconds
 		new java.util.Timer().schedule(
 				new java.util.TimerTask() {
 					@Override
@@ -147,12 +140,11 @@ public class MenuState extends State {
 
 	public void mouseReleased(MouseEvent e) {
 		// Check if already quitting
-		if(quiting) return;
+		if(quiting)
+			game.exit();
 
 		// Left Click
 		if(e.getButton() == MouseEvent.BUTTON1) {
-			// Change Mouse Back
-			currentMouse = game.resources.normalMouse;
 
 			// Play Button Click!!
 			if(playButton.containsMouse())
@@ -160,25 +152,17 @@ public class MenuState extends State {
 
 			// Quit Button Click!!
 			if(quitButton.containsMouse())
-				quitButtonClicked();
-		}
-	}
-
-	public void mousePressed(MouseEvent e) {
-		// Check if already quitting
-		if(quiting) return;
-
-		// Check if left click pressed
-		if(e.getButton() == MouseEvent.BUTTON1) {
-			// Change Mouse
-			currentMouse = game.resources.clickMouse;
+				quitGame();
 		}
 	}
 
 	public void keyPressed(KeyEvent e) {
+		if(quiting)
+			game.exit();
+
 		// Exit Game!!!
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
-			game.exit();
+			quitGame();
 
 		// Selection UP...
 		if(e.getKeyCode() == KeyEvent.VK_UP) {
@@ -215,7 +199,7 @@ public class MenuState extends State {
 			if(currentPostion == PLAY_POSITION)
 				game.stateMachine.setState(Game.PLAY);
 			else {
-				quitButtonClicked();
+				quitGame();
 			}
 		}
 	}
