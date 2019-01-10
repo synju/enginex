@@ -3,11 +3,13 @@ package zeldaClone;
 import enginex.EngineX;
 
 public class Game extends EngineX {
-	public PlayState playState;
 	public MenuState menuState;
+	public PlayState playState;
+	public TestState testState;
 
 	public static final int MENU = 0;
 	public static final int PLAY = 1;
+	public static final int TEST = 2;
 
 	public Resources resources;
 
@@ -20,11 +22,15 @@ public class Game extends EngineX {
 
 		menuState = new MenuState(this);
 		playState = new PlayState(this);
+		testState = new TestState(this);
 
 		stateMachine.pushState(menuState);
 		stateMachine.pushState(playState);
+		stateMachine.pushState(testState);
 
 		stateMachine.initAll();
+
+		stateMachine.setState(TEST);
 
 		window.setVisible(true);
 		run();
