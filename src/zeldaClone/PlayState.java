@@ -4,14 +4,14 @@ import enginex.State;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 
 public class PlayState extends State {
 	Game game;
-
 	boolean initialized = false;
-
 	Player player;
+	public ArrayList<Wall> walls;
 
 	public PlayState(Game game) {
 		super(game);
@@ -20,6 +20,13 @@ public class PlayState extends State {
 
 	public void initialize() {
 		if(initialized) return;
+
+		walls = new ArrayList<>();
+		walls.add(new Wall(28,28,62,546));
+		walls.add(new Wall(game.width-94,28,62,546));
+		walls.add(new Wall(28,28,746,54));
+		walls.add(new Wall(28,game.height-118,746,63));
+
 
 		// Create Things...
 		player = new Player(game);
@@ -37,7 +44,7 @@ public class PlayState extends State {
 	}
 
 	public void render(Graphics2D g) {
-		g.drawImage(game.resources.testRoomBG, 0,0,null);
+		g.drawImage(game.resources.testRoomBG, 0, 0, null);
 		player.render(g);
 	}
 

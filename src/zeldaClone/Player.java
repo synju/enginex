@@ -31,6 +31,15 @@ public class Player {
 	private static final int LEFT = 2;
 	private static final int RIGHT = 3;
 
+	ArrayList<Wall> currentWalls;
+
+	private int boundsWidth = 57;
+	private int boundsHeight = 42;
+	private int boundsXOffset = 5;
+	private int boundsyOffset = 54;
+	private Rectangle bounds;
+	private Rectangle projectedBounds = new Rectangle(0, 0, boundsWidth, boundsHeight);
+
 	private float speed = 4f;
 
 	private ArrayList<Bullet> bullets = new ArrayList<>();
@@ -38,10 +47,8 @@ public class Player {
 	public Player(Game game) {
 		this.game = game;
 		setLocation(new Vector2f((float) (game.width / 2 - 35), (float) (game.height / 2 - 65)));
-	}
-
-	public void setLocation(Vector2f location) {
-		this.location = location;
+		this.bounds = new Rectangle((int) location.x + boundsXOffset, (int) location.y + boundsyOffset, boundsWidth, boundsHeight);
+		this.currentWalls = ((PlayState) game.stateMachine.getCurrentState()).walls;
 	}
 
 	public void update() {
@@ -49,15 +56,37 @@ public class Player {
 		checkShooting();
 	}
 
+	public void setLocation(Vector2f location) {
+		this.location = location;
+	}
+
 	private void checkMoving() {
-		if(moveUp)
+		if(moveUp && !moveDown && canMove(new Point(bounds.x, (int) (bounds.y - speed))))
 			location.y -= speed;
-		if(moveDown)
+		if(moveDown && !moveUp && canMove(new Point(bounds.x, (int) (bounds.y + speed))))
 			location.y += speed;
-		if(moveLeft)
+		if(moveLeft && !moveRight && canMove(new Point((int) (bounds.x - speed), bounds.y)))
 			location.x -= speed;
-		if(moveRight)
+		if(moveRight && !moveLeft && canMove(new Point((int) (bounds.x + speed), bounds.y)))
 			location.x += speed;
+
+		updateBounds();
+	}
+
+	private boolean canMove(Point projectedLocation) {
+		projectedBounds.setLocation(projectedLocation);
+
+		for(Wall w : currentWalls) {
+			if(projectedBounds.intersects(w.bounds))
+				return false;
+		}
+
+		return true;
+	}
+
+	private void updateBounds() {
+		bounds.x = (int) (location.x + boundsXOffset);
+		bounds.y = (int) (location.y + boundsyOffset);
 	}
 
 	private void checkShooting() {
@@ -121,6 +150,11 @@ public class Player {
 	public void render(Graphics2D g) {
 		// Render Player
 		g.drawImage(game.resources.playerIdle, (int) location.x, (int) location.y, null);
+
+		// Render Bounds
+		
+//		g.setColor(Color.RED);
+//		g.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
 		// Render Bullets
 		for(Bullet b : bullets)
