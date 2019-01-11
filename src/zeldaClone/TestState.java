@@ -31,9 +31,8 @@ public class TestState extends State {
 		points = new ArrayList<>();
 		points.add(new Point(centerX, centerY));
 		Point basePoint = points.get(0);
-		for(int i = 0; i < 5; i++) {
-			points.add(new Point(centerX, basePoint.y + (i * defaultDistance)));
-		}
+		for(int i = 0; i < 5; i++)
+			points.add(new Point(centerX, basePoint.y + ((i+1) * defaultDistance)));
 
 		// State Initialized
 		initialized = true;
@@ -46,32 +45,58 @@ public class TestState extends State {
 
 	private void updatePoints() {
 		try {
-			for(int i = points.size() - 1; i > 0; i--) {
-				// Establish Points
-				Point a, b, c;
-				a = points.get(i - 1);
-				b = points.get(i);
-				if(i < points.size() - 1)
-					c = points.get(i + 1);
-				else
-					c = game.getMousePosition();
-
-				// Get ac angle
-				float acAngle = getAngle(a, c, true);
-//				int acDistance = (int)getDistance(a,c);
-
-				float x = (float)(30 * Math.cos(acAngle));
-				float y = (float)(30 * Math.sin(acAngle));
-				Point target = new Point((int)x, (int)y);
-
-				// Move x
-				updateLocation(b,acAngle,0.1f);
-				if(getDistance(b,target) > 5)
-					b.setLocation(target);
+			if(game.window.contains(game.getMousePosition())) {
+//				oldMethod();
+				newMethod();
 			}
 		}
 		catch(Exception e) {
 			// Do nothing...
+		}
+	}
+
+	private void newMethod() {
+		for(int i = 0; i < points.size(); i++) {
+			// Establish points
+			Point a = points.get(i);
+			Point b = game.getMousePosition();
+
+			// 1. Get Theta1
+			float theta1 = getAngle(a,b,true);
+			System.out.println(theta1);
+			break;
+
+			// 2. Get Hypotenuse1
+//			float hypotenuse1 = getDistance(a,b);
+//
+//			// 3. Get Adjacent1 & Opposite1
+//			float adjacent1 = Math.abs(a.x-b.x);
+//			float opposite1 = Math.abs(a.y-b.y);
+
+			// 4. Get Theta2
+//			if()
+
+
+
+		}
+	}
+
+	private void oldMethod() {
+		for(int i = (points.size() - 1); i > 0; i--) {
+			// Establish Points
+			Point a, b, c;
+			a = points.get(i - 1);
+			b = points.get(i);
+			if(i < (points.size() - 1))
+				c = points.get(i + 1);
+			else
+				c = game.getMousePosition();
+
+			// Get acAngle
+			float acAngle = getAngle(a, c, true);
+
+			// Move b
+			updateLocation(b, acAngle, 2f);
 		}
 	}
 
@@ -86,8 +111,8 @@ public class TestState extends State {
 		return angle;
 	}
 
-	private double getDistance(Point a, Point b) {
-		return Math.sqrt((b.y - a.y) * (b.y - a.y) + (b.x - a.x) * (b.x - a.x));
+	private float getDistance(Point a, Point b) {
+		return (float)(Math.sqrt((b.y - a.y) * (b.y - a.y) + (b.x - a.x) * (b.x - a.x)));
 	}
 
 	private void updateLocation(Point p, float angle, float speed) {
@@ -99,15 +124,12 @@ public class TestState extends State {
 		try {
 			g.setColor(Color.WHITE);
 			g.fillOval(game.getMousePosition().x - 5, game.getMousePosition().y - 5, 10, 10);
+		}
+		catch(Exception e) {}
 
-			for(Point p : points) {
-				g.setColor(Color.RED);
-				g.fillOval(p.x, p.y, 20, 20);
-			}
-		}
-		catch(Exception e) {
-			// Do nothing...
-		}
+		g.setColor(Color.BLUE);
+		for(Point p : points)
+			g.fillOval(p.x - 5, p.y - 5, 10, 10);
 	}
 
 	public void keyPressed(KeyEvent e) {
