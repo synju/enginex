@@ -4,15 +4,16 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.awt.*;
 
-public class InverseSegment {
+public class FixedPointInverseSegment {
 	Game game;
 	Vector2 a;
 	Vector2 b = new Vector2();
 	float len;
 	float angle;
-	InverseSegment parent = null;
+	FixedPointInverseSegment parent = null;
+	FixedPointInverseSegment child = null;
 
-	InverseSegment(float x, float y, float len, float angle, Game game) {
+	FixedPointInverseSegment(float x, float y, float len, float angle, Game game) {
 		this.game = game;
 		a = new Vector2(x, y);
 		this.len = len;
@@ -20,13 +21,18 @@ public class InverseSegment {
 		calculateB();
 	}
 
-	InverseSegment(InverseSegment parent, float len, float angle, Game game) {
+	FixedPointInverseSegment(FixedPointInverseSegment parent, float len, float angle, Game game) {
 		this.game = game;
 		this.parent = parent;
 		a = new Vector2(0, 0);
 		this.len = len;
 		this.angle = angle;
 		calculateB();
+		parent.setChild(this);
+	}
+
+	public void setChild(FixedPointInverseSegment child) {
+		this.child = child;
 	}
 
 	private void calculateB() {
@@ -47,6 +53,10 @@ public class InverseSegment {
 			int dy = (int) (len * Math.sin(angle));
 			b.set(a.x + dx, a.y + dy);
 		}
+	}
+
+	public void setA(Vector2 v) {
+		a.set(v.x, v.y);
 	}
 
 	public void follow(float tx, float ty) {
@@ -105,6 +115,11 @@ public class InverseSegment {
 		}
 		catch(Exception e) {
 		}
+	}
+
+	public void updatePhase2() {
+		if(child!=null)
+			setA(child.b);
 	}
 
 	public void render(Graphics2D g) {
