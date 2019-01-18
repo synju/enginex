@@ -31,10 +31,12 @@ public class FixedPointInverseSegment {
 		parent.setChild(this);
 	}
 
-	public void setChild(FixedPointInverseSegment child) {
+	private void setChild(FixedPointInverseSegment child) {
 		this.child = child;
 	}
 
+	// Sets B's position based on A's angle to Mouse Position, otherwise the Parents A position
+	// Maintains length of Segment
 	private void calculateB() {
 		if(parent == null) {
 			try {
@@ -59,12 +61,14 @@ public class FixedPointInverseSegment {
 		a.set(v.x, v.y);
 	}
 
-	public void follow(float tx, float ty) {
+	// Make A Follow (Parents A) or (Mouse) Position
+	private void follow(float tx, float ty) {
 		Vector2 target = new Vector2(tx, ty);
 		Vector2 dir = vectorSubtract(target, a);
 		dir = setVector2Mag(dir, len);
 		dir = vector2Multiply(dir, -1);
-		a = vectorAdd(target, dir);
+		Vector2 result = vectorAdd(target, dir);
+		setA(result);
 	}
 
 	private float getVector2Mag(Vector2 v) {
@@ -84,15 +88,6 @@ public class FixedPointInverseSegment {
 		return new Vector2(x, y);
 	}
 
-	private void updateLocation(Vector2 v, float angle, float speed) {
-		v.x += speed * Math.cos(angle);
-		v.y += speed * Math.sin(angle);
-	}
-
-	private float getDistance(Vector2 a, Vector2 b) {
-		return (float) (Math.sqrt((b.y - a.y) * (b.y - a.y) + (b.x - a.x) * (b.x - a.x)));
-	}
-
 	private float getAngle(Vector2 a, Vector2 b) {
 		return (float) Math.toDegrees(Math.atan2(b.y - a.y, b.x - a.x));
 	}
@@ -107,19 +102,16 @@ public class FixedPointInverseSegment {
 
 	public void update() {
 		try {
+			// Calculate B's position based on A's angle to Mouse position or Parents A position.
 			calculateB();
+
+			// Make A follow Parent A Position or Mouse Position (according to length)
 			if(parent == null)
 				follow(game.getMousePosition().x, game.getMousePosition().y);
 			else
 				follow(parent.a.x, parent.a.y);
 		}
-		catch(Exception e) {
-		}
-	}
-
-	public void updatePhase2() {
-		if(child!=null)
-			setA(child.b);
+		catch(Exception e) {}
 	}
 
 	public void render(Graphics2D g) {
