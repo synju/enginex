@@ -30,9 +30,9 @@ public class FixedPointInverseSegmentCollection {
 		for(FixedPointInverseSegment s : segments)
 			s.update();
 
-		segments.get(segments.size() - 1).setA(base);
-		for(int i = segments.size() - 2; i >= 0; i--)
-			segments.get(i).setA(segments.get(i).child.b);
+//		segments.get(segments.size() - 1).setA(base);
+//		for(int i = segments.size() - 2; i >= 0; i--)
+//			segments.get(i).setA(segments.get(i).child.b);
 	}
 
 	public void render(Graphics2D g) {
