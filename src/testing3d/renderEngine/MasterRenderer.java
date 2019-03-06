@@ -45,8 +45,8 @@ public class MasterRenderer {
 	public MasterRenderer(Loader loader) {
 		enableCulling();
 		createProjectionMatrix();
-		renderer = new EntityRenderer(shader,projectionMatrix);
-		terrainRenderer = new TerrainRenderer(terrainShader,projectionMatrix);
+		renderer = new EntityRenderer(shader, projectionMatrix);
+		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
 	}
 
@@ -67,7 +67,8 @@ public class MasterRenderer {
 		prepare();
 
 		shader.start();
-		shader.loadSkyColor(RED,GREEN,BLUE);
+		shader.loadMaxLightCount();
+		shader.loadSkyColor(RED, GREEN, BLUE);
 		shader.loadDensityAndGradient(density, gradient);
 		shader.loadLights(lights);
 		shader.loadViewMatrix(camera);
@@ -75,7 +76,7 @@ public class MasterRenderer {
 		shader.stop();
 
 		terrainShader.start();
-		terrainShader.loadSkyColor(RED,GREEN,BLUE);
+		terrainShader.loadSkyColor(RED, GREEN, BLUE);
 		terrainShader.loadDensityAndGradient(density, gradient);
 		terrainShader.loadLights(lights);
 		terrainShader.loadViewMatrix(camera);
@@ -95,10 +96,9 @@ public class MasterRenderer {
 	public void processEntity(Entity entity) {
 		TexturedModel entityModel = entity.getModel();
 		List<Entity> batch = entities.get(entityModel);
-		if(batch!=null) {
+		if(batch != null) {
 			batch.add(entity);
-		}
-		else {
+		} else {
 			List<Entity> newBatch = new ArrayList<Entity>();
 			newBatch.add(entity);
 			entities.put(entityModel, newBatch);
@@ -112,8 +112,8 @@ public class MasterRenderer {
 
 	private void prepare() {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT|GL11.GL_DEPTH_BUFFER_BIT);
-		GL11.glClearColor(RED,GREEN,BLUE,1);
+		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		GL11.glClearColor(RED, GREEN, BLUE, 1);
 	}
 
 	private void createProjectionMatrix() {
@@ -127,7 +127,7 @@ public class MasterRenderer {
 		projectionMatrix.m11 = y_scale;
 		projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustrum_length);
 		projectionMatrix.m23 = -1;
-		projectionMatrix.m32 = -((2*NEAR_PLANE*FAR_PLANE)/ frustrum_length);
+		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustrum_length);
 		projectionMatrix.m33 = 0;
 	}
 }

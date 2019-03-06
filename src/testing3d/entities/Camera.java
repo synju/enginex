@@ -115,9 +115,6 @@ public class Camera {
 		}
 
 		if(Mouse.isButtonDown(MOUSE_RIGHT_BUTTON)) {
-			// Hide the mouse
-//			game.hideMouse();
-
 			// Update Player
 			player.turning = false;
 
@@ -140,9 +137,6 @@ public class Camera {
 			Mouse.setCursorPosition(Display.getWidth()/2, Display.getHeight()/2);
 		}
 		else {
-			// Set Custom Mouse Pointer
-			game.customMouse();
-
 			// Update Player
 			player.turning = true;
 		}

@@ -34,7 +34,7 @@ public abstract class ShaderProgram {
 	protected abstract void getAllUniformLocations();
 
 	protected int getUniformLocation(String uniformName) {
-		return GL20.glGetUniformLocation(programID,uniformName);
+		return GL20.glGetUniformLocation(programID, uniformName);
 	}
 
 	public void start() {
@@ -61,19 +61,19 @@ public abstract class ShaderProgram {
 	}
 
 	protected void loadFloat(int location, float value) {
-		GL20.glUniform1f(location,value);
+		GL20.glUniform1f(location, value);
 	}
 
 	protected void loadInt(int location, int value) {
-		GL20.glUniform1i(location,value);
+		GL20.glUniform1i(location, value);
 	}
 
 	protected void loadVector(int location, Vector3f vector) {
-		GL20.glUniform3f(location,vector.x,vector.y,vector.z);
+		GL20.glUniform3f(location, vector.x, vector.y, vector.z);
 	}
 
 	protected void load2DVector(int location, Vector2f vector) {
-		GL20.glUniform2f(location,vector.x,vector.y);
+		GL20.glUniform2f(location, vector.x, vector.y);
 	}
 
 	protected void loadBoolean(int location, boolean value) {
@@ -106,10 +106,10 @@ public abstract class ShaderProgram {
 			System.exit(-1);
 		}
 		int shaderID = GL20.glCreateShader(type);
-		GL20.glShaderSource(shaderID,shaderSource);
+		GL20.glShaderSource(shaderID, shaderSource);
 		GL20.glCompileShader(shaderID);
-		if(GL20.glGetShader(shaderID,GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
-			System.out.println(GL20.glGetShaderInfoLog(shaderID,500));
+		if(GL20.glGetShader(shaderID, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
+			System.out.println(GL20.glGetShaderInfoLog(shaderID, 500));
 			System.out.println("Could not compile shader.");
 			System.exit(-1);
 		}

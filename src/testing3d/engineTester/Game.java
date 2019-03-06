@@ -31,7 +31,9 @@ import java.util.Random;
 public class Game {
 	// Fog and Density Properties
 	float density = 0.0026f;
+	float densityModifier = 0.0001f;
 	float gradient = 1.9420f;
+	float gradientModifier = 0.001f;
 
 	// Window Size...
 	int resolutionMultiplier = 16;
@@ -47,6 +49,7 @@ public class Game {
 	GuiRenderer guiRenderer;
 	ArrayList<GuiTexture> guis;
 	GuiTexture gui;
+	boolean guiRenderingEnabled = false;
 
 	// Mouse Picker
 	MousePicker picker;
@@ -71,10 +74,9 @@ public class Game {
 
 	// Lights..
 	public ArrayList<Light> lights;
-
 	public boolean placingLamp = false;
 
-	// Main Function (Where it all begins...)
+	// Main Function
 	public static void main(String[] args) {
 		new Game().run();
 	}
@@ -91,7 +93,7 @@ public class Game {
 		exit();
 	}
 
-	// Create.. Update.. Render.. Exit..
+	// Create
 	void create() {
 		DisplayManager.createDisplay();
 		loader = new Loader();
@@ -111,42 +113,53 @@ public class Game {
 		picker = new MousePicker(camera, renderer.getProjectionMatrix(), terrain);
 	}
 
+	// Update
 	void update() {
+		// Check Input
 		checkInput();
+
+		// Other
 		bulbasaur.increaseRotation(0.0f, 0.25f, 0.0f);
+
+		// Update All 3D Things
 		player.update();
 		lamps.get(0).update();
+
+		// Update Camera
 		camera.update();
 
+		// Update Picker
 		picker.update();
 	}
 
+	// Render
 	void render() {
-		renderer.density = density;
-		renderer.gradient = gradient;
-
-		renderer.processTerrain(terrain);
-
-		for(Lamp l : lamps) {
-			renderer.processEntity(l.getEntity());
+		// Check for adjustments to density or gradient
+		if(renderer.density != density || renderer.gradient != gradient) {
+			renderer.density = density;
+			renderer.gradient = gradient;
 		}
-//		renderer.processEntity(lamps.get(0).getEntity());
 
+		// Process Everything
+		renderer.processTerrain(terrain);
 		renderer.processEntity(bulbasaur);
 		renderer.processEntity(player);
+		for(Lamp l : lamps) renderer.processEntity(l.getEntity());
 		for(Entity e : fernEntities) renderer.processEntity(e);
 		for(Entity g : grassEntities) renderer.processEntity(g);
 
+		// Render 3D things...
 		renderer.render(lights, camera);
 
 		// GUI Rendering
-//		guiRenderer.render(guis);
+		if(guiRenderingEnabled) guiRenderer.render(guis);
 
 		// Update the Display
 		DisplayManager.updateDisplay();
 	}
 
-	void exit() {
+	// Exit
+	public void exit() {
 		guiRenderer.cleanUp();
 		renderer.cleanUp();
 		loader.cleanUP();
@@ -154,93 +167,127 @@ public class Game {
 		System.exit(0);
 	}
 
-	// Input
-	private void checkInput() {
-		checkMouseInput();
+	// Window Size Adjustments
+	private void adjustWindowSize(String adjustment) {
+		// Return if incorrect argument is given...
+		if(adjustment != "increase" && adjustment != "decrease")
+			return;
 
-		placingLamp = false;
-		if(Keyboard.isKeyDown(Keyboard.KEY_F1)) placingLamp = true;
+		try {
+			// Increase window size
+			if(adjustment == "increase") resolutionMultiplier *= 1.2;
 
-		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) || Keyboard.isKeyDown(Keyboard.KEY_X))
-			exit();
+			// Decrease window size
+			if(adjustment == "decrease") resolutionMultiplier /= 1.2;
 
-		if(Keyboard.isKeyDown(Keyboard.KEY_MINUS)) {
-			resolutionMultiplier /= 1.2;
-			if(resolutionMultiplier < 16) {
-				resolutionMultiplier = 16;
-				return;
-			}
+			// Make sure it doesn't get smaller
+			if(resolutionMultiplier < 16) resolutionMultiplier = 16;
 
-			try {
-				int width = resolutionMultiplier * baseWidth;
-				int height = resolutionMultiplier * baseHeight;
-				Display.setDisplayMode(new DisplayMode(width, height));
-				GL11.glViewport(0, 0, width, height);
-			}
-			catch(Exception e) {
-				// Do nothing...
-			}
+			// Set window size.
+			int width = resolutionMultiplier * baseWidth;
+			int height = resolutionMultiplier * baseHeight;
+			Display.setDisplayMode(new DisplayMode(width, height));
+			GL11.glViewport(0, 0, width, height);
 		}
-
-		if(Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) {
-			resolutionMultiplier *= 1.2;
-
-			try {
-				int width = resolutionMultiplier * baseWidth;
-				int height = resolutionMultiplier * baseHeight;
-				Display.setDisplayMode(new DisplayMode(width, height));
-				GL11.glViewport(0, 0, width, height);
-			}
-			catch(Exception e) {
-				// Do nothing...
-			}
-		}
-
-		if(Keyboard.isKeyDown(Keyboard.KEY_2)) {
-			try {
-				int width = 640;
-				int height = 480;
-				Display.setDisplayMode(new DisplayMode(width, height));
-				GL11.glViewport(0, 0, width, height);
-			}
-			catch(Exception e) {
-				// Do nothing...
-			}
-		}
-
-		if(Keyboard.isKeyDown(Keyboard.KEY_F)) {
-			density += 0.0001f;
-			System.out.println("density:" + density);
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_V)) {
-			density -= 0.0001f;
-			System.out.println("density:" + density);
-		}
-
-		float gradientModifier = 0.001f;
-//		float gradientModifier = 0.1f;
-		if(Keyboard.isKeyDown(Keyboard.KEY_G)) {
-			gradient += gradientModifier;
-			System.out.println("gradient:" + gradient);
-		}
-		if(Keyboard.isKeyDown(Keyboard.KEY_B)) {
-			gradient -= gradientModifier;
-			System.out.println("gradient:" + gradient);
+		catch(Exception e) {
+			// Do nothing...
 		}
 	}
 
+	private void setWindowSize(int w, int h) {
+		try {
+			Display.setDisplayMode(new DisplayMode(w, h));
+			GL11.glViewport(0, 0, w, h);
+		}
+		catch(Exception e) {
+			// Do nothing...
+		}
+	}
+
+	// Density and Gradient Adjustment
+	private void adjustDensity(String adjustment) {
+		// Return if incorrect argument is given...
+		if(adjustment != "increase" && adjustment != "decrease")
+			return;
+
+		// Increase window size
+		if(adjustment == "increase") density += densityModifier;
+
+		// Decrease window size
+		if(adjustment == "decrease") density -= densityModifier;
+
+		System.out.println("density:" + density);
+	}
+
+	private void adjustGradient(String adjustment) {
+		// Return if incorrect argument is given...
+		if(adjustment != "increase" && adjustment != "decrease")
+			return;
+
+		// Increase window size
+		if(adjustment == "increase") gradient += gradientModifier;
+
+		// Decrease window size
+		if(adjustment == "decrease") gradient -= gradientModifier;
+
+		System.out.println("gradient:" + gradient);
+	}
+
+	// Keyboard and Mouse Input Input
+	private void checkInput() {
+		// Check Mouse Input
+		checkMouseInput();
+
+		// Enable placing Lamps
+		placingLamp = false;
+		if(Keyboard.isKeyDown(Keyboard.KEY_F1)) placingLamp = true;
+
+		// Exit
+		if(Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) || Keyboard.isKeyDown(Keyboard.KEY_X)) exit();
+
+		// Window Size Adjustment
+		if(Keyboard.isKeyDown(Keyboard.KEY_EQUALS)) adjustWindowSize("increase");
+		if(Keyboard.isKeyDown(Keyboard.KEY_MINUS)) adjustWindowSize("decrease");
+
+		// Set 640 x 480 Window Size
+		if(Keyboard.isKeyDown(Keyboard.KEY_2)) setWindowSize(640, 480);
+
+		// Increase and Decrease Density..
+		if(Keyboard.isKeyDown(Keyboard.KEY_F)) adjustDensity("increase");
+		if(Keyboard.isKeyDown(Keyboard.KEY_V)) adjustDensity("decrease");
+
+		// Increase and Decrease Gradient..
+		if(Keyboard.isKeyDown(Keyboard.KEY_G)) adjustGradient("increase");
+		if(Keyboard.isKeyDown(Keyboard.KEY_B)) adjustGradient("decrease");
+	}
+
 	private void checkMouseInput() {
-		while(Mouse.next() && placingLamp) {
+		while(Mouse.next()) {
 			if(Mouse.getEventButtonState()) {
+				// Left Mouse Button
 				if(Mouse.getEventButton() == 0) {
-//					System.out.println("Left button pressed");
+					// Left Button Pressed
 				}
-			}
-			else {
+
+				// Right Mouse Button
+				if(Mouse.getEventButton() == 1) {
+					// Right Button Pressed
+					this.hideMouse();
+				}
+			} else {
+				// Left Mouse Button
 				if(Mouse.getEventButton() == 0) {
-					System.out.println("Left button released");
-					addLamp();
-					System.out.println("Lamp Added");
+					// Left Button Released
+					if(placingLamp) {
+						addLamp();
+						System.out.println("Lamp Added");
+					}
+				}
+
+				// Right Mouse Button
+				if(Mouse.getEventButton() == 1) {
+					// Released Button Released
+					this.showMouse();
 				}
 			}
 		}
@@ -286,9 +333,14 @@ public class Game {
 		}
 	}
 
+	public void showMouse() {
+		// Just do Custom Mouse Again
+		customMouse();
+	}
+
 	public void addLamp() {
 		if(picker.getCurrentTerrainPoint() != null) {
-			lamps.add(new Lamp(picker.getCurrentTerrainPoint(), loader, Lamp.ORANGE,this));
+			lamps.add(new Lamp(picker.getCurrentTerrainPoint(), loader, Lamp.ORANGE, this));
 		}
 	}
 
