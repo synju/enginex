@@ -8,16 +8,16 @@ public class DisplayManager {
 	private static final int FPS_CAP = 120;
 
 	// Really Small
-//	private static final int WIDTH = 20 * 16;
-//	private static final int HEIGHT = 20 * 9;
+	private static final int WIDTH = 20 * 16;
+	private static final int HEIGHT = 20 * 9;
 
 	// Small
 //	private static final int WIDTH = 50 * 16;
 //	private static final int HEIGHT = 50 * 9;
 
 	// Medium
-	private static final int WIDTH = 70 * 16;
-	private static final int HEIGHT = 70 * 9;
+//	private static final int WIDTH = 70 * 16;
+//	private static final int HEIGHT = 70 * 9;
 
 	// Large
 //	private static final int WIDTH = 100 * 16;
@@ -33,6 +33,7 @@ public class DisplayManager {
 		ContextAttribs attributes = new ContextAttribs(3,2).withForwardCompatible(true).withProfileCore(true);
 
 		try {
+			Display.setLocation(1580,50);
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.create(new PixelFormat(), attributes);
 			Display.setTitle("Testing 3D");

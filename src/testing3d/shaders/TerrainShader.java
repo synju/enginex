@@ -11,8 +11,8 @@ import java.util.List;
 public class TerrainShader extends ShaderProgram {
 	private static final int MAX_LIGHTS = 4;
 
-	private static final String VERTEX_FILE = "src/testing3d/shaders/terrainVertexShader.txt";
-	private static final String FRAGMENT_FILE = "src/testing3d/shaders/terrainFragmentShader.txt";
+	private static final String VERTEX_FILE = "src/testing3d/shaders/terrainVertexShader.vert";
+	private static final String FRAGMENT_FILE = "src/testing3d/shaders/terrainFragmentShader.frag";
 
 
 	private int location_transformationMatrix;

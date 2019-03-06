@@ -8,8 +8,8 @@ import testing3d.shaders.ShaderProgram;
 import testing3d.toolbox.Maths;
 
 public class SkyboxShader extends ShaderProgram {
-	private static final String VERTEX_FILE = "src/testing3d/skybox/skyboxVertexShader.txt";
-	private static final String FRAGMENT_FILE = "src/testing3d/skybox/skyboxFragmentShader.txt";
+	private static final String VERTEX_FILE = "src/testing3d/skybox/skyboxVertexShader.vert";
+	private static final String FRAGMENT_FILE = "src/testing3d/skybox/skyboxFragmentShader.frag";
 
 	private static final float ROTATE_SPEED = 1f;
 

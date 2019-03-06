@@ -3,8 +3,8 @@ package testing3d.shaders;
 import org.lwjgl.util.vector.Matrix4f;
 
 public class GuiShader extends ShaderProgram {
-	private static final String VERTEX_FILE = "src/testing3d/shaders/guiVertexShader.txt";
-	private static final String FRAGMENT_FILE = "src/testing3d/shaders/guiFragmentShader.txt";
+	private static final String VERTEX_FILE = "src/testing3d/shaders/guiVertexShader.vert";
+	private static final String FRAGMENT_FILE = "src/testing3d/shaders/guiFragmentShader.frag";
 
 	private int location_transformationMatrix;
 

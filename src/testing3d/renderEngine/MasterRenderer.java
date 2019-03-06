@@ -31,11 +31,11 @@ public class MasterRenderer {
 
 	private Matrix4f projectionMatrix;
 
-	private StaticShader shader = new StaticShader();
+	private StaticShader shader;
 	private EntityRenderer renderer;
 
 	private TerrainRenderer terrainRenderer;
-	private TerrainShader terrainShader = new TerrainShader();
+	private TerrainShader terrainShader;
 
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
 	private List<Terrain> terrains = new ArrayList<Terrain>();
@@ -45,8 +45,12 @@ public class MasterRenderer {
 	public MasterRenderer(Loader loader) {
 		enableCulling();
 		createProjectionMatrix();
+		shader = new StaticShader();
 		renderer = new EntityRenderer(shader, projectionMatrix);
+
+		terrainShader = new TerrainShader();
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+
 		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
 	}
 
@@ -98,7 +102,8 @@ public class MasterRenderer {
 		List<Entity> batch = entities.get(entityModel);
 		if(batch != null) {
 			batch.add(entity);
-		} else {
+		}
+		else {
 			List<Entity> newBatch = new ArrayList<Entity>();
 			newBatch.add(entity);
 			entities.put(entityModel, newBatch);
