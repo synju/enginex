@@ -45,6 +45,7 @@ public class MasterRenderer {
 	public MasterRenderer(Loader loader) {
 		enableCulling();
 		createProjectionMatrix();
+
 		shader = new StaticShader();
 		renderer = new EntityRenderer(shader, projectionMatrix);
 
