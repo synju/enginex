@@ -72,7 +72,7 @@ public class MasterRenderer {
 		prepare();
 
 		shader.start();
-		shader.loadMaxLightCount();
+//		shader.loadMaxLightCount();
 		shader.loadSkyColor(RED, GREEN, BLUE);
 		shader.loadDensityAndGradient(density, gradient);
 		shader.loadLights(lights);
