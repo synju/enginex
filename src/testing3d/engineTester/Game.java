@@ -41,9 +41,9 @@ public class Game {
 	int baseHeight = 9;
 
 	// Model Loader.. Camera.. Renderer..
-	Loader loader;
+	public Loader loader;
 	Camera camera;
-	MasterRenderer renderer;
+	public MasterRenderer renderer;
 
 	// GUI Stuff..
 	GuiRenderer guiRenderer;
@@ -97,7 +97,7 @@ public class Game {
 	void create() {
 		DisplayManager.createDisplay();
 		loader = new Loader();
-		renderer = new MasterRenderer(loader);
+		renderer = new MasterRenderer(this);
 
 		generateLights();
 		customMouse();
@@ -280,7 +280,6 @@ public class Game {
 					// Left Button Released
 					if(placingLamp) {
 						addLamp();
-						System.out.println("Lamp Added");
 					}
 				}
 
@@ -341,6 +340,7 @@ public class Game {
 	public void addLamp() {
 		if(picker.getCurrentTerrainPoint() != null) {
 			lamps.add(new Lamp(picker.getCurrentTerrainPoint(), loader, Lamp.ORANGE, this));
+			System.out.println("Lamp " + lamps.size() + " Added");
 		}
 	}
 

@@ -13,7 +13,7 @@ uniform vec2 offset;
 uniform float density;
 uniform float gradient;
 uniform float useFakeLighting;
-uniform int maxLights;
+uniform int currentLightCount;
 
 out vec3 toLightVector[14];
 out vec3 surfaceNormal;
@@ -33,7 +33,7 @@ void main(void) {
 	}
 
 	surfaceNormal = (transformationMatrix * vec4(actualNormal, 0.0)).xyz;
-	for(int i = 0; i < maxLights; i++) {
+	for(int i = 0; i < currentLightCount; i++) {
 		toLightVector[i] = lightPosition[i] - worldPosition.xyz;
 	}
 

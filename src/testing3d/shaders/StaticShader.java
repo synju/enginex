@@ -3,6 +3,7 @@ package testing3d.shaders;
 import org.lwjgl.util.vector.Matrix4f;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
+import testing3d.engineTester.Game;
 import testing3d.entities.Camera;
 import testing3d.entities.Light;
 import testing3d.toolbox.Maths;
@@ -10,13 +11,15 @@ import testing3d.toolbox.Maths;
 import java.util.List;
 
 public class StaticShader extends ShaderProgram {
+	public static final int MAX_LIGHTS = 100;
+
 	private static final String VERTEX_FILE = "src/testing3d/shaders/vertexShader.vert";
 	private static final String FRAGMENT_FILE = "src/testing3d/shaders/fragmentShader.frag";
 
 	private int location_transformationMatrix;
 	private int location_projectionMatrix;
 	private int location_viewMatrix;
-	private int location_maxLights;
+	private int location_currentLightCount;
 	private int location_lightPosition[];
 	private int location_lightColor[];
 	private int location_attenuation[];
@@ -29,15 +32,20 @@ public class StaticShader extends ShaderProgram {
 	private int location_numberOfRows;
 	private int location_offset;
 
-	public int maxLights;
+	private int maxLights;
+	private int currentLightCount;
+
+	public Game game;
 
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
 	}
 
-	protected void getAllUniformLocations() {
-		maxLights = 14;
+	public void setCurrentLightCount(int count) {
+		this.currentLightCount = count;
+	}
 
+	protected void getAllUniformLocations() {
 		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
 		location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 		location_viewMatrix = super.getUniformLocation("viewMatrix");
@@ -49,13 +57,13 @@ public class StaticShader extends ShaderProgram {
 		location_gradient = super.getUniformLocation("gradient");
 		location_numberOfRows = super.getUniformLocation("numberOfRows");
 		location_offset = super.getUniformLocation("offset");
-		location_maxLights = super.getUniformLocation("maxLights");
+		location_currentLightCount = super.getUniformLocation("currentLightCount");
 
-		location_lightPosition = new int[maxLights];
-		location_lightColor = new int[maxLights];
-		location_attenuation = new int[maxLights];
+		location_lightPosition = new int[MAX_LIGHTS];
+		location_lightColor = new int[MAX_LIGHTS];
+		location_attenuation = new int[MAX_LIGHTS];
 
-		for(int i = 0; i < maxLights; i++) {
+		for(int i = 0; i < MAX_LIGHTS; i++) {
 			location_lightPosition[i] = super.getUniformLocation("lightPosition[" + i + "]");
 			location_lightColor[i] = super.getUniformLocation("lightColor[" + i + "]");
 			location_attenuation[i] = super.getUniformLocation("attenuation[" + i + "]");
@@ -98,22 +106,15 @@ public class StaticShader extends ShaderProgram {
 		super.loadMatrix(location_transformationMatrix, matrix);
 	}
 
-	public void loadMaxLightCount() {
-		super.loadInt(location_maxLights, maxLights);
+	public void loadCurrentLightCount() {
+		super.loadInt(location_currentLightCount, currentLightCount);
 	}
 
 	public void loadLights(List<Light> lights) {
-		for(int i = 0; i < maxLights; i++) {
-			if(i < lights.size()) {
-				super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
-				super.loadVector(location_lightColor[i], lights.get(i).getColor());
-				super.loadVector(location_attenuation[i], lights.get(i).getAttenuation());
-			}
-			else {
-				super.loadVector(location_lightPosition[i], new Vector3f(0, 0, 0));
-				super.loadVector(location_lightColor[i], new Vector3f(0, 0, 0));
-				super.loadVector(location_attenuation[i], new Vector3f(1, 0, 0));
-			}
+		for(int i = 0; i < lights.size(); i++) {
+			super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
+			super.loadVector(location_lightColor[i], lights.get(i).getColor());
+			super.loadVector(location_attenuation[i], lights.get(i).getAttenuation());
 		}
 	}
 

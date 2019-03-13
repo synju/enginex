@@ -30,6 +30,8 @@ public class Lamp {
 		light = new Light(new Vector3f(position.x,position.y+40,position.z), color, new Vector3f(attenuation,attenuation,attenuation));
 		entity.getModel().getTexture().setUseFakeLighting(true);
 		game.lights.add(this.light);
+		if(game.lights.size() < 14)
+			game.renderer.setCurrentLightCount(game.lights.size());
 	}
 
 	public void update() {

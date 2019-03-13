@@ -12,7 +12,7 @@ uniform sampler2D modelTexture;
 uniform float shineDamper;
 uniform float reflectivity;
 uniform vec3 skyColor;
-uniform int maxLights;
+uniform int currentLightCount;
 
 out vec4 out_Color;
 
@@ -23,7 +23,7 @@ void main(void) {
 	vec3 totalDiffuse = vec3(0.0);
 	vec3 totalSpecular = vec3(0.0);
 
-	for(int i = 0; i < maxLights; i++) {
+	for(int i = 0; i < currentLightCount; i++) {
 		float distance = length(toLightVector[i]);
 		float attFactor = attenuation[i].x + (attenuation[i].y * distance) + (attenuation[i].z * distance * distance);
 		vec3 unitLightVector = normalize(toLightVector[i]);

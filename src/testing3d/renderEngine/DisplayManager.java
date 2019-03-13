@@ -33,7 +33,7 @@ public class DisplayManager {
 		ContextAttribs attributes = new ContextAttribs(3,2).withForwardCompatible(true).withProfileCore(true);
 
 		try {
-//			Display.setLocation(1580,50);
+//			Display.setLocation(2250,350);
 			Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT));
 			Display.create(new PixelFormat(), attributes);
 			Display.setTitle("Testing 3D");

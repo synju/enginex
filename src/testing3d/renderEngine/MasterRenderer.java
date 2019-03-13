@@ -3,6 +3,7 @@ package testing3d.renderEngine;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Matrix4f;
+import testing3d.engineTester.Game;
 import testing3d.entities.Camera;
 import testing3d.entities.Entity;
 import testing3d.entities.Light;
@@ -42,7 +43,9 @@ public class MasterRenderer {
 
 	private SkyboxRenderer skyboxRenderer;
 
-	public MasterRenderer(Loader loader) {
+	public Game game;
+
+	public MasterRenderer(Game game) {
 		enableCulling();
 		createProjectionMatrix();
 
@@ -52,7 +55,7 @@ public class MasterRenderer {
 		terrainShader = new TerrainShader();
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 
-		skyboxRenderer = new SkyboxRenderer(loader, projectionMatrix);
+		skyboxRenderer = new SkyboxRenderer(game.loader, projectionMatrix);
 	}
 
 	public Matrix4f getProjectionMatrix() {
@@ -68,11 +71,15 @@ public class MasterRenderer {
 		GL11.glDisable(GL11.GL_CULL_FACE);
 	}
 
+	public void setCurrentLightCount(int count) {
+		shader.setCurrentLightCount(count);
+	}
+
 	public void render(List<Light> lights, Camera camera) {
 		prepare();
 
 		shader.start();
-//		shader.loadMaxLightCount();
+		shader.loadCurrentLightCount();
 		shader.loadSkyColor(RED, GREEN, BLUE);
 		shader.loadDensityAndGradient(density, gradient);
 		shader.loadLights(lights);
