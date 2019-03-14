@@ -11,7 +11,7 @@ import testing3d.toolbox.Maths;
 import java.util.List;
 
 public class StaticShader extends ShaderProgram {
-	public static final int MAX_LIGHTS = 100;
+	public static final int MAX_LIGHTS = 16;
 
 	private static final String VERTEX_FILE = "src/testing3d/shaders/vertexShader.vert";
 	private static final String FRAGMENT_FILE = "src/testing3d/shaders/fragmentShader.frag";
@@ -31,8 +31,6 @@ public class StaticShader extends ShaderProgram {
 	private int location_gradient;
 	private int location_numberOfRows;
 	private int location_offset;
-
-	private int maxLights;
 	private int currentLightCount;
 
 	public Game game;
@@ -112,9 +110,11 @@ public class StaticShader extends ShaderProgram {
 
 	public void loadLights(List<Light> lights) {
 		for(int i = 0; i < lights.size(); i++) {
-			super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
-			super.loadVector(location_lightColor[i], lights.get(i).getColor());
-			super.loadVector(location_attenuation[i], lights.get(i).getAttenuation());
+			if(i < MAX_LIGHTS) {
+				super.loadVector(location_lightPosition[i], lights.get(i).getPosition());
+				super.loadVector(location_lightColor[i], lights.get(i).getColor());
+				super.loadVector(location_attenuation[i], lights.get(i).getAttenuation());
+			}
 		}
 	}
 
