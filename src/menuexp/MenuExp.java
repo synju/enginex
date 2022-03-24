@@ -6,7 +6,7 @@ public class MenuExp extends EngineX {
 	MenuState menuState;
 
 	MenuExp(String gameName) {
-		super(gameName);
+		super(gameName,800,600);
 	}
 
 	public void init() {

@@ -10,7 +10,7 @@ public class Game extends EngineX {
 	}
 	
 	Game() {
-		super("Mega Money");
+		super("Mega Money",800,600);
 	}
 	
 	public void init() {

@@ -14,49 +14,48 @@ public class SmartRocketState extends State {
 	public Rectangle	start, wall, target;
 	ArrayList<Rocket>	rockets;
 	ArrayList<Rocket>	matingPool					= new ArrayList<Rocket>();
-	
 	int								population					= 10000;
 	int								maxMoves						= 500;
 	int								generation					= 0;
-	
 	int 							maxMatingPopulation = 100;
-	
 	double						mutation						= 0.01;
-	
 	int								speed								= 10;
-	
 	boolean						normal							= true;
 	int								normalCount					= 0;
 	int								normalMax						= 20;
-	
 	boolean						rocketsInitialized	= false;
-	
+
+	// Initialization (Create Game --> Initialize Environment --> Initialize Rockets)
 	protected SmartRocketState(EngineX game) {
 		super(game);
 		initEnvironment();
-		 initRockets();
+		initRockets();
 	}
-	
 	void initEnvironment() {
+		// Start
 		start = new Rectangle(new Dimension(10, 10));
 		start.setLocation(game.width / 2 - start.width / 2, game.height - start.height);
-		
+
+		// Wall
 		wall = new Rectangle(new Dimension(500, 20));
 		wall.setLocation(game.width / 2 - wall.width / 2, (int)(game.height / 1.5 - wall.height / 2));
-		
+
+		// Target
 		target = new Rectangle(new Dimension(10, 10));
 		target.setLocation(game.width / 2 - target.width / 2, 0);
 	}
-	
 	void initRockets() {
-		printGeneration();
+		// Print Generation Count
+		System.out.println("Generation: " + generation);
+
 		rockets = new ArrayList<Rocket>();
 		for(int i = 0; i < population; i++)
 			rockets.add(new Rocket(game, start.x, start.y, maxMoves, speed));
 		
 		rocketsInitialized = true;
 	}
-	
+
+	// Update Everything
 	public void update() {
 		if(rocketsInitialized) {
 			if(normal) {
@@ -72,7 +71,7 @@ public class SmartRocketState extends State {
 			}
 		}
 	}
-	
+
 	void updateRockets() {
 		for(Rocket r:rockets)
 			r.update();
@@ -88,7 +87,7 @@ public class SmartRocketState extends State {
 			normalCount++;
 		}
 	}
-	
+
 	void evaluate() {
 		// Calculate Fitness and Normalize
 		calculateFitnessAndNormalize();
@@ -102,13 +101,11 @@ public class SmartRocketState extends State {
 		
 		// Update Generation
 		generation++;
-		printGeneration();
-	}
-	
-	void printGeneration() {
+
+		// Print Generation Count
 		System.out.println("Generation: " + generation);
 	}
-	
+
 	void calculateFitnessAndNormalize() {
 		// Calculate Fitness
 		double maxFit = 0;
@@ -119,8 +116,10 @@ public class SmartRocketState extends State {
 		}
 		
 		// Normalize
-		for(Rocket r:rockets)
+		for(Rocket r:rockets) {
 			r.fitness /= maxFit;
+			System.out.println(r.fitness);
+		}
 	}
 	
 	void matingPool() {

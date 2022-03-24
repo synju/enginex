@@ -11,29 +11,27 @@ public class PlayState extends State {
 	boolean	initialized	= false;
 	Player p;
 
-	protected PlayState(EngineX game) {
-		super(game);
-	}
-
 	public PlayState(Game game) {
 		super(game);
 		this.game = game;
 	}
 
 	public void postInit() {
-		if(initialized)
-			return;
-		else
-			initialized = true;
+		// Check if initialized
+		if(initialized) return;
 		
-		// Initialize Stuff here...
+		// Initialize Stuff Here...
 		p = new Player(game);
+
+		// Complete initialization
+		initialized = true;
 	}
 
 	public void update() {
 		// This is Run Only Once...
 		postInit();
-		
+
+		// Update Player...
 		p.update();
 	}
 

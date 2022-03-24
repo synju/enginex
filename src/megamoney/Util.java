@@ -5,6 +5,10 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 
 public class Util {
+	static int generateRandom(int min, int max) {
+		return (int) ((Math.random() * ((max + 1) - min)) + min);
+	}
+
 	static void drawText(String text, int x, int y, int size, Graphics2D g) {
 		g.setFont(new Font("Arial", Font.BOLD, size));
 		g.setColor(Color.WHITE);
