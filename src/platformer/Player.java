@@ -13,35 +13,35 @@ import enginex.GameObject;
 
 @SuppressWarnings("serial")
 public class Player extends GameObject {
-	Platformer	game;
-	double		x;
-	double		y;
-	int			w			= 50;
-	int			h			= 50;
-	Color		color		= Color.RED;
-	boolean		moveLeft	= false;
-	boolean		moveRight	= false;
-	boolean		moveUp		= false;
-	boolean		moveDown	= false;
+	Platformer game;
+	double x;
+	double y;
+	int w = 50;
+	int h = 50;
+	Color color = Color.RED;
+	boolean moveLeft = false;
+	boolean moveRight = false;
+	boolean moveUp = false;
+	boolean moveDown = false;
 
-	int		speed		= 5;
+	int speed = 5;
 	// float jumpSpeed = 8.61f;
-	float	jumpSpeed	= 6.41f;
-	boolean	jumpDynamic	= false;
+	float jumpSpeed = 6.41f;
+	boolean jumpDynamic = false;
 
 	float velocityX, velocityY;
 
-	float		gravity			= 0.35f;
-	float		maxGravity		= 12f;
-	boolean		gravityEnabled	= true;
-	FileManager	fm				= new FileManager();
+	float gravity = 0.35f;
+	float maxGravity = 12f;
+	boolean gravityEnabled = true;
+	FileManager fm = new FileManager();
 
 	ArrayList<Collidable> clist = new ArrayList<>();
 
-	MovementContainer	mc;
-	boolean				renderMC		= true;
-	boolean				correction		= true;
-	boolean				mcCorrection	= false;
+	MovementContainer mc;
+	boolean renderMC = true;
+	boolean correction = true;
+	boolean mcCorrection = false;
 
 	public Player(Platformer game, int x, int y) {
 		super(game);
@@ -90,7 +90,7 @@ public class Player extends GameObject {
 
 	void updateVX() {
 		boolean collision = false;
-		for(Collidable c:clist) {
+		for(Collidable c : clist) {
 			Rectangle a = new Rectangle((int)(this.x + velocityX), (int)(this.y), (int)this.w, (int)this.h);
 			Rectangle b = new Rectangle((int)c.x, (int)c.y, (int)c.w, (int)c.h);
 			if(Phys.collision(a, b)) {
@@ -104,7 +104,7 @@ public class Player extends GameObject {
 				if((this.x + velocityX > mc.x) && (this.x + this.w + velocityX < mc.x + mc.w))
 					this.x += velocityX;
 				else {
-					for(Collidable c:clist)
+					for(Collidable c : clist)
 						c.x -= velocityX;
 				}
 			}
@@ -117,7 +117,7 @@ public class Player extends GameObject {
 
 	void updateVY() {
 		boolean collision = false;
-		for(Collidable c:clist) {
+		for(Collidable c : clist) {
 			Rectangle a = new Rectangle((int)(this.x), (int)(this.y + velocityY), (int)this.w, (int)this.h);
 			Rectangle b = new Rectangle((int)c.x, (int)c.y, (int)c.w, (int)c.h);
 			if(Phys.collision(a, b)) {
@@ -140,7 +140,7 @@ public class Player extends GameObject {
 
 		// Collision Correction
 		if(correction)
-			for(Collidable c:clist) {
+			for(Collidable c : clist) {
 				Rectangle a = new Rectangle((int)this.x, (int)this.y, (int)this.w, (int)this.h);
 				Rectangle b = new Rectangle((int)c.x, (int)c.y, (int)c.w, (int)c.h);
 				if(Phys.collision(a, b))
@@ -158,7 +158,7 @@ public class Player extends GameObject {
 				if(top > mcTop && bottom < mcBottom)
 					this.y += velocityY;
 				else
-					for(Collidable c:clist)
+					for(Collidable c : clist)
 						c.y -= velocityY;
 			}
 			else {
@@ -176,25 +176,25 @@ public class Player extends GameObject {
 
 		while(p.x < game.width / 2 - p.w / 2) {
 			p.x++;
-			for(Collidable c:clist)
+			for(Collidable c : clist)
 				c.x++;
 		}
 
 		while(p.y < game.height / 2 - p.h / 2) {
 			p.y++;
-			for(Collidable c:clist)
+			for(Collidable c : clist)
 				c.y++;
 		}
 
 		while(p.x > game.width / 2 - p.w / 2) {
 			p.x--;
-			for(Collidable c:clist)
+			for(Collidable c : clist)
 				c.x--;
 		}
 
 		while(p.y > game.height / 2 - p.h / 2) {
 			p.y--;
-			for(Collidable c:clist)
+			for(Collidable c : clist)
 				c.y--;
 		}
 	}
@@ -209,7 +209,7 @@ public class Player extends GameObject {
 	}
 
 	boolean onGround() {
-		for(Collidable c:clist) {
+		for(Collidable c : clist) {
 			Rectangle a = new Rectangle((int)this.x, (int)(this.y + this.h), (int)this.w, 1);
 			Rectangle b = new Rectangle((int)c.x, (int)c.y, (int)c.w, (int)c.h);
 			if(Phys.collision(a, b))

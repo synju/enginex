@@ -159,6 +159,7 @@ public class EngineX implements Runnable {
 		window.setBackground(Color.BLACK);
 		window.setResizable(false);
 		window.pack();
+		windowTitleHeight = window.getInsets().top;
 		window.setVisible(visible);
 		window.setLocationRelativeTo(null);
 		window.addWindowListener(new WindowAdapter() {

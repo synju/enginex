@@ -58,12 +58,13 @@ public class PlayState extends State {
 	}
 	
 	public void playMusic() {
-		if(musicEnabled)
+		if(musicEnabled) {
 			if(!musicPlaying) {
 				game.res.playSong.getSound().stop();
 				musicPlaying = true;
 				game.res.playSong.getSound().playSong();
 			}
+		}
 	}
 	
 	public void stopMusic() {

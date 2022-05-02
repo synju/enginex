@@ -4,6 +4,8 @@ import enginex.EngineX;
 
 public class Game extends EngineX {
 	PlayState ps;
+
+	Resources res		= new Resources();
 	
 	public static void main(String[] args) {
 		new Game().init();

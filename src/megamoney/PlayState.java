@@ -2,6 +2,7 @@ package megamoney;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 import enginex.EngineX;
 import enginex.State;
@@ -48,5 +49,13 @@ public class PlayState extends State {
 	
 	public void keyReleased(KeyEvent e) {
 		p.keyReleased(e);
+	}
+
+	public void mousePressed(MouseEvent e) {
+		p.mousePressed(e);
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		p.mouseReleased(e);
 	}
 }

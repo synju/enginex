@@ -26,6 +26,11 @@ public class Button extends GameObject {
 	Image	defaultImage;
 	Image	hoverImage;
 
+	// Offsets
+	boolean offsetEnabled = false;
+	int xOffset = 0;
+	int yOffset = 0;
+
 	Point m;
 
 	public Button(EngineX game, int w, int h) {
@@ -64,6 +69,7 @@ public class Button extends GameObject {
 		this.game = game;
 		this.x = x;
 		this.y = y;
+
 		this.w = w;
 		this.h = h;
 		setImages(defaultImagePath, hoverImagePath);
@@ -142,6 +148,15 @@ public class Button extends GameObject {
 		hasImages = true;
 	}
 
+	public void setOffsets(int xOffset, int yOffset) {
+		this.xOffset = xOffset;
+		this.yOffset = yOffset;
+	}
+
+	public void toggleOffset(boolean v) {
+		this.offsetEnabled = v;
+	}
+
 	public void setSound(String soundPath) {
 		sound = new Sound(soundPath);
 		hasSound = true;
@@ -182,10 +197,20 @@ public class Button extends GameObject {
 	public void render(Graphics2D g) {
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
 		if(hasImages) {
-			if(hover && hasHoverImage)
-				g.drawImage(hoverImage, (int) x, (int) y, null);
-			else
-				g.drawImage(defaultImage, (int)x, (int)y, null);
+			if(hover && hasHoverImage) {
+				g.drawImage(hoverImage, (int)x, (int)y, null);
+			}
+			else {
+				if(offsetEnabled) {
+					g.drawImage(defaultImage, (int)x + this.xOffset, (int)y + this.yOffset, null);
+					if(!containsMouse()) {
+						toggleOffset(false);
+					}
+				}
+				else {
+					g.drawImage(defaultImage, (int)x, (int)y, null);
+				}
+			}
 		}
 		else {
 			if(!hover) {
@@ -201,5 +226,21 @@ public class Button extends GameObject {
 				Util.drawText((int)(x + 5), (int)(y + h/2), name, 25, Color.WHITE, g);
 			}
 		}
+	}
+
+	public int getX() {
+		return (int)x;
+	}
+
+	public int getY() {
+		return (int)y;
+	}
+
+	public int getWidth() {
+		return (int)w;
+	}
+
+	public int getHeight() {
+		return (int)h;
 	}
 }
