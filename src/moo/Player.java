@@ -9,12 +9,10 @@ import java.util.ArrayList;
 
 public class Player extends GameObject {
 	Game game;
-	float x = 10*32;
-	float y = 14*32;
+	float x;
+	float y;
 	int w = 32;
 	int h = 64;
-//	int w = 16*3;
-//	int h = 64;
 
 	int speed = 5;
 //	float jumpSpeed = 6.67f;
@@ -30,19 +28,24 @@ public class Player extends GameObject {
 
 	ArrayList<Collidable> clist = new ArrayList<>();
 
-//	int x1 = 200;
-//	int y1 = 500;
-//	int x2 = 600;
-//	int y2 = 500;
-
 	Boolean moveUp = false;
 	Boolean moveDown = false;
 	Boolean moveLeft = false;
 	Boolean moveRight = false;
 
-	public Player(Game game) {
+	public Player(Game game, int x, int y) {
 		super(game);
 		this.game = game;
+
+		this.x = x;
+		this.y = y;
+	}
+
+	void resetPlayer() {
+		this.x = (int)game.ps.startLocation.x;
+		this.y = (int)game.ps.startLocation.y-32;
+		velocityY = 0;
+		velocityX = 0;
 	}
 
 	public void update() {
@@ -53,12 +56,6 @@ public class Player extends GameObject {
 
 		updateVY();
 		updateVX();
-
-		// Collision Detection
-//		Area area = new Area(new Rectangle((int)(this.x + velocityX), (int)(this.y), this.w, this.h));
-//		Line2D line = new Line2D.Double(x1, y1, x2, y2);
-//		if(Phys.lineCollision(area, line, 10))
-//			System.out.println("Collision");
 	}
 
 	void gravity() {
@@ -206,17 +203,9 @@ public class Player extends GameObject {
 			velocityY = -jumpSpeed;
 	}
 
-	void resetPlayer() {
-		this.x = 10*32;
-		this.y = 14*32;
-		velocityY = 0;
-		velocityX = 0;
-	}
-
 	public void render(Graphics2D g) {
 		g.setColor(Color.red);
 		g.fillRect((int)x, (int)y, w, h);
-//		g.drawLine(x1, y1, x2, y2);
 	}
 
 	public void keyPressed(KeyEvent e) {
@@ -229,13 +218,11 @@ public class Player extends GameObject {
 		if(e.getKeyCode() == KeyEvent.VK_D)
 			moveRight = true;
 
-		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+		if(e.getKeyCode() == KeyEvent.VK_NUMPAD2)
 			jump();
-		}
 
-		if(e.getKeyCode() == KeyEvent.VK_R) {
+		if((e.getKeyCode() == KeyEvent.VK_R) || (e.getKeyCode() == KeyEvent.VK_NUMPAD5))
 			resetPlayer();
-		}
 	}
 
 	public void keyReleased(KeyEvent e) {
