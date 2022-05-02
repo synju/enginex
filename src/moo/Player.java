@@ -57,7 +57,6 @@ public class Player extends GameObject {
 		// Collision Detection
 //		Area area = new Area(new Rectangle((int)(this.x + velocityX), (int)(this.y), this.w, this.h));
 //		Line2D line = new Line2D.Double(x1, y1, x2, y2);
-//
 //		if(Phys.lineCollision(area, line, 10))
 //			System.out.println("Collision");
 	}
