@@ -8,14 +8,19 @@ import java.awt.*;
 public class Collidable extends GameObject {
 	Game game;
 
-	public Collidable(Game game, int x, int y, int w, int h) {
+	int offsetX;
+	int offsetY;
+
+	public Collidable(Game game, int offsetX, int offsetY, int width, int height) {
 		super(game);
 		this.game = game;
 
-		this.x = x;
-		this.y = y;
-		this.w = w;
-		this.h = h;
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+		x = game.ps.worldX + offsetX;
+		y = game.ps.worldY + offsetY;
+		this.w = width;
+		this.h = height;
 	}
 
 	public Collidable(Game game, int x, int y) {
@@ -26,6 +31,11 @@ public class Collidable extends GameObject {
 		this.y = y;
 		this.w = 50;
 		this.h = 50;
+	}
+
+	public void update() {
+		x = game.ps.worldX + offsetX;
+		y = game.ps.worldY + offsetY;
 	}
 
 	public void render(Graphics2D g) {

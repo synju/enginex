@@ -134,5 +134,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Jamepad" level="project" />
   </component>
 </module>

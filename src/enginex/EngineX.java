@@ -28,6 +28,7 @@ public class EngineX implements Runnable {
 	public StateMachine stateMachine;
 	public SoundMachine soundMachine;
 	public boolean autoAdjust = true;
+	public boolean windowUndecorated = false; // true = Remove Title Bar and Frame
 
 	public int width = 800;
 	public int height = 600;
@@ -65,6 +66,18 @@ public class EngineX implements Runnable {
 		visible = true;
 
 		construct();
+	}
+
+	protected EngineX(String gameName, boolean fullscreen, boolean sizeable, int w, int h) {
+		this.gameName = gameName;
+		this.width = w;
+		this.height = h;
+		visible = true;
+		this.windowUndecorated = fullscreen;
+
+		construct();
+
+		window.setResizable(sizeable);
 	}
 
 	protected EngineX(String gameName, int w, int h, boolean sizeable, boolean autoAdjust) {
@@ -158,6 +171,7 @@ public class EngineX implements Runnable {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setBackground(Color.BLACK);
 		window.setResizable(false);
+		window.setUndecorated(windowUndecorated);
 		window.pack();
 		windowTitleHeight = window.getInsets().top;
 		window.setVisible(visible);

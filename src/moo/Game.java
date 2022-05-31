@@ -2,22 +2,23 @@ package moo;
 
 import enginex.EngineX;
 
+import java.awt.*;
+
 public class Game extends EngineX {
 	PlayState ps;
 	Resources res = new Resources();
 
-	int gameWidth;
-	int gameHeight;
+	int width;
+	int height;
 
 	public static void main(String[] args) {
 		new Game().init();
 	}
 
 	Game() {
-		// Game Window.... Decided to make it 42*32px Width by 21*32px Height
-		super("Moo", 42*32, 42*32);
-		gameWidth = 42*32;
-		gameHeight = 21*32;
+		super("Moo", Config.fullscreen, Config.sizeable, (Config.fullscreen) ? (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() : Config.width, (Config.fullscreen) ? (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() : Config.height);
+		this.width = super.width;
+		this.height = super.height;
 	}
 
 	public void init() {
@@ -25,5 +26,15 @@ public class Game extends EngineX {
 		stateMachine.pushState(ps);
 		stateMachine.states.get(0).init();
 		run();
+	}
+
+	@Override
+	public int getWidth() {
+		return width;
+	}
+
+	@Override
+	public int getHeight() {
+		return height;
 	}
 }
