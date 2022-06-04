@@ -30,7 +30,7 @@ public class Game extends EngineX {
 
 		stateMachine.initAll();
 
-		stateMachine.setState(TEST);
+		stateMachine.setState(PLAY);
 
 		window.setVisible(true);
 		run();
