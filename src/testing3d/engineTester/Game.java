@@ -274,7 +274,8 @@ public class Game {
 					// Right Button Pressed
 					this.hideMouse();
 				}
-			} else {
+			}
+			else {
 				// Left Mouse Button
 				if(Mouse.getEventButton() == 0) {
 					// Left Button Released
