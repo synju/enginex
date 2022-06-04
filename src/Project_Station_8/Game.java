@@ -1,4 +1,4 @@
-package Station_8;
+package Project_Station_8;
 
 import enginex.EngineX;
 
@@ -9,7 +9,7 @@ public class Game extends EngineX {
 	PlayState playState;
 
 	Game() {
-		super("Station_8", 480, 288, false, false);
+		super("Project_Station_8", 480, 288, false, false);
 		window.setVisible(true);
 	}
 

@@ -1,4 +1,4 @@
-package Station_8;
+package Project_Station_8;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
