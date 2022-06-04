@@ -1,4 +1,4 @@
-package Platformer_Working_Perfectly;
+package Project_Platformer;
 
 public class EmptyObject {
 	Game game;
