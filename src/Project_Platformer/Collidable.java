@@ -1,6 +1,6 @@
 package Project_Platformer;
 
-import enginex.GameObject;
+import EngineX.GameObject;
 
 import java.awt.*;
 

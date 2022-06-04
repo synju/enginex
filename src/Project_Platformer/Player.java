@@ -1,7 +1,7 @@
 package Project_Platformer;
 
 import com.studiohartman.jamepad.ControllerState;
-import enginex.GameObject;
+import EngineX.GameObject;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

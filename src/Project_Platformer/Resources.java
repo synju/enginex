@@ -1,6 +1,6 @@
 package Project_Platformer;
 
-import enginex.Resource;
+import EngineX.Resource;
 
 class Resources {
 	// CONSTANTS.... (Just to make it easier typing...)
@@ -12,5 +12,5 @@ class Resources {
 	Resource grid_block = new Resource("bin/project_platformer/res/grid_block.png", IMAGE);
 
 	// SOUNDS ==================================================================
-	Resource spinSound = new Resource("res/megamoney/spinSound.ogg", SOUND);
+	Resource spinSound = new Resource("res/Complete.megamoney/spinSound.ogg", SOUND);
 }

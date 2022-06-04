@@ -1,6 +1,6 @@
 package Project_Platformer;
 
-import enginex.EngineX;
+import EngineX.EngineX;
 
 import java.awt.*;
 

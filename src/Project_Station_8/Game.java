@@ -1,6 +1,6 @@
 package Project_Station_8;
 
-import enginex.EngineX;
+import EngineX.EngineX;
 
 public class Game extends EngineX {
 	public static final int PLAY = 0;

@@ -1,8 +1,8 @@
 package Project_Station_8;
 
 import com.studiohartman.jamepad.ControllerState;
-import enginex.Animation;
-import enginex.Sprite;
+import EngineX.Animation;
+import EngineX.Sprite;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
