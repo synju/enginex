@@ -57,9 +57,9 @@ public class Player {
 
 	boolean canShoot = true;
 
-	String	jumpSound	= "res/Complete.titanclones/jump.ogg";
-	String	shootSound	= "res/Complete.titanclones/shoot.ogg";
-	String	hurtSound	= "res/Complete.titanclones/hurt.ogg";
+	String	jumpSound	= "res/titanclones/jump.ogg";
+	String	shootSound	= "res/titanclones/shoot.ogg";
+	String	hurtSound	= "res/titanclones/hurt.ogg";
 
 	public static final int	A			= 0;
 	public static final int	B			= 1;
@@ -191,7 +191,7 @@ public class Player {
 
 	void jump() {
 		if(onGround()) {
-			game.soundMachine.playSound("res/Complete.titanclones/jump.ogg");
+			game.soundMachine.playSound("res/titanclones/jump.ogg");
 			velocityY = -jumpSpeed;
 		}
 	}
@@ -217,25 +217,25 @@ public class Player {
 
 	void setupAnimations() {
 		if(playerType == A) {
-			runLeftImages = new BufferedImage[] {Sprite.getSprite(0, 0, 32, 32, "res/Complete.titanclones/runLeft.png"), Sprite.getSprite(1, 0, 32, 32, "res/Complete.titanclones/runLeft.png"), Sprite.getSprite(2, 0, 32, 32, "res/Complete.titanclones/runLeft.png")};
+			runLeftImages = new BufferedImage[] {Sprite.getSprite(0, 0, 32, 32, "res/titanclones/runLeft.png"), Sprite.getSprite(1, 0, 32, 32, "res/titanclones/runLeft.png"), Sprite.getSprite(2, 0, 32, 32, "res/titanclones/runLeft.png")};
 
-			runRightImages = new BufferedImage[] {Sprite.getSprite(0, 0, 32, 32, "res/Complete.titanclones/runRight.png"), Sprite.getSprite(1, 0, 32, 32, "res/Complete.titanclones/runRight.png"), Sprite.getSprite(2, 0, 32, 32, "res/Complete.titanclones/runRight.png")};
+			runRightImages = new BufferedImage[] {Sprite.getSprite(0, 0, 32, 32, "res/titanclones/runRight.png"), Sprite.getSprite(1, 0, 32, 32, "res/titanclones/runRight.png"), Sprite.getSprite(2, 0, 32, 32, "res/titanclones/runRight.png")};
 
 			runLeft = new Animation(runLeftImages, 3);
 			runRight = new Animation(runRightImages, 3);
-			idleLeft = new Animation(Sprite.getSprite(1, 0, 32, 32, "res/Complete.titanclones/runLeft.png"));
-			idleRight = new Animation(Sprite.getSprite(1, 0, 32, 32, "res/Complete.titanclones/runRight.png"));
+			idleLeft = new Animation(Sprite.getSprite(1, 0, 32, 32, "res/titanclones/runLeft.png"));
+			idleRight = new Animation(Sprite.getSprite(1, 0, 32, 32, "res/titanclones/runRight.png"));
 		}
 
 		if(playerType == B) {
-			runLeftImages = new BufferedImage[] {Sprite.getSprite(0, 0, 32, 32, "res/Complete.titanclones/runLeftB.png"), Sprite.getSprite(1, 0, 32, 32, "res/Complete.titanclones/runLeftB.png"), Sprite.getSprite(2, 0, 32, 32, "res/Complete.titanclones/runLeftB.png")};
+			runLeftImages = new BufferedImage[] {Sprite.getSprite(0, 0, 32, 32, "res/titanclones/runLeftB.png"), Sprite.getSprite(1, 0, 32, 32, "res/titanclones/runLeftB.png"), Sprite.getSprite(2, 0, 32, 32, "res/titanclones/runLeftB.png")};
 
-			runRightImages = new BufferedImage[] {Sprite.getSprite(0, 0, 32, 32, "res/Complete.titanclones/runRightB.png"), Sprite.getSprite(1, 0, 32, 32, "res/Complete.titanclones/runRightB.png"), Sprite.getSprite(2, 0, 32, 32, "res/Complete.titanclones/runRightB.png")};
+			runRightImages = new BufferedImage[] {Sprite.getSprite(0, 0, 32, 32, "res/titanclones/runRightB.png"), Sprite.getSprite(1, 0, 32, 32, "res/titanclones/runRightB.png"), Sprite.getSprite(2, 0, 32, 32, "res/titanclones/runRightB.png")};
 
 			runLeft = new Animation(runLeftImages, 3);
 			runRight = new Animation(runRightImages, 3);
-			idleLeft = new Animation(Sprite.getSprite(1, 0, 32, 32, "res/Complete.titanclones/runLeftB.png"));
-			idleRight = new Animation(Sprite.getSprite(1, 0, 32, 32, "res/Complete.titanclones/runRightB.png"));
+			idleLeft = new Animation(Sprite.getSprite(1, 0, 32, 32, "res/titanclones/runLeftB.png"));
+			idleRight = new Animation(Sprite.getSprite(1, 0, 32, 32, "res/titanclones/runRightB.png"));
 		}
 
 		setAnimation(idleRight);

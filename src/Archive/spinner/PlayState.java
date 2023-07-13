@@ -30,7 +30,7 @@ public class PlayState extends State {
 
 		// Initialize stuff..
 		wheel = new Wheel(game);
-		spinButton = new Button(game,game.width-151-20,game.height-65-20,151,65,"res/Archive.spinner/spinButton.png","res/Archive.spinner/spinButton.png","res/Archive.spinner/click.ogg");
+		spinButton = new Button(game,game.width-151-20,game.height-65-20,151,65,"bin/archive/spinner/spinButton.png","bin/archive/spinner/spinButton.png","bin/archive/spinner/click.ogg");
 
 		// Initialize switch...
 		initialized = true;

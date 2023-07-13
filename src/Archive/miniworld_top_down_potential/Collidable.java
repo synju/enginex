@@ -7,15 +7,15 @@ import java.awt.geom.AffineTransform;
 
 import javax.swing.ImageIcon;
 public class Collidable {
-	MiniWorld game;
-	double x;
-	double y;
-	int w;
-	int h;
+	Game    game;
+	double  x;
+	double  y;
+	int     w;
+	int     h;
 	boolean visible = false;
-	Image						bg					= new ImageIcon("res/Complete.titanclones/wall_tile.png").getImage();
+	Image   bg					= new ImageIcon("res/Complete.titanclones/wall_tile.png").getImage();
 	
-	public Collidable(MiniWorld game, int x, int y, int w, int h) {
+	public Collidable(Game game, int x, int y, int w, int h) {
 		this.game = game;
 		this.x = x;
 		this.y = y;

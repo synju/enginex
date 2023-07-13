@@ -14,7 +14,7 @@ public class Collidable {
 	int			w;
 	int			h;
 	boolean		visible	= false;
-	Image		bg		= new ImageIcon("res/Complete.titanclones/wall_tile.png").getImage();
+	Image		bg		= new ImageIcon("res/titanclones/wall_tile.png").getImage();
 
 	public Collidable(TitanClones game, int x, int y, int w, int h) {
 		this.game = game;

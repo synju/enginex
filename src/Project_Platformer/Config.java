@@ -10,5 +10,5 @@ public class Config {
 	public static int height = (fullscreen) ? (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight(): 21 * 32;
 
 	// Controller... Disabled... Further Dev Needed...
-	public static boolean controllerEnabled = false;
+	public static boolean controllerEnabled = true;
 }

@@ -9,12 +9,12 @@ import EngineX.GameObject;
 
 @SuppressWarnings("serial")
 public class Healthpack extends GameObject {
-	int			x;
-	int			y;
-	static int	w		= 30;
-	static int	h		= 30;
-	float		alpha	= 1.0f;
-	boolean		used	= false;
+	int x;
+	int y;
+	static int w = 30;
+	static int h = 30;
+	float alpha = 1.0f;
+	boolean used = false;
 
 	Rectangle bounds;
 

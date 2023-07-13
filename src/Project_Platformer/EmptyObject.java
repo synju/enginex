@@ -9,15 +9,15 @@ public class EmptyObject {
 
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
-		x = game.ps.worldX + offsetX;
-		y = game.ps.worldY + offsetY;
+		x = game.ps.levelHandler.worldX + offsetX;
+		y = game.ps.levelHandler.worldY + offsetY;
 		this.w = width;
 		this.h = height;
 	}
 
 	public void update() {
-		x = game.ps.worldX + offsetX;
-		y = game.ps.worldY + offsetY;
+		x = game.ps.levelHandler.worldX + offsetX;
+		y = game.ps.levelHandler.worldY + offsetY;
 	}
 
 	public int getWidth() {

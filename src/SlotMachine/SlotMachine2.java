@@ -1,0 +1,1411 @@
+package SlotMachine;
+
+import EngineX.Button;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
+
+public class SlotMachine2 extends SlotMachine {
+	Game    game;
+	boolean initialized = false;
+	boolean spinning    = false;
+
+	double   credit          = 0.00;
+	double   creditDisplay   = credit;
+	double[] betAmounts      = {0.20, 0.40, 0.60, 0.80, 1, 1.60, 2, 4, 6, 8, 12, 18, 20, 40, 60, 80, 100};
+	int      currentBetIndex = 0;
+	double   betAmount       = betAmounts[0];
+	String[] spinResult;
+
+	// Symbols
+	public static final int LEMON  = 0; // 0.25,0.50,2.50
+	public static final int CHERRY = 1; // 0.25,0.50,2.50
+	public static final int ORANGE = 2; // 0.25,0.50,2.50
+	public static final int PLUM   = 3; // 0.25,0.50,2.50
+	public static final int PEACH  = 4; // 0.50,2.00,10.00
+	public static final int MELON  = 5; // 1.00,5.00,25.00
+	public static final int GRAPES = 6; // 1.00,5.00,25.00
+	public static final int SEVEN  = 7; // 0.25,2.00,10.00,100.00
+
+	// Multipliers
+	public static final double M_LEMON3  = 0.25;
+	public static final double M_LEMON4  = 0.50;
+	public static final double M_LEMON5  = 2.50;
+	public static final double M_CHERRY3 = 0.25;
+	public static final double M_CHERRY4 = 0.50;
+	public static final double M_CHERRY5 = 2.50;
+	public static final double M_ORANGE3 = 0.25;
+	public static final double M_ORANGE4 = 0.50;
+	public static final double M_ORANGE5 = 2.50;
+	public static final double M_PLUM3   = 0.25;
+	public static final double M_PLUM4   = 0.50;
+	public static final double M_PLUM5   = 2.50;
+	public static final double M_PEACH3  = 0.50;
+	public static final double M_PEACH4  = 2;
+	public static final double M_PEACH5  = 10;
+	public static final double M_MELON3  = 1;
+	public static final double M_MELON4  = 5;
+	public static final double M_MELON5  = 25;
+	public static final double M_GRAPES3 = 1;
+	public static final double M_GRAPES4 = 5;
+	public static final double M_GRAPES5 = 25;
+	public static final double M_SEVEN2  = 0.25;
+	public static final double M_SEVEN3  = 2;
+	public static final double M_SEVEN4  = 10;
+	public static final double M_SEVEN5  = 100;
+
+	// Simulation Variables
+	int simSpinCount = 5000000;
+	int simBetAmount = 1;
+
+	// 95.89%
+	int lemonCount 	= 2;
+	int cherryCount = 2;
+	int orangeCount = 1;
+	int plumCount 	= 1;
+	int peachCount 	= 2;
+	int melonCount 	= 2;
+	int grapesCount = 2;
+	int sevensCount = 1;
+
+	// 4147.78%
+	/*
+	int lemonCount 	= 6;
+	int cherryCount = 6;
+	int orangeCount = 6;
+	int plumCount 	= 6;
+	int peachCount 	= 4;
+	int melonCount 	= 3;
+	int grapesCount = 3;
+	int sevensCount = 1;
+	*/
+
+	// Initialize rows
+	int ROW1 = 0;
+	int ROW2 = 1;
+	int ROW3 = 2;
+	int ROW4 = 3;
+
+	// Initialize Line Count and Lines
+	int                lineCount    = 40;
+	int[][]            lines        = new int[lineCount][5];
+	ArrayList<Integer> linesWonList = new ArrayList<>();
+	int                linesWon     = 0;
+
+	// Timers
+	int spinTime      = Config.spinTime;
+	int spinCountDown = 0;
+
+	// Other Components
+	ReelManager reelManager;
+
+	// Text Components
+	boolean win_counting_up     = false;
+	int     win_portion_divider = 100;
+	String  win_last_win_text        = "LAST WIN";
+	double  win_last_win_amount      = 0;
+	double  new_win_last_win_amount  = 0;
+
+	// Buttons
+	Button spinButton;
+	Button quickSpinButton;
+	Button increaseBetButton;
+	Button decreaseBetButton;
+	Button volumeButton;
+	Button infoButton;
+	Button musicButton;
+
+	// QuickSpin Booleans
+	boolean quickSpinEnabled = false;
+
+	// Volume Booleans
+	boolean volumeEnabled = Config.volumeEnabled;
+	boolean musicEnabled  = Config.startupMusicEnabled;
+
+	// Formatting Numbers
+	//	DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+	DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+
+	SlotMachine2(Game game) {
+		super(game);
+		this.game = game;
+	}
+
+	public void initialize() {
+		if(initialized)
+			return;
+
+		// Initialize lines .. [lines][positions][row,position]
+		initializeLines();
+
+		if(Config.simulationEnabled) {
+			initialized = true;
+			return;
+		}
+
+		// Start Game Music
+		if(volumeEnabled) {
+			if(musicEnabled) {
+				game.res.themesong.getSound().play(1f, 1f, true);
+			}
+		}
+
+		// Other
+		reelManager = new ReelManager(game, this);
+
+		// Display Stuff
+		spinButton = new Button(game, 1096, 283, 201, 201, game.res.spinButtonReady.getPath(), game.res.spinButtonReady.getPath());
+		spinButton.setOffsets(2, 2);
+
+		quickSpinButton = new Button(game, 1151, 500, 86, 86, game.res.quickSpinButtonOn.getPath(), game.res.quickSpinButtonOn.getPath());
+		if(!quickSpinEnabled) quickSpinButton.setImages(game.res.quickSpinButtonOff.getPath(),game.res.quickSpinButtonOff.getPath());
+		quickSpinButton.setOffsets(2, 2);
+
+		increaseBetButton = new Button(game, 902, 696, 58, 57, game.res.increaseBetButton.getPath(), game.res.increaseBetButton.getPath());
+		increaseBetButton.setOffsets(2, 2);
+		decreaseBetButton = new Button(game, 838, 696, 57, 56, game.res.decreaseBetButton.getPath(), game.res.decreaseBetButton.getPath());
+		decreaseBetButton.setOffsets(2, 2);
+
+		// optionsOffset
+		int optionsOffset = 35;
+
+		musicButton = new Button(game, 1058 + optionsOffset, 640, 57, 57, game.res.musicOnButton.getPath(), game.res.musicOnButton.getPath());
+		if(!musicEnabled) musicButton.setImages(game.res.musicOffButton.getPath(),game.res.musicOffButton.getPath());
+		musicButton.setOffsets(2, 2);
+
+
+		volumeButton = new Button(game, 1132 + optionsOffset, 640, 58, 58, game.res.volumeOnButton.getPath(), game.res.volumeOnButton.getPath());
+		if(!volumeEnabled) volumeButton.setImages(game.res.volumeOffButton.getPath(),game.res.volumeOffButton.getPath());
+		volumeButton.setOffsets(2, 2);
+
+
+		infoButton = new Button(game, 1206 + optionsOffset, 640, 57, 57, game.res.infoButton.getPath(), game.res.infoButton.getPath());
+		infoButton.setOffsets(2, 2);
+
+		initialized = true;
+	}
+
+	// Core Functions
+	public String[] spin() {
+		String[] rows = new String[4];
+
+		ArrayList reel = new ArrayList();
+		for(int i = 0; i < lemonCount; i++)
+			reel.add(LEMON);
+		for(int i = 0; i < cherryCount; i++)
+			reel.add(CHERRY);
+		for(int i = 0; i < orangeCount; i++)
+			reel.add(ORANGE);
+		for(int i = 0; i < plumCount; i++)
+			reel.add(PLUM);
+		for(int i = 0; i < peachCount; i++)
+			reel.add(PEACH);
+		for(int i = 0; i < melonCount; i++)
+			reel.add(MELON);
+		for(int i = 0; i < grapesCount; i++)
+			reel.add(GRAPES);
+		for(int i = 0; i < sevensCount; i++)
+			reel.add(SEVEN);
+		Collections.shuffle(reel);
+
+		Random rand      = new Random();
+		int    randomIndex;
+		int    rowCount  = 4;
+		int    reelCount = 5;
+
+		for(int i = 0; i < rowCount; i++) {
+			String result = "";
+			for(int j = 0; j < reelCount; j++) {
+				randomIndex = rand.nextInt(reel.size());
+				result += String.valueOf(reel.get(randomIndex));
+			}
+			rows[i] = result;
+		}
+
+		return rows;
+	}
+
+	public void playerSpin() {
+		// Display Stuff
+		win_last_win_text = "LAST WIN";
+		if(new_win_last_win_amount > 0) {
+			win_last_win_amount = new_win_last_win_amount;
+		}
+
+		// Work Stuff...
+		linesWonList = new ArrayList<>();
+		linesWon = 0;
+		if((credit - betAmount) < 0) {
+			System.out.println("Not Enough Credit");
+			return;
+		}
+
+		// Sounds
+		if(volumeEnabled) {
+			game.res.spinSound.getSound().play(1f, 1f, true);
+		}
+
+		// Deduct from credit
+		credit -= betAmount;
+
+		// Set Actual Bet Amount
+		double actualBetAmount = betAmount;
+
+		// Initialize Total Win
+		double totalWin = 0;
+
+		// Get Spin Result
+		String[] result = spin();
+		spinResult = result;
+
+		// Initialize Symbol
+		int symbol;
+
+		// Initialize multipliers
+		double multiplier1;
+		double multiplier2;
+		double multiplier3;
+		double multiplier4;
+
+		// Initialize Positions
+		int[] position1;
+		int[] position2;
+		int[] position3;
+		int[] position4;
+		int[] position5;
+
+		// Check Lines and add winnings to totalWin
+		for(int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+			// Positions Line 1 .. [row]
+			position1 = new int[]{lines[lineIndex][0]};
+			position2 = new int[]{lines[lineIndex][1]};
+			position3 = new int[]{lines[lineIndex][2]};
+			position4 = new int[]{lines[lineIndex][3]};
+			position5 = new int[]{lines[lineIndex][4]};
+
+			// Lemon
+			symbol = LEMON;
+			multiplier1 = M_LEMON3;
+			multiplier2 = M_LEMON4;
+			multiplier3 = M_LEMON5;
+			if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$$$
+				totalWin += actualBetAmount * multiplier3;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$$#
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$#$
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$##
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+
+			// Cherry
+			symbol = CHERRY;
+			multiplier1 = M_CHERRY3;
+			multiplier2 = M_CHERRY4;
+			multiplier3 = M_CHERRY5;
+			if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$$$
+				totalWin += actualBetAmount * multiplier3;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$$#
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$#$
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$##
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+
+			// Orange
+			symbol = ORANGE;
+			multiplier1 = M_ORANGE3;
+			multiplier2 = M_ORANGE4;
+			multiplier3 = M_ORANGE5;
+			if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$$$
+				totalWin += actualBetAmount * multiplier3;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$$#
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$#$
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$##
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+
+			// Plum
+			symbol = PLUM;
+			multiplier1 = M_PLUM3;
+			multiplier2 = M_PLUM4;
+			multiplier3 = M_PLUM5;
+			if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$$$
+				totalWin += actualBetAmount * multiplier3;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$$#
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$#$
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$##
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+
+			// PEACH
+			symbol = PEACH;
+			multiplier1 = M_PEACH3;
+			multiplier2 = M_PEACH4;
+			multiplier3 = M_PEACH5;
+			if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$$$
+				totalWin += actualBetAmount * multiplier3;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$$#
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$#$
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$##
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+
+			// MELON
+			symbol = MELON;
+			multiplier1 = M_MELON3;
+			multiplier2 = M_MELON4;
+			multiplier3 = M_MELON5;
+			if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$$$
+				totalWin += actualBetAmount * multiplier3;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$$#
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$#$
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$##
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+
+			// GRAPES
+			symbol = GRAPES;
+			multiplier1 = M_GRAPES3;
+			multiplier2 = M_GRAPES4;
+			multiplier3 = M_GRAPES5;
+			if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$$$
+				totalWin += actualBetAmount * multiplier3;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$$#
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$#$
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$##
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+
+			// SEVEN
+			symbol = SEVEN;
+			multiplier1 = M_SEVEN2;
+			multiplier2 = M_SEVEN3;
+			multiplier3 = M_SEVEN4;
+			multiplier4 = M_SEVEN5;
+			if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$$$
+				totalWin += actualBetAmount * multiplier4;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$$#
+				totalWin += actualBetAmount * multiplier3;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$$#$
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$$##
+				totalWin += actualBetAmount * multiplier2;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) != symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+				// $$##$
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) != symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$#$#
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+			else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) != symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+				// $$###
+				totalWin += actualBetAmount * multiplier1;
+				linesWon++;
+				linesWonList.add(lineIndex);
+			}
+		}
+
+		totalWin = Math.round(totalWin * 100.0) / 100.0;
+		credit += totalWin;
+		credit = Math.round(credit * 100.0) / 100.0;
+
+		displayRows(result);
+		if(totalWin > 0) {
+			System.out.println("Credit: R" + credit + " .. Total Bet: R" + Math.round(100.0) / 100.0 + " .. You Won: R" + totalWin + " .. Lines Won: " + linesWon);
+
+			// Update Display Stuff
+			new_win_last_win_amount = totalWin;
+			win_counting_up = true;
+		}
+		else {
+			System.out.println("Credit: R" + credit + " .. Total Bet: R" + Math.round(100.0) / 100.0);
+		}
+
+		// Do Display Work....
+		// Start Spinning in Reel Manager
+		spinning = true;
+		spinCountDown = spinTime;
+		creditDisplay -= betAmount;
+	}
+
+	public void loadCredit(double amount) {
+		credit += amount;
+		creditDisplay = credit;
+		System.out.println("Added R" + amount);
+		displayBalanceAndBetAmount();
+	}
+
+	public void resetCredit() {
+		credit = 0;
+		creditDisplay = credit;
+	}
+
+	public void displayBalanceAndBetAmount() {
+		System.out.println("Credit: R" + credit + " .. Bet Amount: R" + betAmount);
+	}
+
+	public void simulate() {
+		System.out.println("Running");
+
+		double totalStake = 0;
+		double totalWin   = 0;
+
+		// Set Actual Bet Amount
+		double actualBetAmount = simBetAmount;
+		for(int i = 0; i < simSpinCount; i++) {
+			totalStake += simBetAmount;
+			String[] result = spin();
+
+			// Initialize Symbol
+			int symbol;
+
+			// Initialize multipliers
+			double multiplier1;
+			double multiplier2;
+			double multiplier3;
+			double multiplier4;
+
+			// Initialize rows
+			int ROW1 = 0;
+			int ROW2 = 1;
+			int ROW3 = 2;
+			int ROW4 = 3;
+
+			// Initialize Positions
+			int[] position1;
+			int[] position2;
+			int[] position3;
+			int[] position4;
+			int[] position5;
+
+			// Initialize lines .. [lines][positions][row,position]
+			// ##### - ROW1
+			// ##### - ROW2
+			// ##### - ROW3
+			// ##### - ROW4
+			int[][] lines = new int[40][5];
+			lines[0] = new int[]{ROW1, ROW1, ROW1, ROW1, ROW1}; // 1
+			lines[1] = new int[]{ROW1, ROW2, ROW2, ROW2, ROW2}; // 2
+			lines[2] = new int[]{ROW1, ROW1, ROW1, ROW1, ROW2}; // 3
+			lines[3] = new int[]{ROW1, ROW1, ROW1, ROW2, ROW3}; // 4
+			lines[4] = new int[]{ROW1, ROW2, ROW3, ROW2, ROW1}; // 5
+			lines[5] = new int[]{ROW1, ROW1, ROW2, ROW1, ROW1}; // 6
+			lines[6] = new int[]{ROW1, ROW2, ROW2, ROW2, ROW1}; // 7
+			lines[7] = new int[]{ROW1, ROW2, ROW3, ROW3, ROW3}; // 8
+			lines[8] = new int[]{ROW2, ROW2, ROW2, ROW2, ROW1}; // 9
+			lines[9] = new int[]{ROW2, ROW1, ROW1, ROW1, ROW2}; // 10
+			lines[10] = new int[]{ROW2, ROW2, ROW1, ROW2, ROW2}; // 11
+			lines[11] = new int[]{ROW2, ROW3, ROW3, ROW3, ROW3}; // 12
+			lines[12] = new int[]{ROW2, ROW2, ROW2, ROW2, ROW2}; // 13
+			lines[13] = new int[]{ROW2, ROW1, ROW1, ROW1, ROW1}; // 14
+			lines[14] = new int[]{ROW2, ROW2, ROW2, ROW2, ROW3}; // 15
+			lines[15] = new int[]{ROW2, ROW3, ROW4, ROW4, ROW4}; // 16
+			lines[16] = new int[]{ROW2, ROW2, ROW3, ROW2, ROW2}; // 17
+			lines[17] = new int[]{ROW2, ROW2, ROW2, ROW3, ROW4}; // 18
+			lines[18] = new int[]{ROW2, ROW3, ROW4, ROW3, ROW2}; // 19
+			lines[19] = new int[]{ROW2, ROW3, ROW3, ROW3, ROW2}; // 20
+			lines[20] = new int[]{ROW3, ROW3, ROW3, ROW2, ROW1}; // 21
+			lines[21] = new int[]{ROW3, ROW2, ROW2, ROW2, ROW3}; // 22
+			lines[22] = new int[]{ROW3, ROW3, ROW2, ROW3, ROW3}; // 23
+			lines[23] = new int[]{ROW3, ROW2, ROW1, ROW2, ROW3}; // 24
+			lines[24] = new int[]{ROW3, ROW3, ROW3, ROW3, ROW2}; // 25
+			lines[25] = new int[]{ROW3, ROW2, ROW1, ROW1, ROW1}; // 26
+			lines[26] = new int[]{ROW3, ROW3, ROW3, ROW3, ROW3}; // 27
+			lines[27] = new int[]{ROW3, ROW2, ROW2, ROW2, ROW2}; // 28
+			lines[28] = new int[]{ROW3, ROW3, ROW4, ROW3, ROW3}; // 29
+			lines[29] = new int[]{ROW3, ROW4, ROW4, ROW4, ROW4}; // 30
+			lines[30] = new int[]{ROW3, ROW3, ROW3, ROW3, ROW4}; // 31
+			lines[31] = new int[]{ROW3, ROW4, ROW4, ROW4, ROW3}; // 32
+			lines[32] = new int[]{ROW4, ROW4, ROW3, ROW4, ROW4}; // 33
+			lines[33] = new int[]{ROW4, ROW3, ROW3, ROW3, ROW4}; // 34
+			lines[34] = new int[]{ROW4, ROW4, ROW4, ROW3, ROW2}; // 35
+			lines[35] = new int[]{ROW4, ROW3, ROW2, ROW3, ROW4}; // 36
+			lines[36] = new int[]{ROW4, ROW4, ROW4, ROW4, ROW3}; // 37
+			lines[37] = new int[]{ROW4, ROW3, ROW3, ROW3, ROW3}; // 38
+			lines[38] = new int[]{ROW4, ROW3, ROW2, ROW2, ROW2}; // 39
+			lines[39] = new int[]{ROW4, ROW4, ROW4, ROW4, ROW4}; // 40
+
+			for(int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+				// Positions Line 1 .. [row]
+				position1 = new int[]{lines[lineIndex][0]};
+				position2 = new int[]{lines[lineIndex][1]};
+				position3 = new int[]{lines[lineIndex][2]};
+				position4 = new int[]{lines[lineIndex][3]};
+				position5 = new int[]{lines[lineIndex][4]};
+
+				// Lemon
+				symbol = LEMON;
+				multiplier1 = M_LEMON3;
+				multiplier2 = M_LEMON4;
+				multiplier3 = M_LEMON5;
+
+				if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$$$
+					totalWin += actualBetAmount * multiplier3;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$$#
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$#$
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$##
+					totalWin += actualBetAmount * multiplier1;
+				}
+
+				// Cherry
+				symbol = CHERRY;
+				multiplier1 = M_CHERRY3;
+				multiplier2 = M_CHERRY4;
+				multiplier3 = M_CHERRY5;
+
+				if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$$$
+					totalWin += actualBetAmount * multiplier3;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$$#
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$#$
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$##
+					totalWin += actualBetAmount * multiplier1;
+				}
+
+				// Orange
+				symbol = ORANGE;
+				multiplier1 = M_ORANGE3;
+				multiplier2 = M_ORANGE4;
+				multiplier3 = M_ORANGE5;
+				if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$$$
+					totalWin += actualBetAmount * multiplier3;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$$#
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$#$
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$##
+					totalWin += actualBetAmount * multiplier1;
+				}
+
+				// Plum
+				symbol = PLUM;
+				multiplier1 = M_PLUM3;
+				multiplier2 = M_PLUM4;
+				multiplier3 = M_PLUM5;
+				if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$$$
+					totalWin += actualBetAmount * multiplier3;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$$#
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$#$
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$##
+					totalWin += actualBetAmount * multiplier1;
+				}
+
+				// PEACH
+				symbol = PEACH;
+				multiplier1 = M_PEACH3;
+				multiplier2 = M_PEACH4;
+				multiplier3 = M_PEACH5;
+				if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$$$
+					totalWin += actualBetAmount * multiplier3;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$$#
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$#$
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$##
+					totalWin += actualBetAmount * multiplier1;
+				}
+
+				// MELON
+				symbol = MELON;
+				multiplier1 = M_MELON3;
+				multiplier2 = M_MELON4;
+				multiplier3 = M_MELON5;
+				if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$$$
+					totalWin += actualBetAmount * multiplier3;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$$#
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$#$
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$##
+					totalWin += actualBetAmount * multiplier1;
+				}
+
+				// GRAPES
+				symbol = GRAPES;
+				multiplier1 = M_GRAPES3;
+				multiplier2 = M_GRAPES4;
+				multiplier3 = M_GRAPES5;
+				if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$$$
+					totalWin += actualBetAmount * multiplier3;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$$#
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$#$
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$##
+					totalWin += actualBetAmount * multiplier1;
+				}
+
+				// SEVEN
+				symbol = SEVEN;
+				multiplier1 = M_SEVEN2;
+				multiplier2 = M_SEVEN3;
+				multiplier3 = M_SEVEN4;
+				multiplier4 = M_SEVEN5;
+				if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$$$
+					totalWin += actualBetAmount * multiplier4;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$$#
+					totalWin += actualBetAmount * multiplier3;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$$#$
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) == symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$$##
+					totalWin += actualBetAmount * multiplier2;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) != symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) == symbol) {
+					// $$##$
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) != symbol && Character.getNumericValue(result[position4[0]].charAt(3)) == symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$#$#
+					totalWin += actualBetAmount * multiplier1;
+				}
+				else if(Character.getNumericValue(result[position1[0]].charAt(0)) == symbol && Character.getNumericValue(result[position2[0]].charAt(1)) == symbol && Character.getNumericValue(result[position3[0]].charAt(2)) != symbol && Character.getNumericValue(result[position4[0]].charAt(3)) != symbol && Character.getNumericValue(result[position5[0]].charAt(4)) != symbol) {
+					// $$###
+					totalWin += actualBetAmount * multiplier1;
+				}
+			}
+
+			//			System.out.println("Sim " + i + " complete.");
+		}
+
+		double RTP = (totalWin / totalStake) * 100;
+
+		//System.out.println("Total Stake: R" + toDecimal(totalStake));
+		//System.out.println("Total Win: R" + toDecimal(totalWin));
+		System.out.println("RTP: " + toDecimal(RTP) + "%");
+	}
+
+	public void initializeLines() {
+		// ##### - ROW1
+		// ##### - ROW2
+		// ##### - ROW3
+		// ##### - ROW4
+		lines[0] = new int[]{ROW1, ROW1, ROW1, ROW1, ROW1}; // 1
+		lines[1] = new int[]{ROW1, ROW2, ROW2, ROW2, ROW2}; // 2
+		lines[2] = new int[]{ROW1, ROW1, ROW1, ROW1, ROW2}; // 3
+		lines[3] = new int[]{ROW1, ROW1, ROW1, ROW2, ROW3}; // 4
+		lines[4] = new int[]{ROW1, ROW2, ROW3, ROW2, ROW1}; // 5
+		lines[5] = new int[]{ROW1, ROW1, ROW2, ROW1, ROW1}; // 6
+		lines[6] = new int[]{ROW1, ROW2, ROW2, ROW2, ROW1}; // 7
+		lines[7] = new int[]{ROW1, ROW2, ROW3, ROW3, ROW3}; // 8
+		lines[8] = new int[]{ROW2, ROW2, ROW2, ROW2, ROW1}; // 9
+		lines[9] = new int[]{ROW2, ROW1, ROW1, ROW1, ROW2}; // 10
+		lines[10] = new int[]{ROW2, ROW2, ROW1, ROW2, ROW2}; // 11
+		lines[11] = new int[]{ROW2, ROW3, ROW3, ROW3, ROW3}; // 12
+		lines[12] = new int[]{ROW2, ROW2, ROW2, ROW2, ROW2}; // 13
+		lines[13] = new int[]{ROW2, ROW1, ROW1, ROW1, ROW1}; // 14
+		lines[14] = new int[]{ROW2, ROW2, ROW2, ROW2, ROW3}; // 15
+		lines[15] = new int[]{ROW2, ROW3, ROW4, ROW4, ROW4}; // 16
+		lines[16] = new int[]{ROW2, ROW2, ROW3, ROW2, ROW2}; // 17
+		lines[17] = new int[]{ROW2, ROW2, ROW2, ROW3, ROW4}; // 18
+		lines[18] = new int[]{ROW2, ROW3, ROW4, ROW3, ROW2}; // 19
+		lines[19] = new int[]{ROW2, ROW3, ROW3, ROW3, ROW2}; // 20
+		lines[20] = new int[]{ROW3, ROW3, ROW3, ROW2, ROW1}; // 21
+		lines[21] = new int[]{ROW3, ROW2, ROW2, ROW2, ROW3}; // 22
+		lines[22] = new int[]{ROW3, ROW3, ROW2, ROW3, ROW3}; // 23
+		lines[23] = new int[]{ROW3, ROW2, ROW1, ROW2, ROW3}; // 24
+		lines[24] = new int[]{ROW3, ROW3, ROW3, ROW3, ROW2}; // 25
+		lines[25] = new int[]{ROW3, ROW2, ROW1, ROW1, ROW1}; // 26
+		lines[26] = new int[]{ROW3, ROW3, ROW3, ROW3, ROW3}; // 27
+		lines[27] = new int[]{ROW3, ROW2, ROW2, ROW2, ROW2}; // 28
+		lines[28] = new int[]{ROW3, ROW3, ROW4, ROW3, ROW3}; // 29
+		lines[29] = new int[]{ROW3, ROW4, ROW4, ROW4, ROW4}; // 30
+		lines[30] = new int[]{ROW3, ROW3, ROW3, ROW3, ROW4}; // 31
+		lines[31] = new int[]{ROW3, ROW4, ROW4, ROW4, ROW3}; // 32
+		lines[32] = new int[]{ROW4, ROW4, ROW3, ROW4, ROW4}; // 33
+		lines[33] = new int[]{ROW4, ROW3, ROW3, ROW3, ROW4}; // 34
+		lines[34] = new int[]{ROW4, ROW4, ROW4, ROW3, ROW2}; // 35
+		lines[35] = new int[]{ROW4, ROW3, ROW2, ROW3, ROW4}; // 36
+		lines[36] = new int[]{ROW4, ROW4, ROW4, ROW4, ROW3}; // 37
+		lines[37] = new int[]{ROW4, ROW3, ROW3, ROW3, ROW3}; // 38
+		lines[38] = new int[]{ROW4, ROW3, ROW2, ROW2, ROW2}; // 39
+		lines[39] = new int[]{ROW4, ROW4, ROW4, ROW4, ROW4}; // 40
+	}
+
+	public void increaseBetAmount() {
+		if(currentBetIndex < betAmounts.length - 1) {
+			currentBetIndex++;
+			betAmount = betAmounts[currentBetIndex];
+			if(volumeEnabled) {
+				if(game.res.buttonSound.getSound().isPlaying()) {
+					game.res.buttonSound.getSound().stop();
+				}
+				game.res.buttonSound.getSound().play();
+			}
+
+			displayBalanceAndBetAmount();
+		}
+		else {
+			System.out.println("Bet Amount Already At Maximum");
+		}
+	}
+
+	public void decreaseBetAmount() {
+		if(currentBetIndex != 0) {
+			currentBetIndex--;
+			betAmount = betAmounts[currentBetIndex];
+			if(volumeEnabled) {
+				if(game.res.buttonSound.getSound().isPlaying()) {
+					game.res.buttonSound.getSound().stop();
+				}
+				game.res.buttonSound.getSound().play();
+			}
+			displayBalanceAndBetAmount();
+		}
+		else {
+			System.out.println("Bet Amount Already At Minimum");
+		}
+	}
+
+	public void increaseCount(int type) {
+		if(type == LEMON)
+			lemonCount++;
+		if(type == CHERRY)
+			cherryCount++;
+		if(type == ORANGE)
+			orangeCount++;
+		if(type == PLUM)
+			plumCount++;
+		if(type == PEACH)
+			peachCount++;
+		if(type == MELON)
+			melonCount++;
+		if(type == GRAPES)
+			grapesCount++;
+		if(type == SEVEN)
+			sevensCount++;
+		displayCounts();
+	}
+
+	public void decreaseCount(int type) {
+		if(type == LEMON)
+			lemonCount--;
+		if(type == CHERRY)
+			cherryCount--;
+		if(type == ORANGE)
+			orangeCount--;
+		if(type == PLUM)
+			plumCount--;
+		if(type == PEACH)
+			peachCount--;
+		if(type == MELON)
+			melonCount--;
+		if(type == GRAPES)
+			grapesCount--;
+		if(type == SEVEN)
+			sevensCount--;
+		displayCounts();
+	}
+
+	public void displayCounts() {
+		System.out.println("LEMONS:" + lemonCount + " .. " + "CHERRY:" + cherryCount + " .. " + "ORANGE:" + orangeCount + " .. " + "PLUM:" + plumCount + " .. " + "PEACH:" + peachCount + " .. " + "MELON:" + melonCount + " .. " + "GRAPES:" + grapesCount + " .. " + "SEVEN:" + sevensCount + " .. ");
+	}
+
+	public void displayRows(String[] rows) {
+		System.out.println("-----");
+		for(String row : rows) {
+			System.out.println(row);
+		}
+
+		if(linesWonList.size() > 0) {
+			System.out.print("Lines: ");
+			for(Integer i : linesWonList) {
+				System.out.print(i + 1 + ", ");
+			}
+			System.out.println();
+		}
+	}
+
+	public String toDecimal(double value) {
+		DecimalFormat decimalFormat = new DecimalFormat("#.##");
+		decimalFormat.setRoundingMode(RoundingMode.DOWN);
+		return decimalFormat.format(value);
+	}
+
+	// Update & Render
+	public void update() {
+		if(Config.simulationEnabled)
+			return;
+
+		if(spinning) {
+			if(spinCountDown > 0) {
+				spinCountDown--;
+				if(spinCountDown == 0) {
+					stopSpinning();
+				}
+			}
+
+			if(Config.stopSpinEnabled) {
+				// Set spin button to 'stop' button
+				spinButton.setImages(game.res.spinButtonStop.getPath(), game.res.spinButtonStop.getPath());
+			}
+			else {
+				// Set spin button to 'inactive' button
+				spinButton.setImages(game.res.spinButtonInactive.getPath(), game.res.spinButtonInactive.getPath());
+			}
+		}
+		else {
+			// Set spin button to 'idle' button
+			spinButton.setImages(game.res.spinButtonReady.getPath(), game.res.spinButtonReady.getPath());
+
+			// Win Last Win Amount
+			if(new_win_last_win_amount > 0) {
+				// Initialize win amount
+				if(win_counting_up) {
+					win_last_win_text = "WIN";
+					win_last_win_amount = 0;
+					win_counting_up = false;
+				}
+
+				// Initialize win_portion_divider
+				win_portion_divider = 10;
+				if(new_win_last_win_amount >= (1 * betAmount)) 		win_portion_divider 	= 100;
+				if(new_win_last_win_amount >= (2 * betAmount)) 		win_portion_divider 	= 200;
+				if(new_win_last_win_amount >= (5 * betAmount)) 		win_portion_divider 	= 300;
+				if(new_win_last_win_amount >= (10 * betAmount)) 	win_portion_divider 	= 400;
+				if(new_win_last_win_amount >= (20 * betAmount)) 	win_portion_divider 	= 500;
+				if(new_win_last_win_amount >= (50 * betAmount)) 	win_portion_divider 	= 600;
+				if(new_win_last_win_amount >= (100 * betAmount)) 	win_portion_divider 	= 700;
+				if(new_win_last_win_amount < 1) 									win_portion_divider 	= 10;
+
+				// Coin Drop Sound
+				if(!game.res.coinDropSoundLong.getSound().isPlaying() && volumeEnabled) {
+					game.res.coinDropSoundLong.getSound().play(1f,1f,true);
+				}
+
+				// Increment win_last_win_amount...
+				double portion = new_win_last_win_amount / win_portion_divider;
+				if((win_last_win_amount + portion) > new_win_last_win_amount) {
+					portion = new_win_last_win_amount - win_last_win_amount;
+				}
+				win_last_win_amount += portion;
+			}
+			if(win_last_win_amount == new_win_last_win_amount) {
+				new_win_last_win_amount = 0;
+				creditDisplay = credit;
+				// Stop Coin Drop Sound
+				if(game.res.coinDropSoundLong.getSound().isPlaying()) {
+					game.res.coinDropSoundLong.getSound().stop();
+				}
+			}
+		}
+
+		reelManager.update();
+
+		// Buttons
+		spinButton.update();
+	}
+
+	public void render(Graphics2D g) {
+		// Background Graphics
+		g.drawImage(game.res.background_full.getImage(), 0, 0, null);
+		g.drawImage(game.res.background.getImage(), 0, 0, null);
+
+		// Other
+		if(Config.renderReelsEnabled) {
+			reelManager.render(g);
+		}
+
+		// Overlay Graphics
+		g.drawImage(game.res.background_art.getImage(), 0, 0, null);
+		g.drawImage(game.res.gradient_overlay.getImage(), 0, 0, null);
+
+		// Text
+		g.drawImage(game.res.text_mockup.getImage(), 0, 0, null);
+
+		// CREDIT
+		drawText("CREDIT", 329, 638, new Color(204, 204, 204), "Century Gothic", Font.BOLD, 22, true, g);
+		drawText("R" + decimalFormat.format(creditDisplay), 329, 685, Color.white, "Century Gothic", Font.BOLD, 50, true, g);
+
+		// WIN / LAST WIN
+		drawText(win_last_win_text, 590, 638, new Color(204, 204, 204), "Century Gothic", Font.BOLD, 22, true, g);
+		drawText("R" + decimalFormat.format(win_last_win_amount), 590, 685, Color.white, "Century Gothic", Font.BOLD, 50, true, g);
+
+		// BET AMOUNT
+		drawText("BET", 894, 638, new Color(204, 204, 204), "Century Gothic", Font.BOLD, 22, true, g);
+		drawText("R" + decimalFormat.format(betAmount), 894, 685, Color.white, "Century Gothic", Font.BOLD, 50, true, g);
+
+		// Buttons
+		quickSpinButton.render(g);
+		spinButton.render(g);
+		increaseBetButton.render(g);
+		decreaseBetButton.render(g);
+		volumeButton.render(g);
+		musicButton.render(g);
+		infoButton.render(g);
+	}
+
+	public void drawText(String text, int x, int y, Color color, String fontType, int fontWeight, int fontSize, boolean centered, Graphics2D g) {
+		// Set the color...
+		g.setColor(color);
+
+		// Check if centered
+		if(centered) {
+			// Create a font and text
+			Font font = new Font(fontType, fontWeight, fontSize);
+
+			// Get the font metrics for the font
+			FontMetrics metrics = g.getFontMetrics(font);
+
+			// Calculate the size of the text
+			int textWidth = metrics.stringWidth(text);
+
+			// Adjust x coordinate
+			x -= (textWidth / 2);
+
+			// Set the font...
+			g.setFont(font);
+		}
+		else {
+			// Just set the font...
+			g.setFont(new Font(fontType, fontWeight, fontSize));
+		}
+
+		// Draw it...
+		g.drawString(text, x, y);
+	}
+
+	// Other Functions
+	public void stopSpinning() {
+		// spinResult is:
+		// 0 ##### -->
+		// 1 ##### -->
+		// 2 ##### -->
+		// 3 ##### -->
+
+		// Update Static Symbols
+		for(int i = 0; i < reelManager.reels.size(); i++) {
+			for(int j = 0; j < reelManager.reels.get(i).symbolsStatic.size(); j++) {
+				reelManager.reels.get(i).symbolsStatic.get(j).setType(Integer.parseInt(String.valueOf(spinResult[j].charAt(i))));
+			}
+		}
+		spinning = false;
+		if(!win_counting_up) {
+			creditDisplay = credit;
+		}
+
+		// Sounds
+		if(game.res.spinSound.getSound().isPlaying()) {
+			game.res.spinSound.getSound().stop();
+		}
+	}
+
+	// Quick Spin Functions
+	public void toggleQuickSpin() {
+		if(quickSpinEnabled) {
+			quickSpinEnabled = false;
+			spinTime = Config.spinTime;
+			quickSpinButton.setImages(game.res.quickSpinButtonOff.getPath(),game.res.quickSpinButtonOff.getPath());
+		}
+		else {
+			quickSpinEnabled = true;
+			spinTime = Config.quickSpinTime;
+			quickSpinButton.setImages(game.res.quickSpinButtonOn.getPath(),game.res.quickSpinButtonOn.getPath());
+		}
+	}
+
+	// Sound Functions
+	public void toggleVolume() {
+		if(volumeEnabled) {
+			volumeEnabled = false;
+			volumeButton.setImages(game.res.volumeOffButton.getPath(), game.res.volumeOffButton.getPath());
+			if(game.res.spinSound.getSound().isPlaying()) {
+				game.res.spinSound.getSound().stop();
+			}
+
+			// Music
+			if(musicEnabled) {
+				if(game.res.themesong.getSound().isPlaying()) {
+					game.res.themesong.getSound().stop();
+				}
+			}
+		}
+		else {
+			volumeEnabled = true;
+			volumeButton.setImages(game.res.volumeOnButton.getPath(), game.res.volumeOnButton.getPath());
+
+			if(spinning) {
+				game.res.spinSound.getSound().play(1f,1f,true);
+			}
+
+			// Music
+			if(musicEnabled) {
+				game.res.themesong.getSound().play(1f, 1f, true);
+			}
+		}
+	}
+
+	public void toggleMusic() {
+		if(musicEnabled) {
+			if(game.res.themesong.getSound().isPlaying()) {
+				game.res.themesong.getSound().stop();
+			}
+			musicEnabled = false;
+			musicButton.setImages(game.res.musicOffButton.getPath(), game.res.musicOffButton.getPath());
+		}
+		else {
+			if(volumeEnabled) {
+				game.res.themesong.getSound().play(1f, 1f, true);
+			}
+			musicEnabled = true;
+			musicButton.setImages(game.res.musicOnButton.getPath(), game.res.musicOnButton.getPath());
+		}
+	}
+
+	// Key Input
+	public void keyPressed(KeyEvent e) {
+		// Increase / Decrease Counts
+		if(Config.simulationEnabled) {
+			if(e.getKeyCode() == KeyEvent.VK_1)
+				increaseCount(SlotMachine2.LEMON);
+			if(e.getKeyCode() == KeyEvent.VK_2)
+				increaseCount(SlotMachine2.CHERRY);
+			if(e.getKeyCode() == KeyEvent.VK_3)
+				increaseCount(SlotMachine2.ORANGE);
+			if(e.getKeyCode() == KeyEvent.VK_4)
+				increaseCount(SlotMachine2.PLUM);
+			if(e.getKeyCode() == KeyEvent.VK_5)
+				increaseCount(SlotMachine2.PEACH);
+			if(e.getKeyCode() == KeyEvent.VK_6)
+				increaseCount(SlotMachine2.MELON);
+			if(e.getKeyCode() == KeyEvent.VK_7)
+				increaseCount(SlotMachine2.GRAPES);
+			if(e.getKeyCode() == KeyEvent.VK_8)
+				increaseCount(SlotMachine2.SEVEN);
+			if(e.getKeyCode() == KeyEvent.VK_F1)
+				decreaseCount(SlotMachine2.LEMON);
+			if(e.getKeyCode() == KeyEvent.VK_F2)
+				decreaseCount(SlotMachine2.CHERRY);
+			if(e.getKeyCode() == KeyEvent.VK_F3)
+				decreaseCount(SlotMachine2.ORANGE);
+			if(e.getKeyCode() == KeyEvent.VK_F4)
+				decreaseCount(SlotMachine2.PLUM);
+			if(e.getKeyCode() == KeyEvent.VK_F5)
+				decreaseCount(SlotMachine2.PEACH);
+			if(e.getKeyCode() == KeyEvent.VK_F6)
+				decreaseCount(SlotMachine2.MELON);
+			if(e.getKeyCode() == KeyEvent.VK_F7)
+				decreaseCount(SlotMachine2.GRAPES);
+			if(e.getKeyCode() == KeyEvent.VK_F8)
+				decreaseCount(SlotMachine2.SEVEN);
+		}
+
+		// Display Counts
+		if(e.getKeyCode() == KeyEvent.VK_D) {
+			displayCounts();
+		}
+
+		// Toggle Music
+		if(e.getKeyCode() == KeyEvent.VK_M) {
+			toggleMusic();
+		}
+
+		// Toggle Volume
+		if(e.getKeyCode() == KeyEvent.VK_V) {
+			toggleVolume();
+		}
+
+		// Player Spin / Run Simulation
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			if(Config.simulationEnabled) {
+				simulate();
+				return;
+			}
+
+			if(!spinning) {
+				playerSpin();
+			}
+			else {
+				if(Config.stopSpinEnabled) {
+					stopSpinning();
+				}
+			}
+		}
+	}
+
+	public void keyReleased(KeyEvent e) {
+		// Increase Decrease Bet Amount
+		if(e.getKeyCode() == KeyEvent.VK_A) {
+			increaseBetAmount();
+		}
+		if(e.getKeyCode() == KeyEvent.VK_Z) {
+			decreaseBetAmount();
+		}
+
+		// Loading Credit
+		if(!Config.simulationEnabled) {
+			if(e.getKeyCode() == KeyEvent.VK_1)
+				loadCredit(1);
+			if(e.getKeyCode() == KeyEvent.VK_2)
+				loadCredit(10);
+			if(e.getKeyCode() == KeyEvent.VK_3)
+				loadCredit(100);
+			if(e.getKeyCode() == KeyEvent.VK_4)
+				loadCredit(1000);
+			if(e.getKeyCode() == KeyEvent.VK_5)
+				loadCredit(10000);
+
+			// Reset Credit
+			if(e.getKeyCode() == KeyEvent.VK_0)
+				resetCredit();
+		}
+
+		if(e.getKeyCode() == KeyEvent.VK_B)
+			displayBalanceAndBetAmount();
+	}
+
+	// Mouse Input
+	public void mousePressed(MouseEvent e) {
+		if(Config.simulationEnabled)
+			return;
+
+		if(e.getButton() == MouseEvent.BUTTON1) {
+			if(spinButton.containsMouse()) {
+				spinButton.toggleOffset(false);
+
+				if(!spinning) {
+					playerSpin();
+				}
+				else {
+					if(Config.stopSpinEnabled) {
+						stopSpinning();
+					}
+				}
+			}
+
+			if(quickSpinButton.containsMouse()) {
+				quickSpinButton.toggleOffset(false);
+				toggleQuickSpin();
+			}
+
+			if(increaseBetButton.containsMouse()) {
+				increaseBetAmount();
+			}
+
+			if(decreaseBetButton.containsMouse()) {
+				decreaseBetAmount();
+			}
+
+			if(volumeButton.containsMouse()) {
+				toggleVolume();
+			}
+
+			if(musicButton.containsMouse()) {
+				toggleMusic();
+			}
+		}
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		if(Config.simulationEnabled)
+			return;
+
+		if(spinButton.containsMouse()) {
+			spinButton.toggleOffset(false);
+		}
+	}
+}

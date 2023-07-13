@@ -10,7 +10,7 @@ public class OpportunityPanel extends ActionPanel {
 	Game game;
 
 	// Images
-	Image actionPanelImage = new ImageIcon("res/Complete.megamoney/opportunityActionPanel.png").getImage();
+	Image actionPanelImage = new ImageIcon("res/megamoney/opportunityActionPanel.png").getImage();
 
 	// Buttons
 	Button purchaseButton; // Purchase Button
@@ -26,10 +26,10 @@ public class OpportunityPanel extends ActionPanel {
 		super(game, width, height);
 		this.game = game;
 
-		purchaseButton = new Button(game, (x + 15), ((y + h) - (55+15)), 201, 55, "res/Complete.megamoney/purchase_Button.png", "res/Complete.megamoney/purchase_Button.png");
+		purchaseButton = new Button(game, (x + 15), ((y + h) - (55+15)), 201, 55, "res/megamoney/purchase_Button.png", "res/megamoney/purchase_Button.png");
 		purchaseButton.setOffsets(2,2);
 
-		passButton = new Button(game, ((x + w) - (201 + 15)), ((y + h) - (55+15)), 201, 55, "res/Complete.megamoney/passButton.png", "res/Complete.megamoney/passButton.png");
+		passButton = new Button(game, ((x + w) - (201 + 15)), ((y + h) - (55+15)), 201, 55, "res/megamoney/passButton.png", "res/megamoney/passButton.png");
 		passButton.setOffsets(2,2);
 	}
 

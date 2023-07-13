@@ -11,19 +11,19 @@ import EngineX.EngineX;
 import EngineX.State;
 
 public class SmartRocketState extends State {
-	public Rectangle	start, wall, target;
-	ArrayList<Rocket>	rockets;
-	ArrayList<Rocket>	matingPool					= new ArrayList<Rocket>();
-	int								population					= 10000;
-	int								maxMoves						= 500;
-	int								generation					= 0;
-	int 							maxMatingPopulation = 100;
-	double						mutation						= 0.01;
-	int								speed								= 10;
-	boolean						normal							= true;
-	int								normalCount					= 0;
-	int								normalMax						= 20;
-	boolean						rocketsInitialized	= false;
+	public Rectangle start, wall, target;
+	ArrayList<Rocket> rockets;
+	ArrayList<Rocket> matingPool          = new ArrayList<Rocket>();
+	int               population          = 10000;
+	int               maxMoves            = 500;
+	int               generation          = 0;
+	int               maxMatingPopulation = 100;
+	double            mutation            = 0.01;
+	int               speed               = 10;
+	boolean           normal              = true;
+	int               normalCount         = 0;
+	int               normalMax           = 20;
+	boolean           rocketsInitialized  = false;
 
 	// Initialization (Create Game --> Initialize Environment --> Initialize Rockets)
 	protected SmartRocketState(EngineX game) {
@@ -31,6 +31,7 @@ public class SmartRocketState extends State {
 		initEnvironment();
 		initRockets();
 	}
+
 	void initEnvironment() {
 		// Start
 		start = new Rectangle(new Dimension(10, 10));
@@ -44,6 +45,7 @@ public class SmartRocketState extends State {
 		target = new Rectangle(new Dimension(10, 10));
 		target.setLocation(game.width / 2 - target.width / 2, 0);
 	}
+
 	void initRockets() {
 		// Print Generation Count
 		System.out.println("Generation: " + generation);
@@ -51,7 +53,7 @@ public class SmartRocketState extends State {
 		rockets = new ArrayList<Rocket>();
 		for(int i = 0; i < population; i++)
 			rockets.add(new Rocket(game, start.x, start.y, maxMoves, speed));
-		
+
 		rocketsInitialized = true;
 	}
 
@@ -64,7 +66,7 @@ public class SmartRocketState extends State {
 			else {
 				while(!normal) {
 					updateRockets();
-					
+
 					if(normalCount == normalMax)
 						normal = true;
 				}
@@ -73,15 +75,15 @@ public class SmartRocketState extends State {
 	}
 
 	void updateRockets() {
-		for(Rocket r:rockets)
+		for(Rocket r : rockets)
 			r.update();
-		
+
 		// Alive...
 		boolean alive = false;
-		for(Rocket r:rockets)
+		for(Rocket r : rockets)
 			if(r.alive == true)
 				alive = true;
-			
+
 		if(!alive) {
 			evaluate();
 			normalCount++;
@@ -91,14 +93,14 @@ public class SmartRocketState extends State {
 	void evaluate() {
 		// Calculate Fitness and Normalize
 		calculateFitnessAndNormalize();
-		
+
 		// MatingPool
-//		matingPool();
+		//		matingPool();
 		matingPool2();
-		
+
 		// Selection
 		selection();
-		
+
 		// Update Generation
 		generation++;
 
@@ -110,18 +112,19 @@ public class SmartRocketState extends State {
 		// Calculate Fitness
 		double maxFit = 0;
 		for(int i = 0; i < population; i++) {
-			rockets.get(i).calcFitness();
-			if(rockets.get(i).fitness > maxFit)
-				maxFit = rockets.get(i).fitness;
+			Rocket r = rockets.get(i);
+			r.calcFitness();
+			if(r.fitness > maxFit)
+				maxFit = r.fitness;
 		}
-		
+
 		// Normalize
-		for(Rocket r:rockets) {
+		for(Rocket r : rockets) {
 			r.fitness /= maxFit;
 			System.out.println(r.fitness);
 		}
 	}
-	
+
 	void matingPool() {
 		matingPool = new ArrayList<Rocket>();
 		for(int i = 0; i < rockets.size(); i++) {
@@ -129,19 +132,19 @@ public class SmartRocketState extends State {
 			for(int j = 0; j < n; j++)
 				matingPool.add(rockets.get(i));
 		}
-		
+
 		this.game.exit(String.valueOf(matingPool.size()));
 	}
-	
+
 	void matingPool2() {
 		matingPool = new ArrayList<Rocket>();
-		
+
 		// Only add 100 fittest
 		for(int i = 0; i < rockets.size(); i++) {
 			Rocket r = rockets.get(i);
-			
+
 			double n = r.fitness * 100;
-			
+
 			// Decision:
 			// if less than 100, add...
 			// if greater than 100, replace...
@@ -156,13 +159,13 @@ public class SmartRocketState extends State {
 				}
 			}
 		}
-		
+
 		// Check top 100 fitness
-//		for(Rocket t:matingPool) {
-//			System.out.println(t.fitness);
-//		}
+		//		for(Rocket t:matingPool) {
+		//			System.out.println(t.fitness);
+		//		}
 	}
-	
+
 	void selection() {
 		ArrayList<Rocket> newRockets = new ArrayList<Rocket>();
 		for(int i = 0; i < rockets.size(); i++) {
@@ -171,54 +174,54 @@ public class SmartRocketState extends State {
 				a = (int)(Math.random() * matingPool.size());
 				b = (int)(Math.random() * matingPool.size());
 			}
-			
+
 			int[] parentAdna = matingPool.get(a).dna;
 			int[] parentBdna = matingPool.get(b).dna;
-			int[] childdna = crossover(parentAdna, parentBdna);
+			int[] childdna   = crossover(parentAdna, parentBdna);
 			childdna = mutation(childdna);
-			newRockets.add(new Rocket(game, start.x, start.y, childdna, maxMoves, speed));
+			newRockets.add(new Rocket(game, start.x, start.y, maxMoves, speed, childdna));
 		}
-		
+
 		rockets = newRockets;
 	}
-	
+
 	public int[] crossover(int[] father, int[] mother) {
 		int[] newdna = new int[maxMoves];
-		int mid = floor(random(maxMoves));
+		int   mid    = floor(random(maxMoves));
 		for(int i = 0; i < maxMoves; i++)
 			if(i > mid)
 				newdna[i] = father[i];
 			else
 				newdna[i] = mother[i];
-			
+
 		return newdna;
 	}
-	
+
 	int[] mutation(int[] dna) {
 		for(int i = 0; i < maxMoves; i++)
 			if(random(1) < mutation)
 				dna[i] = (int)(Math.random() * 3);
-			
+
 		return dna;
 	}
-	
+
 	public void render(Graphics2D g) {
 		g.setColor(Color.WHITE);
 		g.fillRect(target.x, target.y, target.width, target.height);
 		g.fillRect(wall.x, wall.y, wall.width, wall.height);
 		g.fillRect(start.x, start.y, start.width, start.height);
-		
+
 		if(rocketsInitialized)
-			for(Rocket r:rockets)
+			for(Rocket r : rockets)
 				r.render(g);
 	}
-	
+
 	public void keyPressed(KeyEvent e) {
 		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
 			game.exit();
-		
+
 		if(e.getKeyCode() == KeyEvent.VK_R)
-			for(Rocket r:rockets)
+			for(Rocket r : rockets)
 				r.alive = false;
 	}
 }

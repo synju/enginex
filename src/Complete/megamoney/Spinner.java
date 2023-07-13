@@ -9,12 +9,12 @@ public class Spinner extends GameObject {
 	Game game;
 
 	// Images
-	Image spinningImage = new ImageIcon("res/Complete.megamoney/spinner_blurred.png").getImage();
-	Image clearImage = new ImageIcon("res/Complete.megamoney/spinner_clear.png").getImage();
-	Image leftArrowImage = new ImageIcon("res/Complete.megamoney/left_arrow.png").getImage();
-	Image rightArrowImage = new ImageIcon("res/Complete.megamoney/right_arrow.png").getImage();
-	Image topFadeImage = new ImageIcon("res/Complete.megamoney/top_fade.png").getImage();
-	Image bottomFadeImage = new ImageIcon("res/Complete.megamoney/bottom_fade.png").getImage();
+	Image spinningImage = new ImageIcon("res/megamoney/spinner_blurred.png").getImage();
+	Image clearImage = new ImageIcon("res/megamoney/spinner_clear.png").getImage();
+	Image leftArrowImage = new ImageIcon("res/megamoney/left_arrow.png").getImage();
+	Image rightArrowImage = new ImageIcon("res/megamoney/right_arrow.png").getImage();
+	Image topFadeImage = new ImageIcon("res/megamoney/top_fade.png").getImage();
+	Image bottomFadeImage = new ImageIcon("res/megamoney/bottom_fade.png").getImage();
 
 	// Location
 	int x = 0;

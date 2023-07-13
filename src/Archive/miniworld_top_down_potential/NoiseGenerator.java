@@ -8,9 +8,9 @@ import processing.core.PApplet;
 
 @SuppressWarnings("serial")
 public class NoiseGenerator extends GameObject {
-	MiniWorld	game;
-	Color			c;
-	PApplet		p		= new PApplet();
+	Game    game;
+	Color   c;
+	PApplet p		= new PApplet();
 	
 	float			inc	= 0.03125f;
 	
@@ -23,7 +23,7 @@ public class NoiseGenerator extends GameObject {
 	float offsetY = 1000;
 	
 	int imgD = 100;
-	public NoiseGenerator(MiniWorld game) {
+	public NoiseGenerator(Game game) {
 		super(game);
 		this.game = game;
 		

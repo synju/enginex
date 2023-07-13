@@ -17,25 +17,15 @@ public class Collidable extends GameObject {
 
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
-		x = game.ps.worldX + offsetX;
-		y = game.ps.worldY + offsetY;
+		this.x = game.ps.levelHandler.worldX + offsetX;
+		this.y = game.ps.levelHandler.worldY + offsetY;
 		this.w = width;
 		this.h = height;
 	}
 
-	public Collidable(Game game, int x, int y) {
-		super(game);
-		this.game = game;
-
-		this.x = x;
-		this.y = y;
-		this.w = 50;
-		this.h = 50;
-	}
-
 	public void update() {
-		x = game.ps.worldX + offsetX;
-		y = game.ps.worldY + offsetY;
+		x = game.ps.levelHandler.worldX + offsetX;
+		y = game.ps.levelHandler.worldY + offsetY;
 	}
 
 	public void render(Graphics2D g) {

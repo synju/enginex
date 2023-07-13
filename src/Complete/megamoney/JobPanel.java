@@ -10,7 +10,7 @@ public class JobPanel extends ActionPanel {
 	Game game;
 
 	// Images
-	Image jobImage = new ImageIcon("res/Complete.megamoney/job_actionPanel.png").getImage();
+	Image jobImage = new ImageIcon("res/megamoney/job_actionPanel.png").getImage();
 
 	// Buttons
 	Button okButton; // Ok Button
@@ -23,7 +23,7 @@ public class JobPanel extends ActionPanel {
 		super(game, width, height);
 		this.game = game;
 
-		okButton = new Button(game, (x + 130), ((y + h) - (55+15)), 201, 55, "res/Complete.megamoney/okButton.png", "res/Complete.megamoney/okButton.png");
+		okButton = new Button(game, (x + 130), ((y + h) - (55+15)), 201, 55, "res/megamoney/okButton.png", "res/megamoney/okButton.png");
 		okButton.setOffsets(2,2);
 	}
 

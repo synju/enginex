@@ -12,16 +12,16 @@ import EngineX.Sound;
 
 @SuppressWarnings("serial")
 public class Button extends GameObject {
-	Replicants	game;
-	boolean		hover		= false;
-	Image		defaultImage;
-	Image		hoverImage;
-	Point		m;
-	boolean		soundPlayed	= false;
-	Sound		sound;
-	boolean		hasSound	= false;
+	Game    game;
+	boolean hover		= false;
+	Image   defaultImage;
+	Image   hoverImage;
+	Point   m;
+	boolean soundPlayed	= false;
+	Sound   sound;
+	boolean hasSound	= false;
 
-	public Button(Replicants game, int x, int y, int w, int h, String defaultImagePath, String hoverImagePath) {
+	public Button(Game game, int x, int y, int w, int h, String defaultImagePath, String hoverImagePath) {
 		super(game);
 
 		this.game = game;
@@ -35,7 +35,7 @@ public class Button extends GameObject {
 		hoverImage = new ImageIcon(hoverImagePath).getImage();
 	}
 
-	public Button(Replicants game, int x, int y, int w, int h, String defaultImagePath, String hoverImagePath, String soundPath) {
+	public Button(Game game, int x, int y, int w, int h, String defaultImagePath, String hoverImagePath, String soundPath) {
 		super(game);
 		this.game = game;
 

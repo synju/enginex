@@ -10,7 +10,7 @@ public class DoodadPanel extends ActionPanel {
 	Game game;
 
 	// Images
-	Image doodadImage = new ImageIcon("res/Complete.megamoney/doodad_actionPanel.png").getImage();
+	Image doodadImage = new ImageIcon("res/megamoney/doodad_actionPanel.png").getImage();
 
 	// Buttons
 	Button amButton; // Available Money Button
@@ -24,9 +24,9 @@ public class DoodadPanel extends ActionPanel {
 		super(game, width, height);
 		this.game = game;
 
-		amButton = new Button(game, (x + 15), ((y + h) - (55+15)), 201, 55, "res/Complete.megamoney/useAvailableMoney.png", "res/Complete.megamoney/useAvailableMoney.png");
+		amButton = new Button(game, (x + 15), ((y + h) - (55+15)), 201, 55, "res/megamoney/useAvailableMoney.png", "res/megamoney/useAvailableMoney.png");
 		amButton.setOffsets(2,2);
-		ccButton = new Button(game, ((x + w) - (201 + 15)), ((y + h) - (55+15)), 201, 55, "res/Complete.megamoney/useCreditCard.png", "res/Complete.megamoney/useCreditCard.png");
+		ccButton = new Button(game, ((x + w) - (201 + 15)), ((y + h) - (55+15)), 201, 55, "res/megamoney/useCreditCard.png", "res/megamoney/useCreditCard.png");
 		ccButton.setOffsets(2,2);
 	}
 

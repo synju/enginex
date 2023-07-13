@@ -62,7 +62,7 @@ public class Player extends GameObject {
 		// Spinner & Spin Button
 		spinner = new Spinner(game);
 		spinner.setLocation((game.window.getWidth()/2)-(spinner.getWidth()/2),150);
-		spinButton = new Button(game, 400-78, 450, 176, 76, "res/Complete.megamoney/spin_button.png", "res/Complete.megamoney/spin_button.png");
+		spinButton = new Button(game, 400-78, 450, 176, 76, "res/megamoney/spin_button.png", "res/megamoney/spin_button.png");
 		spinButton.setOffsets(2,2);
 
 		// Action Panels
@@ -83,7 +83,8 @@ public class Player extends GameObject {
 
 		calculateCashflow();
 
-		availableMoney = Util.generateRandom(500,2000);
+//		availableMoney = Util.generateRandom(500,2000);
+		availableMoney = 25000;
 	}
 
 	public void calculateCashflow() {

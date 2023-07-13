@@ -10,7 +10,7 @@ public class CharityPanel extends ActionPanel {
 	Game game;
 
 	// Images
-	Image actionPanelImage = new ImageIcon("res/Complete.megamoney/charity_actionPanel.png").getImage();
+	Image actionPanelImage = new ImageIcon("res/megamoney/charity_actionPanel.png").getImage();
 
 	// Buttons
 	Button donateButton; 	// Donate Button
@@ -25,16 +25,16 @@ public class CharityPanel extends ActionPanel {
 		super(game, width, height);
 		this.game = game;
 
-		donateButton = new Button(game, (x + 15), ((y + h) - (55+15)), 201, 55, "res/Complete.megamoney/donateButton.png", "res/Complete.megamoney/donateButton.png");
+		donateButton = new Button(game, (x + 15), ((y + h) - (55+15)), 201, 55, "res/megamoney/donateButton.png", "res/megamoney/donateButton.png");
 		donateButton.setOffsets(2,2);
 
-		passButton = new Button(game, ((x + w) - (201 + 15)), ((y + h) - (55+15)), 201, 55, "res/Complete.megamoney/passButton.png", "res/Complete.megamoney/passButton.png");
+		passButton = new Button(game, ((x + w) - (201 + 15)), ((y + h) - (55+15)), 201, 55, "res/megamoney/passButton.png", "res/megamoney/passButton.png");
 		passButton.setOffsets(2,2);
 
-		plusButton = new Button(game, x+w-108, y+100, 58, 55, "res/Complete.megamoney/plusButton.png", "res/Complete.megamoney/plusButton.png");
+		plusButton = new Button(game, x+w-108, y+100, 58, 55, "res/megamoney/plusButton.png", "res/megamoney/plusButton.png");
 		plusButton.setOffsets(2,2);
 
-		minusButton = new Button(game, x+50, y+100, 58, 55, "res/Complete.megamoney/minusButton.png", "res/Complete.megamoney/minusButton.png");
+		minusButton = new Button(game, x+50, y+100, 58, 55, "res/megamoney/minusButton.png", "res/megamoney/minusButton.png");
 		minusButton.setOffsets(2,2);
 	}
 

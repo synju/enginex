@@ -18,8 +18,8 @@ public class GraphicObject {
 	}
 
 	public void update() {
-		x = game.ps.worldX + offsetX;
-		y = game.ps.worldY + offsetY;
+//		x = game.ps.levelHandler.worldX + offsetX;
+//		y = game.ps.levelHandler.worldY + offsetY;
 	}
 
 	public void render(Graphics2D g) {

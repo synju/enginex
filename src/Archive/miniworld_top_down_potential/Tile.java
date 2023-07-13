@@ -8,12 +8,12 @@ import EngineX.GameObject;
 
 @SuppressWarnings("serial")
 public class Tile extends GameObject {
-	MiniWorld game;
+	Game game;
 	
 	Animation				tileAnimation;
 	Animation				currentAnimation;
 
-	public Tile(MiniWorld game, int x, int y,Animation animation) {
+	public Tile(Game game, int x, int y, Animation animation) {
 		super(game);
 		this.game = game;
 		

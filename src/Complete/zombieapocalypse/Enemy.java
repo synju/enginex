@@ -25,7 +25,7 @@ public class Enemy extends GameObject {
 	boolean		canMove	= true;
 
 	double	slowestSpeed	= 1;
-	double	maxSpeed		= 0.70;
+	double	maxSpeed		= 0.4;
 	double	speed;
 
 	int		speedIncreaseCount	= 0;

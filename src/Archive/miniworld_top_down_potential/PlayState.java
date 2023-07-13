@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import EngineX.State;
 
 public class PlayState extends State {
-	MiniWorld game;
+	Game game;
 	public ArrayList<Collidable> clist = new ArrayList<>();
 	Player p;
 	double gx = 0;
@@ -16,7 +16,7 @@ public class PlayState extends State {
 	
 	NoiseGenerator ng;
 	
-	public PlayState(MiniWorld game) {
+	public PlayState(Game game) {
 		super(game);
 		this.game = game;
 	}

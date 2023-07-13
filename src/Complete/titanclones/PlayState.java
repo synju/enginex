@@ -20,9 +20,9 @@ public class PlayState extends State {
 	public ArrayList<Player>	players	= new ArrayList<>();
 
 	AffineTransform	at	= new AffineTransform();
-	Image			bg	= new ImageIcon("res/Complete.titanclones/stage.png").getImage();
+	Image			bg	= new ImageIcon("res/titanclones/stage.png").getImage();
 
-	Resource songResource = new Resource("res/Complete.titanclones/music.ogg", Resource.SOUND);
+	Resource songResource = new Resource("res/titanclones/music.ogg", Resource.SOUND);
 
 	ArrayList<Collidable>	clist	= new ArrayList<>();
 	public char[][]			room;
