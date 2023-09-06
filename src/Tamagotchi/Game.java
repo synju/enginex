@@ -1,8 +1,6 @@
-package Vendogotchi;
+package Tamagotchi;
 
 import EngineX.EngineX;
-
-import java.awt.*;
 
 public class Game extends EngineX {
 	Resources res = new Resources();
@@ -12,17 +10,21 @@ public class Game extends EngineX {
 	int width;
 	int height;
 
+	Tamagotchi tamagotchi;
+
 	public static void main(String[] args) {
 		new Game().init();
 	}
 
 	Game() {
-		super("Vendogotchi", Config.fullscreen, Config.sizeable, Config.width, Config.height);
+		super("Tamagotchi", Config.fullscreen, Config.sizeable, Config.width, Config.height);
 		this.width = super.width;
 		this.height = super.height;
 	}
 
 	public void init() {
+		tamagotchi = new Tamagotchi(this);
+
 		ps = new PlayState(this);
 		stateMachine.pushState(ps);
 		stateMachine.states.get(0).init();

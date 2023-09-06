@@ -1,4 +1,4 @@
-package Vendogotchi;
+package Tamagotchi;
 
 import java.awt.*;
 

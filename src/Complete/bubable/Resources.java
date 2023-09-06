@@ -19,7 +19,7 @@ public class Resources {
 	private Image[] loadWallImages() {
 		return new Image[]{
 				new ImageIcon("src/Complete.bubable/resources/0.png").getImage(),
-				new ImageIcon("src/Complete.bubable/resources/1.png").getImage(),
+				new ImageIcon("src/Complete.bubable/resources/0001.png").getImage(),
 				new ImageIcon("src/Complete.bubable/resources/2.png").getImage(),
 				new ImageIcon("src/Complete.bubable/resources/3.png").getImage(),
 				new ImageIcon("src/Complete.bubable/resources/4.png").getImage(),

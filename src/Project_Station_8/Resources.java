@@ -25,7 +25,7 @@ public class Resources {
 	private Image[] loadWallImages() {
 		return new Image[]{
 				new ImageIcon("src/"+game.gameName+"/resources/0.png").getImage(),
-				new ImageIcon("src/"+game.gameName+"/resources/1.png").getImage(),
+				new ImageIcon("src/"+game.gameName+"/resources/0001.png").getImage(),
 				new ImageIcon("src/"+game.gameName+"/resources/2.png").getImage(),
 				new ImageIcon("src/"+game.gameName+"/resources/3.png").getImage(),
 				new ImageIcon("src/"+game.gameName+"/resources/4.png").getImage(),
