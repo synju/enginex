@@ -4,12 +4,15 @@
       <w>achunks</w>
       <w>backprop</w>
       <w>bchunks</w>
+      <w>blist</w>
       <w>bulbasaur</w>
       <w>cashflow</w>
       <w>cchunks</w>
       <w>clist</w>
+      <w>coaldrill</w>
       <w>collidable</w>
       <w>collidables</w>
+      <w>cooldown</w>
       <w>coord</w>
       <w>coords</w>
       <w>crosshair</w>
@@ -23,6 +26,7 @@
       <w>leftpadding</w>
       <w>linespace</w>
       <w>megamoney</w>
+      <w>outa</w>
       <w>quickspin</w>
       <w>slotbg</w>
       <w>slotmachine</w>
