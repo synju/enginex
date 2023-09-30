@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class LevelHandler {
 	Game game;
+	boolean initialized = false;
 	public int worldX;
 	public int worldY;
 	EmptyObject   startLocation;
@@ -23,7 +24,7 @@ public class LevelHandler {
 
 	Camera camera;
 
-	boolean initialized = false;
+
 
 	LevelHandler(Game game) {
 		this.game = game;
