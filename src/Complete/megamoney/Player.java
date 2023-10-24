@@ -56,6 +56,13 @@ public class Player extends GameObject {
 		super(game);
 		this.game = game;
 		
+		reset();
+	}
+	
+	public void reset() {
+		month     = 1;
+		spinCount = 0;
+		
 		// Setup Player
 		setupPlayer();
 		
@@ -79,33 +86,40 @@ public class Player extends GameObject {
 	
 	public void setupPlayer() {
 		generateFixedExpenses();
-		salaryIncome = fixedExpenses + Util.generateRandom(100, 200);
-		
+		initSalaryIncome();
 		calculateCashflow();
 		
-		//		availableMoney = Util.generateRandom(500,2000);
+		//availableMoney = Util.generateRandom(500,2000);
 		availableMoney = 25000;
+	}
+	
+	public void generateFixedExpenses() {
+		fixedExpenses = 0;
+		
+		fixedExpenseList = new ArrayList<>();
+		
+		fixedExpenseList.add(new FixedExpense("Transport", Util.generateRandom(750, 2000)));
+		fixedExpenseList.add(new FixedExpense("Family", Util.generateRandom(300, 1250)));
+		fixedExpenseList.add(new FixedExpense("Medical", Util.generateRandom(0, 2000)));
+		fixedExpenseList.add(new FixedExpense("Utility", Util.generateRandom(500, 3500)));
+		fixedExpenseList.add(new FixedExpense("Food", Util.generateRandom(500, 3500)));
+		fixedExpenseList.add(new FixedExpense("Shelter", Util.generateRandom(1000, 5000)));
+		fixedExpenseList.add(new FixedExpense("Entertainment", Util.generateRandom(500, 1500)));
+		fixedExpenseList.add(new FixedExpense("Other", Util.generateRandom(300, 1000)));
+		
+		for(FixedExpense f : fixedExpenseList) {
+			fixedExpenses += f.expense;
+		}
+	}
+	
+	public void initSalaryIncome() {
+		salaryIncome = fixedExpenses + Util.generateRandom(100, 200);
 	}
 	
 	public void calculateCashflow() {
 		totalIncome   = salaryIncome + getAssetIncome();
 		totalExpenses = fixedExpenses + getLiquidExpenses() + getCreditExpense();
 		cashflow      = totalIncome - totalExpenses;
-	}
-	
-	public double getLiquidExpenses() {
-		liquidExpenses = 0;
-		
-		for(Asset a : assetList) {
-			if(a.credit == 0) {
-				liquidExpenses += 0;
-			}
-			else {
-				liquidExpenses += a.bank_payment;
-			}
-		}
-		
-		return liquidExpenses;
 	}
 	
 	public double getAssetIncome() {
@@ -123,48 +137,23 @@ public class Player extends GameObject {
 		return assetIncome;
 	}
 	
-	public void generateFixedExpenses() {
-		fixedExpenseList = new ArrayList<>();
+	public double getLiquidExpenses() {
+		liquidExpenses = 0;
 		
-		fixedExpenseList.add(new FixedExpense("Transport", Util.generateRandom(750, 2000)));
-		fixedExpenseList.add(new FixedExpense("Family", Util.generateRandom(300, 1250)));
-		fixedExpenseList.add(new FixedExpense("Medical", Util.generateRandom(0, 2000)));
-		fixedExpenseList.add(new FixedExpense("Utility", Util.generateRandom(500, 3500)));
-		fixedExpenseList.add(new FixedExpense("Food", Util.generateRandom(500, 3500)));
-		fixedExpenseList.add(new FixedExpense("Shelter", Util.generateRandom(1000, 5000)));
-		fixedExpenseList.add(new FixedExpense("Entertainment", Util.generateRandom(500, 1500)));
-		fixedExpenseList.add(new FixedExpense("Other", Util.generateRandom(300, 1000)));
-		
-		for(FixedExpense f : fixedExpenseList) {
-			fixedExpenses += f.expense;
-		}
-	}
-	
-	public void step() {
-		if(!actionPanelActive) {
-			if(spinCount >= 4 && availableMoney > 0) {
-				expenses();
-				
-				totalIncome = getSalaryIncome() + getAssetIncome();
-				cashflow    = totalIncome - totalExpenses;
-				
-				// Reset Can Land on Job
-				canLandOnJob = true;
-				
-				// Reset Spin Count and Increment Month
-				spinCount = 0;
-				month++;
-				
-				generateActionPanel(ActionPanel.PAYMENT);
-				
-				// Check if able to continue...
-				inNegativeCheck();
+		for(Asset a : assetList) {
+			if(a.credit == 0) {
+				liquidExpenses += 0;
+			}
+			else {
+				liquidExpenses += a.bank_payment;
 			}
 		}
+		
+		return liquidExpenses;
 	}
 	
-	public void update() {
-		spinner.update();
+	public double getCreditExpense() {
+		return (currentCredit / 100) * 10;
 	}
 	
 	public double getSalaryIncome() {
@@ -207,15 +196,38 @@ public class Player extends GameObject {
 		availableMoney -= totalExpenses;
 	}
 	
-	public double getCreditExpense() {
-		return (currentCredit / 100) * 10;
-	}
-	
 	public void inNegativeCheck() {
 		if(availableMoney < (cashflow - (cashflow * 2))) {
 			spinButtonEnabled = false;
 			System.out.println("Unable to continue");
 		}
+	}
+	
+	public void step() {
+		if(!actionPanelActive) {
+			if(spinCount >= 4 && availableMoney > 0) {
+				expenses();
+				
+				totalIncome = getSalaryIncome() + getAssetIncome();
+				cashflow    = totalIncome - totalExpenses;
+				
+				// Reset Can Land on Job
+				canLandOnJob = true;
+				
+				// Reset Spin Count and Increment Month
+				spinCount = 0;
+				month++;
+				
+				generateActionPanel(ActionPanel.PAYMENT);
+				
+				// Check if able to continue...
+				inNegativeCheck();
+			}
+		}
+	}
+	
+	public void update() {
+		spinner.update();
 	}
 	
 	public void render(Graphics2D g) {
@@ -304,9 +316,9 @@ public class Player extends GameObject {
 	}
 	
 	public void keyPressed(KeyEvent e) {
-		//		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-		//			// Do nothing..
-		//		}
+		if(e.getKeyCode() == KeyEvent.VK_R) {
+			reset();
+		}
 		
 		// Temporary
 		if(actionPanelActive) {
