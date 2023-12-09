@@ -4,16 +4,16 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class ReelManager {
-	Game game;
+	Game        game;
 	SlotMachine slotMachine;
-	int  originX;
-	int  originY;
-	int  x;
-	int  y;
-	int  width;
-	int  height;
-	int  symbol_width;
-	int  symbol_height;
+	int         originX;
+	int         originY;
+	int         x;
+	int         y;
+	int         width;
+	int         height;
+	int         symbol_width;
+	int         symbol_height;
 
 	// Reels
 	ArrayList<Reel> reels = new ArrayList<>();
@@ -36,7 +36,7 @@ public class ReelManager {
 	}
 
 	public void update() {
-		for(Reel reel:reels) {
+		for(Reel reel : reels) {
 			reel.update();
 		}
 	}

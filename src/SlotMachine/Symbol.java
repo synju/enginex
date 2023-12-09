@@ -6,8 +6,8 @@ import java.awt.*;
 public class Symbol {
 	Game game;
 	Reel reel;
-	int type;
-	public static final int WIDTH = 140;
+	int  type;
+	public static final int WIDTH  = 140;
 	public static final int HEIGHT = 95;
 	Image image;
 	Image image_blurred;

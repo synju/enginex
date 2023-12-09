@@ -98,7 +98,7 @@ public class PlayState extends State {
 		for(int i = 0; i < numControllers; i++) {
 			ControllerState controller = controllerManager.getState(i);
 			if(controller.isConnected && i == 0) {
-
+				slotMachine.controllerUpdate(controller);
 			}
 		}
 	}

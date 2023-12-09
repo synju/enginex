@@ -2,9 +2,6 @@ package SlotMachine;
 
 import EngineX.Resource;
 
-import javax.swing.*;
-import java.awt.*;
-
 public class Resources {
 	// CONSTANTS.... (Just to make it easier typing...)
 	private static final int IMAGE = Resource.IMAGE;
@@ -38,20 +35,20 @@ public class Resources {
 	Resource grapes_img_blurred = new Resource("res/slotmachine/images/symbols/grapes_blurred.png", IMAGE);
 	Resource seven_img_blurred  = new Resource("res/slotmachine/images/symbols/seven_blurred.png", IMAGE);
 
-	Resource spinButtonReady   = new Resource("res/slotmachine/images/spinButtonReady.png", IMAGE);
-	Resource spinButtonInactive   = new Resource("res/slotmachine/images/spinButtonInactive.png", IMAGE);
-	Resource spinButtonStop    = new Resource("res/slotmachine/images/spinButtonStop.png", IMAGE);
-	Resource quickSpinButtonOn    = new Resource("res/slotmachine/images/quickSpinOn.png", IMAGE);
-	Resource quickSpinButtonOff    = new Resource("res/slotmachine/images/quickSpinOff.png", IMAGE);
-	Resource increaseBetButton = new Resource("res/slotmachine/images/increaseBetButton.png", IMAGE);
-	Resource decreaseBetButton = new Resource("res/slotmachine/images/decreaseBetButton.png", IMAGE);
-	Resource volumeOnButton    = new Resource("res/slotmachine/images/volumeOnButton.png", IMAGE);
-	Resource volumeOffButton   = new Resource("res/slotmachine/images/volumeOffButton.png", IMAGE);
-	Resource musicOnButton     = new Resource("res/slotmachine/images/musicOnButton.png", IMAGE);
-	Resource musicOffButton    = new Resource("res/slotmachine/images/musicOffButton.png", IMAGE);
-	Resource infoButton        = new Resource("res/slotmachine/images/infoButton.png", IMAGE);
-	Resource autoSpinOnButton  = new Resource("res/slotmachine/images/autoSpinOn.png", IMAGE);
-	Resource autoSpinOffButton = new Resource("res/slotmachine/images/autoSpinOff.png", IMAGE);
+	Resource spinButtonReady    = new Resource("res/slotmachine/images/spinButtonReady.png", IMAGE);
+	Resource spinButtonInactive = new Resource("res/slotmachine/images/spinButtonInactive.png", IMAGE);
+	Resource spinButtonStop     = new Resource("res/slotmachine/images/spinButtonStop.png", IMAGE);
+	Resource quickSpinButtonOn  = new Resource("res/slotmachine/images/quickSpinOn.png", IMAGE);
+	Resource quickSpinButtonOff = new Resource("res/slotmachine/images/quickSpinOff.png", IMAGE);
+	Resource increaseBetButton  = new Resource("res/slotmachine/images/increaseBetButton.png", IMAGE);
+	Resource decreaseBetButton  = new Resource("res/slotmachine/images/decreaseBetButton.png", IMAGE);
+	Resource volumeOnButton     = new Resource("res/slotmachine/images/volumeOnButton.png", IMAGE);
+	Resource volumeOffButton    = new Resource("res/slotmachine/images/volumeOffButton.png", IMAGE);
+	Resource musicOnButton      = new Resource("res/slotmachine/images/musicOnButton.png", IMAGE);
+	Resource musicOffButton     = new Resource("res/slotmachine/images/musicOffButton.png", IMAGE);
+	Resource infoButton         = new Resource("res/slotmachine/images/infoButton.png", IMAGE);
+	Resource autoSpinOnButton   = new Resource("res/slotmachine/images/autoSpinOn.png", IMAGE);
+	Resource autoSpinOffButton  = new Resource("res/slotmachine/images/autoSpinOff.png", IMAGE);
 
 	// SOUNDS ==================================================================
 	Resource themesong          = new Resource("res/slotmachine/sounds/themesong.ogg", SOUND);

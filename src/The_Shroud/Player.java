@@ -151,8 +151,6 @@ public class Player extends GameObject {
 			boolean canMove = false;
 			for(Collidable c:game.ps.collidables) {
 				Collidable a = new Collidable(game, (int) (collisionBox.x), (int) (collisionBox.y+10), (int) collisionBox.w, (int) collisionBox.h);
-				if(a.con)
-
 			}
 
 			velocityY = Math.max(velocityY - speed, -speed);

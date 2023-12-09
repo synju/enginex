@@ -1,29 +1,28 @@
 package SlotMachine;
 
 import EngineX.Button;
+import com.studiohartman.jamepad.ControllerState;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import java.util.*;
 
 public class SlotMachine {
 	Game    game;
 	boolean initialized = false;
 	boolean spinning    = false;
 
-	double   winLimit        = 10;
-	double   winLimitDisplay = winLimit;
-	double originalWinLimit  = winLimit;
-	double   credit          = 0.00;
-	double   creditDisplay   = credit;
-	double[] betAmounts      = {0.01, 0.05, 0.20, 0.40, 0.60, 0.80, 1, 1.60, 2, 4, 6, 8, 12, 18, 20, 40, 60, 80, 100};
-	int      currentBetIndex = 0;
-	double   betAmount       = betAmounts[0];
+	double   winLimit         = Config.winLimit;
+	double   winLimitDisplay  = winLimit;
+	double   originalWinLimit = winLimit;
+	double   credit           = 0.00;
+	double   creditDisplay    = credit;
+	double[] betAmounts       = {0.01, 0.05, 0.20, 0.40, 0.60, 0.80, 1, 1.60, 2, 4, 6, 8, 12, 18, 20, 40, 60, 80, 100};
+	int      currentBetIndex  = 0;
+	double   betAmount        = betAmounts[0];
 	String[] spinResult;
 
 	// Symbols
@@ -78,14 +77,14 @@ public class SlotMachine {
 	//	int sevensCount = 1;
 
 	// 99.13%
-//	int lemonCount  = 4;
-//	int cherryCount = 4;
-//	int orangeCount = 3;
-//	int plumCount   = 3;
-//	int peachCount  = 4;
-//	int melonCount  = 5;
-//	int grapesCount = 4;
-//	int sevensCount = 1;
+	//	int lemonCount  = 4;
+	//	int cherryCount = 4;
+	//	int orangeCount = 3;
+	//	int plumCount   = 3;
+	//	int peachCount  = 4;
+	//	int melonCount  = 5;
+	//	int grapesCount = 4;
+	//	int sevensCount = 1;
 
 	// 97.6%
 	//	int lemonCount  = 6;
@@ -98,24 +97,24 @@ public class SlotMachine {
 	//	int sevensCount = 2;
 
 	// 97.35% <--- Good one.
-	int lemonCount 	= 12;
+	int lemonCount  = 12;
 	int cherryCount = 10;
 	int orangeCount = 8;
-	int plumCount 	= 4;
-	int peachCount 	= 3;
-	int melonCount 	= 1;
+	int plumCount   = 4;
+	int peachCount  = 3;
+	int melonCount  = 1;
 	int grapesCount = 1;
 	int sevensCount = 1;
 
 	// 96.07%
-//	int lemonCount 	= 2;
-//	int cherryCount = 2;
-//	int orangeCount = 1;
-//	int plumCount 	= 1;
-//	int peachCount 	= 2;
-//	int melonCount 	= 2;
-//	int grapesCount = 2;
-//	int sevensCount = 1;
+	//	int lemonCount 	= 2;
+	//	int cherryCount = 2;
+	//	int orangeCount = 1;
+	//	int plumCount 	= 1;
+	//	int peachCount 	= 2;
+	//	int melonCount 	= 2;
+	//	int grapesCount = 2;
+	//	int sevensCount = 1;
 
 	// 94.5%
 	//	int lemonCount  = 6;
@@ -138,14 +137,14 @@ public class SlotMachine {
 	//	int sevensCount = 1;
 
 	// 85%
-//		int lemonCount = 7;
-//		int cherryCount = 5;
-//		int orangeCount = 3;
-//		int plumCount = 2;
-//		int peachCount = 5;
-//		int melonCount = 5;
-//		int grapesCount = 4;
-//		int sevensCount = 1;
+	//		int lemonCount = 7;
+	//		int cherryCount = 5;
+	//		int orangeCount = 3;
+	//		int plumCount = 2;
+	//		int peachCount = 5;
+	//		int melonCount = 5;
+	//		int grapesCount = 4;
+	//		int sevensCount = 1;
 
 	// Initialize rows
 	int ROW1 = 0;
@@ -167,11 +166,11 @@ public class SlotMachine {
 	ReelManager reelManager;
 
 	// Text Components
-	boolean win_counting_up     = false;
-	int     win_portion_divider = 100;
-	String  win_last_win_text        = "LAST WIN";
-	double  win_last_win_amount      = 0;
-	double  new_win_last_win_amount  = 0;
+	boolean win_counting_up         = false;
+	int     win_portion_divider     = 100;
+	String  win_last_win_text       = "LAST WIN";
+	double  win_last_win_amount     = 0;
+	double  new_win_last_win_amount = 0;
 
 	// Buttons
 	Button spinButton;
@@ -184,7 +183,7 @@ public class SlotMachine {
 	Button autoSpinButton;
 
 	// Autospin Booleans
-	boolean autoSpinEnabled  = false;
+	boolean autoSpinEnabled = false;
 
 	// QuickSpin Booleans
 	boolean quickSpinEnabled = false;
@@ -193,9 +192,82 @@ public class SlotMachine {
 	boolean volumeEnabled = Config.volumeEnabled;
 	boolean musicEnabled  = Config.startupMusicEnabled;
 
-	// Formatting Numbers
-	//	DecimalFormat decimalFormat = new DecimalFormat("#0.00");
+	// Formatting Numbers (Thousands + 2 Decimal Places)
 	DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+
+	// -------------------------------------- Keyboard Stuff Start
+	// Keyboard
+	boolean w_key = false;
+	boolean s_key = false;
+	boolean d_key = false;
+	boolean a_key = false, a_key_just_pressed = false;
+	boolean q_key = false, q_key_just_pressed = false;
+	boolean up_key    = false;
+	boolean down_key  = false;
+	boolean left_key  = false;
+	boolean right_key = false;
+	boolean shift_key = false, shift_key_just_pressed = false;
+	boolean ctrl_key = false, ctrl_key_just_pressed = false;
+	boolean alt_key = false, alt_key_just_pressed = false;
+	boolean space_key = false, space_key_just_pressed = false;
+	boolean r_key = false, r_key_just_pressed = false;
+	boolean f1_key = false, f1_key_just_pressed = false;
+	boolean f2_key = false, f2_key_just_pressed = false;
+	boolean f3_key = false, f3_key_just_pressed = false;
+	boolean f4_key = false, f4_key_just_pressed = false;
+	boolean f5_key = false, f5_key_just_pressed = false;
+	boolean f6_key = false, f6_key_just_pressed = false;
+	boolean f7_key = false, f7_key_just_pressed = false;
+	boolean f8_key = false, f8_key_just_pressed = false;
+	boolean f9_key = false, f9_key_just_pressed = false;
+	boolean f10_key = false, f10_key_just_pressed = false;
+	boolean f11_key = false, f11_key_just_pressed = false;
+	boolean f12_key = false, f12_key_just_pressed = false;
+	// -------------------------------------- Keyboard Stuff End
+
+	// -------------------------------------- Controller Stuff Start
+	ControllerState controller;
+	boolean         start_btn         = false;
+	boolean         back_btn          = false;
+	boolean         dpadUp_btn        = false;
+	boolean         dpadDown_btn      = false;
+	boolean         dpadLeft_btn      = false;
+	boolean         dpadRight_btn     = false;
+	boolean         a_btn             = false;
+	boolean         b_btn             = false;
+	boolean         x_btn             = false;
+	boolean         y_btn             = false;
+	boolean         lb_btn            = false;
+	boolean         leftTrigger_btn   = false;
+	boolean         rb_btn            = false;
+	boolean         rightTrigger_btn  = false;
+	boolean         leftStick_btn     = false; // left stick
+	boolean         leftStickY_up     = false;
+	boolean         leftStickY_down   = false;
+	boolean         leftStickX_left   = false;
+	boolean         leftStickX_right  = false;
+	boolean         rightStick_btn    = false; // right stick
+	boolean         rightStickY_up    = false;
+	boolean         rightStickY_down  = false;
+	boolean         rightStickX_left  = false;
+	boolean         rightStickX_right = false;
+
+	// Controller Just Pressed
+	boolean start_btn_just_pressed      = false;
+	boolean back_btn_just_pressed       = false;
+	boolean dpadUp_btn_just_pressed     = false;
+	boolean dpadDown_btn_just_pressed   = false;
+	boolean dpadLeft_btn_just_pressed   = false;
+	boolean dpadRight_btn_just_pressed  = false;
+	boolean a_btn_just_pressed          = false;
+	boolean b_btn_just_pressed          = false;
+	boolean x_btn_just_pressed          = false;
+	boolean y_btn_just_pressed          = false;
+	boolean lb_btn_just_pressed         = false;
+	boolean rb_btn_just_pressed         = false;
+	boolean leftStick_btn_just_pressed  = false;
+	boolean rightStick_btn_just_pressed = false;
+	// -------------------------------------- Controller Stuff End
 
 	SlotMachine(Game game) {
 		this.game = game;
@@ -225,14 +297,14 @@ public class SlotMachine {
 
 		// Display Stuff
 		autoSpinButton = new Button(game, 1151, 184, 86, 86, game.res.autoSpinOnButton.getPath(), game.res.autoSpinOnButton.getPath());
-		if(!autoSpinEnabled) autoSpinButton.setImages(game.res.autoSpinOffButton.getPath(),game.res.autoSpinOffButton.getPath());
+		if(!autoSpinEnabled) autoSpinButton.setImages(game.res.autoSpinOffButton.getPath(), game.res.autoSpinOffButton.getPath());
 		autoSpinButton.setOffsets(2, 2);
 
 		spinButton = new Button(game, 1096, 283, 201, 201, game.res.spinButtonReady.getPath(), game.res.spinButtonReady.getPath());
 		spinButton.setOffsets(2, 2);
 
 		quickSpinButton = new Button(game, 1151, 500, 86, 86, game.res.quickSpinButtonOn.getPath(), game.res.quickSpinButtonOn.getPath());
-		if(!quickSpinEnabled) quickSpinButton.setImages(game.res.quickSpinButtonOff.getPath(),game.res.quickSpinButtonOff.getPath());
+		if(!quickSpinEnabled) quickSpinButton.setImages(game.res.quickSpinButtonOff.getPath(), game.res.quickSpinButtonOff.getPath());
 		quickSpinButton.setOffsets(2, 2);
 
 		increaseBetButton = new Button(game, 902, 696, 58, 57, game.res.increaseBetButton.getPath(), game.res.increaseBetButton.getPath());
@@ -244,12 +316,12 @@ public class SlotMachine {
 		int optionsOffset = 35;
 
 		musicButton = new Button(game, 1058 + optionsOffset, 640, 57, 57, game.res.musicOnButton.getPath(), game.res.musicOnButton.getPath());
-		if(!musicEnabled) musicButton.setImages(game.res.musicOffButton.getPath(),game.res.musicOffButton.getPath());
+		if(!musicEnabled) musicButton.setImages(game.res.musicOffButton.getPath(), game.res.musicOffButton.getPath());
 		musicButton.setOffsets(2, 2);
 
 
 		volumeButton = new Button(game, 1132 + optionsOffset, 640, 58, 58, game.res.volumeOnButton.getPath(), game.res.volumeOnButton.getPath());
-		if(!volumeEnabled) volumeButton.setImages(game.res.volumeOffButton.getPath(),game.res.volumeOffButton.getPath());
+		if(!volumeEnabled) volumeButton.setImages(game.res.volumeOffButton.getPath(), game.res.volumeOffButton.getPath());
 		volumeButton.setOffsets(2, 2);
 
 
@@ -1118,8 +1190,16 @@ public class SlotMachine {
 
 	// Update & Render
 	public void update() {
+		// Simulation
 		if(Config.simulationEnabled)
 			return;
+
+		// Controller
+		if(Config.controllerEnabled)
+			checkInputState();
+
+		// Reset Keys Just Pressed
+		resetJustPressedKeys();
 
 		if(spinning) {
 			if(spinCountDown > 0) {
@@ -1152,18 +1232,18 @@ public class SlotMachine {
 				}
 
 				// Initialize win_portion_divider
-				if(new_win_last_win_amount >= (1 * betAmount)) 		win_portion_divider 	= 100;
-				if(new_win_last_win_amount >= (2 * betAmount)) 		win_portion_divider 	= 200;
-				if(new_win_last_win_amount >= (5 * betAmount)) 		win_portion_divider 	= 300;
-				if(new_win_last_win_amount >= (10 * betAmount)) 	win_portion_divider 	= 400;
-				if(new_win_last_win_amount >= (20 * betAmount)) 	win_portion_divider 	= 500;
-				if(new_win_last_win_amount >= (50 * betAmount)) 	win_portion_divider 	= 600;
-				if(new_win_last_win_amount >= (100 * betAmount)) 	win_portion_divider 	= 700;
-				if(new_win_last_win_amount < 1) 									win_portion_divider 	= 10;
+				if(new_win_last_win_amount >= (1 * betAmount)) win_portion_divider = 100;
+				if(new_win_last_win_amount >= (2 * betAmount)) win_portion_divider = 200;
+				if(new_win_last_win_amount >= (5 * betAmount)) win_portion_divider = 300;
+				if(new_win_last_win_amount >= (10 * betAmount)) win_portion_divider = 400;
+				if(new_win_last_win_amount >= (20 * betAmount)) win_portion_divider = 500;
+				if(new_win_last_win_amount >= (50 * betAmount)) win_portion_divider = 600;
+				if(new_win_last_win_amount >= (100 * betAmount)) win_portion_divider = 700;
+				if(new_win_last_win_amount < 1) win_portion_divider = 10;
 
 				// Coin Drop Sound
 				if(!game.res.coinDropSoundLong.getSound().isPlaying() && volumeEnabled) {
-					game.res.coinDropSoundLong.getSound().play(1f,1f,true);
+					game.res.coinDropSoundLong.getSound().play(1f, 1f, true);
 				}
 
 				// Increment win_last_win_amount...
@@ -1248,8 +1328,8 @@ public class SlotMachine {
 		drawText("R" + decimalFormat.format(betAmount), 894, 685, Color.white, "Century Gothic", Font.BOLD, 50, true, g);
 
 		// WIN LIMIT
-		drawText("WIN LIMIT", 165, 200+175, new Color(204, 204, 204), "Century Gothic", Font.BOLD, 22, true, g);
-		drawText("R" + decimalFormat.format(winLimitDisplay), 165, 247+175, Color.white, "Century Gothic", Font.BOLD, 50, true, g);
+		drawText("WIN LIMIT", 165, 200 + 175, new Color(204, 204, 204), "Century Gothic", Font.BOLD, 22, true, g);
+		drawText("R" + decimalFormat.format(winLimitDisplay), 165, 247 + 175, Color.white, "Century Gothic", Font.BOLD, 50, true, g);
 
 		// Buttons
 		autoSpinButton.render(g);
@@ -1326,11 +1406,18 @@ public class SlotMachine {
 
 		if(autoSpinEnabled) {
 			autoSpinEnabled = false;
-			autoSpinButton.setImages(game.res.autoSpinOffButton.getPath(),game.res.autoSpinOffButton.getPath());
+			autoSpinButton.setImages(game.res.autoSpinOffButton.getPath(), game.res.autoSpinOffButton.getPath());
 		}
 		else {
 			autoSpinEnabled = true;
-			autoSpinButton.setImages(game.res.autoSpinOnButton.getPath(),game.res.autoSpinOnButton.getPath());
+			autoSpinButton.setImages(game.res.autoSpinOnButton.getPath(), game.res.autoSpinOnButton.getPath());
+		}
+
+		if(autoSpinEnabled) {
+			System.out.println("Autospin Enabled");
+		}
+		else {
+			System.out.println("Autospin Disabled");
 		}
 	}
 
@@ -1339,12 +1426,12 @@ public class SlotMachine {
 		if(quickSpinEnabled) {
 			quickSpinEnabled = false;
 			spinTime = Config.spinTime;
-			quickSpinButton.setImages(game.res.quickSpinButtonOff.getPath(),game.res.quickSpinButtonOff.getPath());
+			quickSpinButton.setImages(game.res.quickSpinButtonOff.getPath(), game.res.quickSpinButtonOff.getPath());
 		}
 		else {
 			quickSpinEnabled = true;
 			spinTime = Config.quickSpinTime;
-			quickSpinButton.setImages(game.res.quickSpinButtonOn.getPath(),game.res.quickSpinButtonOn.getPath());
+			quickSpinButton.setImages(game.res.quickSpinButtonOn.getPath(), game.res.quickSpinButtonOn.getPath());
 		}
 	}
 
@@ -1369,7 +1456,7 @@ public class SlotMachine {
 			volumeButton.setImages(game.res.volumeOnButton.getPath(), game.res.volumeOnButton.getPath());
 
 			if(spinning) {
-				game.res.spinSound.getSound().play(1f,1f,true);
+				game.res.spinSound.getSound().play(1f, 1f, true);
 			}
 
 			// Music
@@ -1478,12 +1565,23 @@ public class SlotMachine {
 	}
 
 	public void keyReleased(KeyEvent e) {
+		System.out.println(e.getKeyCode());
 		// Increase Decrease Bet Amount
-		if(e.getKeyCode() == KeyEvent.VK_A) {
+		if(e.getKeyCode() == KeyEvent.VK_EQUALS) {
 			increaseBetAmount();
 		}
-		if(e.getKeyCode() == KeyEvent.VK_Z) {
+		if(e.getKeyCode() == KeyEvent.VK_MINUS) {
 			decreaseBetAmount();
+		}
+
+		// Toggle Autospin
+		if(e.getKeyCode() == KeyEvent.VK_A) {
+			a_key_just_pressed = true;
+		}
+
+		// Toggle Quickspin
+		if(e.getKeyCode() == KeyEvent.VK_Q) {
+			q_key_just_pressed = true;
 		}
 
 		// Loading Credit
@@ -1573,5 +1671,157 @@ public class SlotMachine {
 		if(spinButton.containsMouse()) {
 			spinButton.toggleOffset(false);
 		}
+	}
+
+	// Controller Input
+	public void checkInputState() {
+		// Spin
+		if(a_btn_just_pressed || space_key_just_pressed) {
+			if(Config.simulationEnabled) {
+				simulate();
+				return;
+			}
+
+			if(!spinning) {
+				// Handle AutoSpin
+				if(autoSpinEnabled) {
+					toggleAutoSpin();
+				}
+
+				playerSpin();
+			}
+			else {
+				if(Config.stopSpinEnabled) {
+					// Turn off AutoSpin
+					if(autoSpinEnabled) {
+						toggleAutoSpin();
+					}
+
+					stopSpinning();
+				}
+			}
+		}
+
+		// Toggle Auto Spin
+		if(y_btn_just_pressed || a_key_just_pressed) {
+			if((credit - betAmount) > 0) {
+				toggleAutoSpin();
+			}
+		}
+
+		// Toggle Quick Spin
+		if(x_btn_just_pressed || q_key_just_pressed) {
+			toggleQuickSpin();
+		}
+
+		// Increase Bet Amount
+		if(rb_btn_just_pressed) {
+			increaseBetAmount();
+		}
+
+		// Decrease Bet Amount
+		if(lb_btn_just_pressed) {
+			decreaseBetAmount();
+		}
+
+		// Toggle Music
+		if(back_btn_just_pressed) {
+			toggleMusic();
+		}
+
+		// Toggle Sound
+		if(start_btn_just_pressed) {
+			toggleVolume();
+		}
+
+		if(Config.continuousInput) {
+			if(x_btn) {
+				System.out.println("X");
+			}
+		}
+		else {
+			if(x_btn_just_pressed) {
+				System.out.println("X");
+			}
+		}
+	}
+
+	public void controllerUpdate(ControllerState controller) {
+		// Update Controller State
+		this.controller = controller;
+
+		// Start, Back
+		this.start_btn = (controller.start);
+		this.back_btn = (controller.back);
+		this.start_btn_just_pressed = (controller.startJustPressed);
+		this.back_btn_just_pressed = (controller.backJustPressed);
+
+		// DPad
+		this.dpadUp_btn = (controller.dpadUp);
+		this.dpadDown_btn = (controller.dpadDown);
+		this.dpadLeft_btn = (controller.dpadLeft);
+		this.dpadRight_btn = (controller.dpadRight);
+		this.dpadUp_btn_just_pressed = (controller.dpadUpJustPressed);
+		this.dpadDown_btn_just_pressed = (controller.dpadDownJustPressed);
+		this.dpadLeft_btn_just_pressed = (controller.dpadLeftJustPressed);
+		this.dpadRight_btn_just_pressed = (controller.dpadRightJustPressed);
+
+		// A, B, X, Y
+		this.a_btn = (controller.a);
+		this.b_btn = (controller.b);
+		this.x_btn = (controller.x);
+		this.y_btn = (controller.y);
+		this.a_btn_just_pressed = controller.aJustPressed;
+		this.b_btn_just_pressed = controller.bJustPressed;
+		this.x_btn_just_pressed = controller.xJustPressed;
+		this.y_btn_just_pressed = controller.yJustPressed;
+
+		// Left Button, Left Trigger
+		this.lb_btn = (controller.lb);
+		this.leftTrigger_btn = (controller.leftTrigger > 0.5);
+		this.lb_btn_just_pressed = (controller.lbJustPressed);
+
+		// Right Button, Right Trigger
+		this.rb_btn = (controller.rb);
+		this.rightTrigger_btn = (controller.rightTrigger > 0.5);
+		this.rb_btn_just_pressed = (controller.rbJustPressed);
+
+		// Left Stick
+		this.leftStick_btn = (controller.leftStickClick);
+		this.leftStick_btn_just_pressed = (controller.leftStickJustClicked);
+		this.leftStickY_up = (controller.leftStickY > 0.5);
+		this.leftStickY_down = (controller.leftStickY < -0.5);
+		this.leftStickX_left = (controller.leftStickX < -0.1);
+		this.leftStickX_right = (controller.leftStickX > 0.1);
+
+		// Right Stick
+		this.rightStick_btn = (controller.rightStickClick);
+		this.rightStick_btn_just_pressed = (controller.rightStickJustClicked);
+		this.rightStickY_up = (controller.rightStickY > 0.5);
+		this.rightStickY_down = (controller.rightStickY < -0.5);
+		this.rightStickX_left = (controller.rightStickX < -0.5);
+		this.rightStickX_right = (controller.rightStickX > 0.5);
+	}
+
+	public void resetJustPressedKeys() {
+		a_key_just_pressed = false;
+		q_key_just_pressed = false;
+		shift_key_just_pressed = false;
+		ctrl_key_just_pressed = false;
+		alt_key_just_pressed = false;
+		space_key_just_pressed = false;
+		r_key_just_pressed = false;
+		f1_key_just_pressed = false;
+		f2_key_just_pressed = false;
+		f3_key_just_pressed = false;
+		f4_key_just_pressed = false;
+		f5_key_just_pressed = false;
+		f6_key_just_pressed = false;
+		f7_key_just_pressed = false;
+		f8_key_just_pressed = false;
+		f9_key_just_pressed = false;
+		f10_key_just_pressed = false;
+		f11_key_just_pressed = false;
+		f12_key_just_pressed = false;
 	}
 }

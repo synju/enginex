@@ -6,7 +6,6 @@ import java.awt.*;
 
 public class Game extends EngineX {
 	Resources res = new Resources();
-
 	PlayState ps;
 
 	int width;
@@ -17,7 +16,7 @@ public class Game extends EngineX {
 	}
 
 	Game() {
-		super("SlotMachine", Config.fullscreen, Config.sizeable, (Config.fullscreen) ? (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() : Config.width, (Config.fullscreen) ? (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() : Config.height);
+		super(Config.gameName, Config.fullscreen, Config.sizeable, (Config.fullscreen) ? (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth() : Config.width, (Config.fullscreen) ? (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight() : Config.height);
 		this.width = super.width;
 		this.height = super.height;
 	}
@@ -38,5 +37,4 @@ public class Game extends EngineX {
 	public int getHeight() {
 		return height;
 	}
-
 }
