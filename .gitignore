@@ -1,4 +1,8 @@
-.idea/workspace.xml
-res/megamoney/spin_button.psd
-classes/artifacts/
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore JetBrains IDE settings
 .idea/
+
+# Binaries
+classes/artifacts/
