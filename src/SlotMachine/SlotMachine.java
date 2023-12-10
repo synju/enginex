@@ -165,6 +165,9 @@ public class SlotMachine {
 	// Other Components
 	ReelManager reelManager;
 
+	// Reel
+	ArrayList reel;
+
 	// Text Components
 	boolean win_counting_up         = false;
 	int     win_portion_divider     = 100;
@@ -277,6 +280,9 @@ public class SlotMachine {
 		if(initialized)
 			return;
 
+		// Generate Reel
+		this.reel = generateReel();
+
 		// Initialize lines .. [lines][positions][row,position]
 		initializeLines();
 
@@ -300,41 +306,43 @@ public class SlotMachine {
 		if(!autoSpinEnabled) autoSpinButton.setImages(game.res.autoSpinOffButton.getPath(), game.res.autoSpinOffButton.getPath());
 		autoSpinButton.setOffsets(2, 2);
 
+		// Spin Button
 		spinButton = new Button(game, 1096, 283, 201, 201, game.res.spinButtonReady.getPath(), game.res.spinButtonReady.getPath());
 		spinButton.setOffsets(2, 2);
 
+		// Quickspin Button
 		quickSpinButton = new Button(game, 1151, 500, 86, 86, game.res.quickSpinButtonOn.getPath(), game.res.quickSpinButtonOn.getPath());
 		if(!quickSpinEnabled) quickSpinButton.setImages(game.res.quickSpinButtonOff.getPath(), game.res.quickSpinButtonOff.getPath());
 		quickSpinButton.setOffsets(2, 2);
 
+		// Increase Decrease Bet Buttons
 		increaseBetButton = new Button(game, 902, 696, 58, 57, game.res.increaseBetButton.getPath(), game.res.increaseBetButton.getPath());
 		increaseBetButton.setOffsets(2, 2);
 		decreaseBetButton = new Button(game, 838, 696, 57, 56, game.res.decreaseBetButton.getPath(), game.res.decreaseBetButton.getPath());
 		decreaseBetButton.setOffsets(2, 2);
 
-		// optionsOffset
+		// optionsOffset - For Buttons
 		int optionsOffset = 35;
 
+		// Music Button
 		musicButton = new Button(game, 1058 + optionsOffset, 640, 57, 57, game.res.musicOnButton.getPath(), game.res.musicOnButton.getPath());
 		if(!musicEnabled) musicButton.setImages(game.res.musicOffButton.getPath(), game.res.musicOffButton.getPath());
 		musicButton.setOffsets(2, 2);
 
-
+		// Volume Button
 		volumeButton = new Button(game, 1132 + optionsOffset, 640, 58, 58, game.res.volumeOnButton.getPath(), game.res.volumeOnButton.getPath());
 		if(!volumeEnabled) volumeButton.setImages(game.res.volumeOffButton.getPath(), game.res.volumeOffButton.getPath());
 		volumeButton.setOffsets(2, 2);
 
-
+		// Info Button
 		infoButton = new Button(game, 1206 + optionsOffset, 640, 57, 57, game.res.infoButton.getPath(), game.res.infoButton.getPath());
 		infoButton.setOffsets(2, 2);
 
+		// Finished Initialization
 		initialized = true;
 	}
 
-	// Core Functions
-	public String[] spin() {
-		String[] rows = new String[4];
-
+	public ArrayList generateReel() {
 		ArrayList reel = new ArrayList();
 		for(int i = 0; i < lemonCount; i++)
 			reel.add(LEMON);
@@ -354,19 +362,76 @@ public class SlotMachine {
 			reel.add(SEVEN);
 		Collections.shuffle(reel);
 
+		return reel;
+	}
+
+	// Core Functions
+	public String[] spin() {
+		String[] rows = new String[4];
+
 		Random rand      = new Random();
 		int    randomIndex;
 		int    rowCount  = 4;
 		int    reelCount = 5;
 
-		for(int i = 0; i < rowCount; i++) {
-			String result = "";
-			for(int j = 0; j < reelCount; j++) {
-				randomIndex = rand.nextInt(reel.size());
-				result += String.valueOf(reel.get(randomIndex));
+		// ------------- Old Method Start
+//		for(int i = 0; i < rowCount; i++) {
+//			String result = "";
+//			for(int j = 0; j < reelCount; j++) {
+//				randomIndex = rand.nextInt(this.reel.size());
+//				result += String.valueOf(this.reel.get(randomIndex));
+//			}
+//			rows[i] = result;
+//		}
+		// ------------- Old Method End
+
+		// ------------- New Method Start
+		/*
+					 0 1 2 3 4
+				0 [0,0,0,0,0]
+				1 [1,1,1,1,1]
+				2 [2,2,2,2,2]
+				3 [3,3,3,3,3]
+		*/
+		String row0 = "";
+		String row1 = "";
+		String row2 = "";
+		String row3 = "";
+		for(int i = 0; i < reelCount; i++) {
+			randomIndex = rand.nextInt(this.reel.size());
+
+			// row0
+			row0 += String.valueOf(this.reel.get(randomIndex));
+
+			// row1
+			if(randomIndex+1 == this.reel.size()) {
+				row1 += String.valueOf(this.reel.get(0));
 			}
-			rows[i] = result;
+			else {
+				row1 += String.valueOf(this.reel.get(randomIndex+1));
+			}
+
+			// row2
+			if(randomIndex+2 == this.reel.size()) {
+				row2 += String.valueOf(this.reel.get(0));
+			}
+			else {
+				row2 += String.valueOf(this.reel.get(randomIndex+2));
+			}
+
+			// row3
+			if(randomIndex+3 == this.reel.size()) {
+				row3 += String.valueOf(this.reel.get(0));
+			}
+			else {
+				row3 += String.valueOf(this.reel.get(randomIndex+3));
+			}
 		}
+		rows[0] = row0;
+		rows[1] = row1;
+		rows[2] = row2;
+		rows[3] = row3;
+		// ------------- New Method End
 
 		return rows;
 	}
@@ -757,8 +822,8 @@ public class SlotMachine {
 		double totalWin   = 0;
 
 		// Set Actual Bet Amount
-		double actualBetAmount = simBetAmount;
-		for(int i = 0; i < simSpinCount; i++) {
+		double actualBetAmount = Config.simBetAmount;
+		for(int i = 0; i < Config.simSpinCount; i++) {
 			totalStake += simBetAmount;
 			String result[] = spin();
 
@@ -1031,13 +1096,13 @@ public class SlotMachine {
 				}
 			}
 
-			//			System.out.println("Sim " + i + " complete.");
+			System.out.println("Sim " + i + " complete.");
 		}
 
 		double RTP = (totalWin / totalStake) * 100;
 
-		//System.out.println("Total Stake: R" + toDecimal(totalStake));
-		//System.out.println("Total Win: R" + toDecimal(totalWin));
+		System.out.println("Total Stake: R" + toDecimal(totalStake));
+		System.out.println("Total Win: R" + toDecimal(totalWin));
 		System.out.println("RTP: " + toDecimal(RTP) + "%");
 	}
 
