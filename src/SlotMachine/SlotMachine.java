@@ -281,7 +281,7 @@ public class SlotMachine {
 			return;
 
 		// Generate Reel
-		this.reel = generateReel();
+		generateReel();
 
 		// Initialize lines .. [lines][positions][row,position]
 		initializeLines();
@@ -342,7 +342,7 @@ public class SlotMachine {
 		initialized = true;
 	}
 
-	public ArrayList generateReel() {
+	public void generateReel() {
 		ArrayList reel = new ArrayList();
 		for(int i = 0; i < lemonCount; i++)
 			reel.add(LEMON);
@@ -362,7 +362,14 @@ public class SlotMachine {
 			reel.add(SEVEN);
 		Collections.shuffle(reel);
 
-		return reel;
+		this.reel = reel;
+
+		// Temp
+		String[] rows = this.spin();
+		for(String row:rows) {
+			System.out.println(row);
+		}
+		game.exit();
 	}
 
 	// Core Functions

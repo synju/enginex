@@ -14,7 +14,7 @@ public class Config {
 	public static int     winLimit            = 10000; // Toggle for whether continuous input is enabled or not.
 
 	// Simulation Config
-	public static boolean simulationEnabled = false; // Simulation Mode on or off, for balancing reel symbol pool to get correct RTP Percentage
+	public static boolean simulationEnabled = true; // Simulation Mode on or off, for balancing reel symbol pool to get correct RTP Percentage
 	public static int     simSpinCount      = 5000000;
 	public static int     simBetAmount      = 1;
 
