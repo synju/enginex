@@ -775,10 +775,18 @@ public class SlotMachine {
 		if(quickSpinEnabled) {
 			int randomNum = new Random().nextInt((Config.maxQuickSpinTime - Config.minQuickSpinTime) + 1);
 			spinCountDown = Config.minQuickSpinTime + randomNum;
+			for(int i = 0; i < reelManager.reels.size(); i++) {
+				reelManager.reels.get(i).spinning = true;
+				reelManager.reels.get(i).spinCountdown = spinCountDown+i*Config.reelStopSpinTime;
+			}
 		}
 		else {
 			int randomNum = new Random().nextInt((Config.maxSpinTime - Config.minSpinTime) + 1);
 			spinCountDown = Config.minSpinTime + randomNum;
+			for(int i = 0; i < reelManager.reels.size(); i++) {
+				reelManager.reels.get(i).spinning = true;
+				reelManager.reels.get(i).spinCountdown = spinCountDown+i*Config.reelQuickStopSpinTime;
+			}
 		}
 
 		// Update Credit Display
@@ -1274,37 +1282,46 @@ public class SlotMachine {
 			spinButton.setImages(game.res.spinButtonReady.getPath(), game.res.spinButtonReady.getPath());
 
 			// Win Last Win Amount
-			if(new_win_last_win_amount > 0) {
-				// Initialize win amount
-				if(win_counting_up) {
-					win_last_win_text = "WIN";
-					win_last_win_amount = 0;
-					win_counting_up = false;
+			boolean allReelsStopped = true;
+			for(Reel reel:reelManager.reels) {
+				if(reel.spinCountdown > 0) {
+					allReelsStopped = false;
 				}
+			}
 
-				// Initialize win_portion_divider
-				if(new_win_last_win_amount >= (1 * betAmount)) win_portion_divider = 100;
-				if(new_win_last_win_amount >= (2 * betAmount)) win_portion_divider = 200;
-				if(new_win_last_win_amount >= (5 * betAmount)) win_portion_divider = 300;
-				if(new_win_last_win_amount >= (10 * betAmount)) win_portion_divider = 400;
-				if(new_win_last_win_amount >= (20 * betAmount)) win_portion_divider = 500;
-				if(new_win_last_win_amount >= (50 * betAmount)) win_portion_divider = 600;
-				if(new_win_last_win_amount >= (100 * betAmount)) win_portion_divider = 700;
-				if(new_win_last_win_amount < 1) win_portion_divider = 10;
+			if(allReelsStopped) {
+				if(new_win_last_win_amount > 0) {
+					// Initialize win amount
+					if(win_counting_up) {
+						win_last_win_text = "WIN";
+						win_last_win_amount = 0;
+						win_counting_up = false;
+					}
 
-				// Coin Drop Sound
-				if(!game.res.coinDropSoundLong.getSound().isPlaying() && volumeEnabled) {
-					game.res.coinDropSoundLong.getSound().play(1f, 1f, true);
+					// Initialize win_portion_divider
+					if(new_win_last_win_amount >= (1 * betAmount)) win_portion_divider = 100;
+					if(new_win_last_win_amount >= (2 * betAmount)) win_portion_divider = 200;
+					if(new_win_last_win_amount >= (5 * betAmount)) win_portion_divider = 300;
+					if(new_win_last_win_amount >= (10 * betAmount)) win_portion_divider = 400;
+					if(new_win_last_win_amount >= (20 * betAmount)) win_portion_divider = 500;
+					if(new_win_last_win_amount >= (50 * betAmount)) win_portion_divider = 600;
+					if(new_win_last_win_amount >= (100 * betAmount)) win_portion_divider = 700;
+					if(new_win_last_win_amount < 1) win_portion_divider = 10;
+
+					// Coin Drop Sound
+					if(!game.res.coinDropSoundLong.getSound().isPlaying() && volumeEnabled) {
+						game.res.coinDropSoundLong.getSound().play(1f, 1f, true);
+					}
+
+					// Increment win_last_win_amount...
+					double portion = new_win_last_win_amount / win_portion_divider;
+					if((win_last_win_amount + portion) > new_win_last_win_amount) {
+						portion = new_win_last_win_amount - win_last_win_amount;
+					}
+
+					win_last_win_amount += portion;
+					winLimitDisplay -= portion;
 				}
-
-				// Increment win_last_win_amount...
-				double portion = new_win_last_win_amount / win_portion_divider;
-				if((win_last_win_amount + portion) > new_win_last_win_amount) {
-					portion = new_win_last_win_amount - win_last_win_amount;
-				}
-
-				win_last_win_amount += portion;
-				winLimitDisplay -= portion;
 			}
 
 			// Set winLimit to absolute zero if less than 0.00
@@ -1329,6 +1346,9 @@ public class SlotMachine {
 		}
 
 		reelManager.update();
+
+		// Check Reels Stopped
+		checkSpinStopped();
 
 		// Buttons
 		spinButton.update();
@@ -1432,20 +1452,36 @@ public class SlotMachine {
 		// 3 ##### -->
 
 		// Update Static Symbols
+		spinning = false;
+		spinCountDown = 0;
 		for(int i = 0; i < reelManager.reels.size(); i++) {
+			reelManager.reels.get(i).spinCountdown = i * Config.reelStopSpinTime;
+
 			for(int j = 0; j < reelManager.reels.get(i).symbolsStatic.size(); j++) {
 				reelManager.reels.get(i).symbolsStatic.get(j).setType(Integer.parseInt(String.valueOf(spinResult[j].charAt(i))));
 			}
 		}
-		spinning = false;
+	}
 
-		if(!win_counting_up) {
-			creditDisplay = credit;
+	public void checkSpinStopped() {
+		boolean allReelsStopped = true;
+		for(Reel reel:reelManager.reels) {
+			if(reel.spinCountdown > 0) {
+				allReelsStopped = false;
+			}
 		}
 
-		// Sounds
-		if(game.res.spinSound.getSound().isPlaying()) {
-			game.res.spinSound.getSound().stop();
+		if(allReelsStopped) {
+			spinning = false;
+
+			if(!win_counting_up) {
+				creditDisplay = credit;
+			}
+
+			// Sounds
+			if(game.res.spinSound.getSound().isPlaying()) {
+				game.res.spinSound.getSound().stop();
+			}
 		}
 	}
 

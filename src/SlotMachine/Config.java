@@ -12,6 +12,9 @@ public class Config {
 	public static int     maxSpinTime         = 120; // Time it takes for a spin to run.
 	public static int     minQuickSpinTime    = 10; // Time it takes for a quickspin to run.
 	public static int     maxQuickSpinTime    = 30; // Time it takes for a quickspin to run.
+	public static int     reelStopSpinTime    		= 30; // Time it takes for a quickspin to run.
+	public static int     reelQuickStopSpinTime   = 10; // Time it takes for a quickspin to run.
+
 
 	// Sound
 	public static boolean startupMusicEnabled = false; // Toggle for whether music starts with game or not.

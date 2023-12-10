@@ -11,8 +11,8 @@ public class Reel {
 	int         y;
 	boolean     spinning          = false;
 	boolean     blurred           = false;
-	int         spinSpeed         = 40;
-	int         spinStopCountdown = 0;
+	int spinSpeed     = 40;
+	int spinCountdown = 0;
 
 	int spinningAy;
 	int spinningBy;
@@ -49,10 +49,16 @@ public class Reel {
 	}
 
 	public void update() {
-		if(spinStopCountdown > 0) spinStopCountdown--;
-		if(spinStopCountdown == 0) spinning = false;
+		if(spinCountdown > 0) {
+			spinCountdown--;
+		}
+		else  {
+			spinCountdown = 0;
+			spinning = false;
+		}
 
-		if(reelManager.slotMachine.spinning) {
+		//if(reelManager.slotMachine.spinning) {
+		if(spinning) {
 			// Enable Blurring
 			blurred = true;
 
@@ -89,7 +95,8 @@ public class Reel {
 	}
 
 	public void render(Graphics2D g) {
-		if(reelManager.slotMachine.spinning) {
+		//if(reelManager.slotMachine.spinning) {
+		if(spinning) {
 			for(int i = 0; i < symbolsSpinningA.size(); i++) {
 				Symbol s = symbolsSpinningA.get(i);
 				s.render(g, x, spinningAy + (i * Symbol.HEIGHT));
