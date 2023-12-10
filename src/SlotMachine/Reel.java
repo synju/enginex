@@ -5,20 +5,21 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Reel {
-	Game game;
+	Game        game;
 	ReelManager reelManager;
-	int x;
-	int y;
-	boolean spinning = false;
-	boolean blurred = false;
-	int spinSpeed = 40;
+	int         x;
+	int         y;
+	boolean     spinning          = false;
+	boolean     blurred           = false;
+	int         spinSpeed         = 40;
+	int         spinStopCountdown = 0;
 
 	int spinningAy;
 	int spinningBy;
 
 	ArrayList<Symbol> symbolsSpinningA = new ArrayList<>();
 	ArrayList<Symbol> symbolsSpinningB = new ArrayList<>();
-	ArrayList<Symbol> symbolsStatic = new ArrayList<>();
+	ArrayList<Symbol> symbolsStatic    = new ArrayList<>();
 
 	Reel(Game game, ReelManager reelManager, int x, int y) {
 		this.game = game;
@@ -27,7 +28,7 @@ public class Reel {
 		this.y = y;
 
 		spinningAy = y;
-		spinningBy = y - (Symbol.HEIGHT*4);
+		spinningBy = y - (Symbol.HEIGHT * 4);
 
 		Random rand = new Random();
 
@@ -48,6 +49,9 @@ public class Reel {
 	}
 
 	public void update() {
+		if(spinStopCountdown > 0) spinStopCountdown--;
+		if(spinStopCountdown == 0) spinning = false;
+
 		if(reelManager.slotMachine.spinning) {
 			// Enable Blurring
 			blurred = true;

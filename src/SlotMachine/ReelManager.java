@@ -28,10 +28,19 @@ public class ReelManager {
 		this.symbol_width = 140;
 		this.symbol_height = 95;
 
+		// Reel 0
 		reels.add(new Reel(game, this, x + (0 * Symbol.WIDTH), y + (0 * Symbol.HEIGHT)));
+
+		// Reel 1
 		reels.add(new Reel(game, this, x + (1 * Symbol.WIDTH), y + (0 * Symbol.HEIGHT)));
+
+		// Reel 2
 		reels.add(new Reel(game, this, x + (2 * Symbol.WIDTH), y + (0 * Symbol.HEIGHT)));
+
+		// Reel 3
 		reels.add(new Reel(game, this, x + (3 * Symbol.WIDTH), y + (0 * Symbol.HEIGHT)));
+
+		// Reel 4
 		reels.add(new Reel(game, this, x + (4 * Symbol.WIDTH), y + (0 * Symbol.HEIGHT)));
 	}
 

@@ -159,7 +159,6 @@ public class SlotMachine {
 	int                linesWon     = 0;
 
 	// Timers
-	int spinTime      = Config.spinTime;
 	int spinCountDown = 0;
 
 	// Other Components
@@ -360,16 +359,21 @@ public class SlotMachine {
 			reel.add(GRAPES);
 		for(int i = 0; i < sevensCount; i++)
 			reel.add(SEVEN);
-		Collections.shuffle(reel);
+
+		//Collections.shuffle(reel); // unseeded
+		Collections.shuffle(reel, new Random(0)); // seeded
 
 		this.reel = reel;
 
-		// Temp
-		String[] rows = this.spin();
-		for(String row:rows) {
-			System.out.println(row);
+		// Print Reel
+		printReel();
+	}
+
+	public void printReel() {
+		for(int k = 0; k < this.reel.size(); k++) {
+			Integer element = (Integer)this.reel.get(k);
+			System.out.println("Index: " + k + ", Value: " + element);
 		}
-		game.exit();
 	}
 
 	// Core Functions
@@ -378,19 +382,7 @@ public class SlotMachine {
 
 		Random rand      = new Random();
 		int    randomIndex;
-		int    rowCount  = 4;
 		int    reelCount = 5;
-
-		// ------------- Old Method Start
-//		for(int i = 0; i < rowCount; i++) {
-//			String result = "";
-//			for(int j = 0; j < reelCount; j++) {
-//				randomIndex = rand.nextInt(this.reel.size());
-//				result += String.valueOf(this.reel.get(randomIndex));
-//			}
-//			rows[i] = result;
-//		}
-		// ------------- Old Method End
 
 		// ------------- New Method Start
 		/*
@@ -406,39 +398,15 @@ public class SlotMachine {
 		String row3 = "";
 		for(int i = 0; i < reelCount; i++) {
 			randomIndex = rand.nextInt(this.reel.size());
-
-			// row0
 			row0 += String.valueOf(this.reel.get(randomIndex));
-
-			// row1
-			if(randomIndex+1 == this.reel.size()) {
-				row1 += String.valueOf(this.reel.get(0));
-			}
-			else {
-				row1 += String.valueOf(this.reel.get(randomIndex+1));
-			}
-
-			// row2
-			if(randomIndex+2 == this.reel.size()) {
-				row2 += String.valueOf(this.reel.get(0));
-			}
-			else {
-				row2 += String.valueOf(this.reel.get(randomIndex+2));
-			}
-
-			// row3
-			if(randomIndex+3 == this.reel.size()) {
-				row3 += String.valueOf(this.reel.get(0));
-			}
-			else {
-				row3 += String.valueOf(this.reel.get(randomIndex+3));
-			}
+			row1 += String.valueOf(this.reel.get((randomIndex + 1) % this.reel.size()));
+			row2 += String.valueOf(this.reel.get((randomIndex + 2) % this.reel.size()));
+			row3 += String.valueOf(this.reel.get((randomIndex + 3) % this.reel.size()));
 		}
 		rows[0] = row0;
 		rows[1] = row1;
 		rows[2] = row2;
 		rows[3] = row3;
-		// ------------- New Method End
 
 		return rows;
 	}
@@ -802,7 +770,18 @@ public class SlotMachine {
 		// Do Display Work....
 		// Start Spinning in Reel Manager
 		spinning = true;
-		spinCountDown = spinTime;
+
+		// Set spinCountDown
+		if(quickSpinEnabled) {
+			int randomNum = new Random().nextInt((Config.maxQuickSpinTime - Config.minQuickSpinTime) + 1);
+			spinCountDown = Config.minQuickSpinTime + randomNum;
+		}
+		else {
+			int randomNum = new Random().nextInt((Config.maxSpinTime - Config.minSpinTime) + 1);
+			spinCountDown = Config.minSpinTime + randomNum;
+		}
+
+		// Update Credit Display
 		creditDisplay -= betAmount;
 	}
 
@@ -1459,6 +1438,7 @@ public class SlotMachine {
 			}
 		}
 		spinning = false;
+
 		if(!win_counting_up) {
 			creditDisplay = credit;
 		}
@@ -1497,12 +1477,10 @@ public class SlotMachine {
 	public void toggleQuickSpin() {
 		if(quickSpinEnabled) {
 			quickSpinEnabled = false;
-			spinTime = Config.spinTime;
 			quickSpinButton.setImages(game.res.quickSpinButtonOff.getPath(), game.res.quickSpinButtonOff.getPath());
 		}
 		else {
 			quickSpinEnabled = true;
-			spinTime = Config.quickSpinTime;
 			quickSpinButton.setImages(game.res.quickSpinButtonOn.getPath(), game.res.quickSpinButtonOn.getPath());
 		}
 	}
@@ -1637,7 +1615,6 @@ public class SlotMachine {
 	}
 
 	public void keyReleased(KeyEvent e) {
-		System.out.println(e.getKeyCode());
 		// Increase Decrease Bet Amount
 		if(e.getKeyCode() == KeyEvent.VK_EQUALS) {
 			increaseBetAmount();
