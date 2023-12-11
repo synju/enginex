@@ -30,8 +30,8 @@ public class Config {
 
 	// Game Window
 	public static boolean sizeable   = false;
-	//	public static boolean fullscreen = true;
-	public static boolean fullscreen = (simulationEnabled) ? false : true;
+	public static boolean fullscreen = false;
+	// public static boolean fullscreen = (simulationEnabled) ? false : true;
 	public static int     width      = (simulationEnabled) ? 320 : 1360;
 	public static int     height     = (simulationEnabled) ? 240 : 768;
 
