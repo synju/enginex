@@ -15,14 +15,13 @@ public class SlotMachine {
 	boolean initialized = false;
 	boolean spinning    = false;
 
-	double   winLimit         = Config.winLimit;
-	double   winLimitDisplay  = winLimit;
-	double   originalWinLimit = winLimit;
-	double   credit           = 0.00;
-	double   creditDisplay    = credit;
-	double[] betAmounts       = {0.01, 0.05, 0.20, 0.40, 0.60, 0.80, 1, 1.60, 2, 4, 6, 8, 12, 18, 20, 40, 60, 80, 100};
-	int      currentBetIndex  = 0;
-	double   betAmount        = betAmounts[0];
+	double   winLimit        = Config.winLimit;
+	double   winLimitDisplay = winLimit;
+	double   credit          = 0.00;
+	double   creditDisplay   = credit;
+	double[] betAmounts      = {0.01, 0.05, 0.20, 0.40, 0.60, 0.80, 1, 1.60, 2, 4, 6, 8, 12, 18, 20, 40, 60, 80, 100};
+	int      currentBetIndex = 0;
+	double   betAmount       = betAmounts[0];
 	String[] spinResult;
 
 	// Symbols
@@ -61,10 +60,6 @@ public class SlotMachine {
 	public static final double M_SEVEN3  = 2;
 	public static final double M_SEVEN4  = 10;
 	public static final double M_SEVEN5  = 100;
-
-	// Simulation Variables
-	int simSpinCount = 5000000;
-	int simBetAmount = 1;
 
 	// 100.19%
 	//	int lemonCount  = 5;
@@ -157,12 +152,16 @@ public class SlotMachine {
 	int[][]            lines        = new int[lineCount][5];
 	ArrayList<Integer> linesWonList = new ArrayList<>();
 	int                linesWon     = 0;
+	boolean            renderLines  = false;
 
 	// Timers
 	int spinCountDown = 0;
 
-	// Other Components
+	// Reel Manager
 	ReelManager reelManager;
+
+	// Line Manager
+	LineManager lineManager;
 
 	// Reel
 	ArrayList reel;
@@ -376,9 +375,8 @@ public class SlotMachine {
 		}
 	}
 
-	// Core Functions
-	public String[] spin() {
-		String[] rows = new String[4];
+	public String[] getSpinResult() {
+		String[] spinResult = new String[4];
 
 		Random rand      = new Random();
 		int    randomIndex;
@@ -403,15 +401,15 @@ public class SlotMachine {
 			row2 += String.valueOf(this.reel.get((randomIndex + 2) % this.reel.size()));
 			row3 += String.valueOf(this.reel.get((randomIndex + 3) % this.reel.size()));
 		}
-		rows[0] = row0;
-		rows[1] = row1;
-		rows[2] = row2;
-		rows[3] = row3;
+		spinResult[0] = row0;
+		spinResult[1] = row1;
+		spinResult[2] = row2;
+		spinResult[3] = row3;
 
-		return rows;
+		return spinResult;
 	}
 
-	public void playerSpin() {
+	public void spin() {
 		// Handle winLimit
 		if(winLimit == 0) {
 			return;
@@ -455,7 +453,7 @@ public class SlotMachine {
 		double totalWin = 0;
 
 		// Get Spin Result
-		String result[] = spin();
+		String result[] = getSpinResult();
 		spinResult = result;
 
 		// Initialize Symbol
@@ -777,7 +775,7 @@ public class SlotMachine {
 			spinCountDown = Config.minQuickSpinTime + randomNum;
 			for(int i = 0; i < reelManager.reels.size(); i++) {
 				reelManager.reels.get(i).spinning = true;
-				reelManager.reels.get(i).spinCountdown = spinCountDown+i*Config.reelStopSpinTime;
+				reelManager.reels.get(i).spinCountdown = spinCountDown + i * Config.reelStopSpinTime;
 			}
 		}
 		else {
@@ -785,7 +783,7 @@ public class SlotMachine {
 			spinCountDown = Config.minSpinTime + randomNum;
 			for(int i = 0; i < reelManager.reels.size(); i++) {
 				reelManager.reels.get(i).spinning = true;
-				reelManager.reels.get(i).spinCountdown = spinCountDown+i*Config.reelQuickStopSpinTime;
+				reelManager.reels.get(i).spinCountdown = spinCountDown + i * Config.reelQuickStopSpinTime;
 			}
 		}
 
@@ -818,8 +816,8 @@ public class SlotMachine {
 		// Set Actual Bet Amount
 		double actualBetAmount = Config.simBetAmount;
 		for(int i = 0; i < Config.simSpinCount; i++) {
-			totalStake += simBetAmount;
-			String result[] = spin();
+			totalStake += Config.simBetAmount;
+			String result[] = getSpinResult();
 
 			// Initialize Symbol
 			int symbol;
@@ -1283,7 +1281,7 @@ public class SlotMachine {
 
 			// Win Last Win Amount
 			boolean allReelsStopped = true;
-			for(Reel reel:reelManager.reels) {
+			for(Reel reel : reelManager.reels) {
 				if(reel.spinCountdown > 0) {
 					allReelsStopped = false;
 				}
@@ -1356,7 +1354,7 @@ public class SlotMachine {
 		// AutoSpin
 		if(autoSpinEnabled && !spinning && (new_win_last_win_amount == 0)) {
 			if((credit - betAmount) > 0) {
-				playerSpin();
+				spin();
 			}
 			else {
 				toggleAutoSpin();
@@ -1465,7 +1463,7 @@ public class SlotMachine {
 
 	public void checkSpinStopped() {
 		boolean allReelsStopped = true;
-		for(Reel reel:reelManager.reels) {
+		for(Reel reel : reelManager.reels) {
 			if(reel.spinCountdown > 0) {
 				allReelsStopped = false;
 			}
@@ -1635,7 +1633,7 @@ public class SlotMachine {
 					toggleAutoSpin();
 				}
 
-				playerSpin();
+				spin();
 			}
 			else {
 				if(Config.stopSpinEnabled) {
@@ -1706,7 +1704,7 @@ public class SlotMachine {
 						toggleAutoSpin();
 					}
 
-					playerSpin();
+					spin();
 				}
 				else {
 					if(Config.stopSpinEnabled) {
@@ -1773,7 +1771,7 @@ public class SlotMachine {
 					toggleAutoSpin();
 				}
 
-				playerSpin();
+				spin();
 			}
 			else {
 				if(Config.stopSpinEnabled) {

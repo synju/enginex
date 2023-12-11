@@ -8,13 +8,16 @@ public class Config {
 	public static boolean stopSpinEnabled     = true; // Allow player to manually stop a spin.
 
 	// Timers
-	public static int     minSpinTime         = 30; // Time it takes for a spin to run.
-	public static int     maxSpinTime         = 120; // Time it takes for a spin to run.
-	public static int     minQuickSpinTime    = 10; // Time it takes for a quickspin to run.
-	public static int     maxQuickSpinTime    = 30; // Time it takes for a quickspin to run.
-	public static int     reelStopSpinTime    		= 30; // Time it takes for a quickspin to run.
-	public static int     reelQuickStopSpinTime   = 10; // Time it takes for a quickspin to run.
+	public static int minSpinTime           = 30; // Time it takes for a spin to run.
+	public static int maxSpinTime           = 120; // Time it takes for a spin to run.
+	public static int minQuickSpinTime      = 10; // Time it takes for a quickspin to run.
+	public static int maxQuickSpinTime      = 30; // Time it takes for a quickspin to run.
+	public static int reelStopSpinTime      = 30; // Time it takes for a quickspin to run.
+	public static int reelQuickStopSpinTime = 10; // Time it takes for a quickspin to run.
 
+	// Symbols
+	public static int symbolWidth  = 140;
+	public static int symbolHeight = 95;
 
 	// Sound
 	public static boolean startupMusicEnabled = false; // Toggle for whether music starts with game or not.
@@ -24,7 +27,6 @@ public class Config {
 
 	// Simulation
 	public static boolean simulationEnabled = false; // Simulation Mode on or off, for balancing reel symbol pool to get correct RTP Percentage
-	//public static int     simSpinCount      = 5000000;
 	public static int     simSpinCount      = 5000000;
 	public static int     simBetAmount      = 1;
 

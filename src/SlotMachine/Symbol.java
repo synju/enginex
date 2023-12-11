@@ -7,8 +7,8 @@ public class Symbol {
 	Game game;
 	Reel reel;
 	int  type;
-	public static final int WIDTH  = 140;
-	public static final int HEIGHT = 95;
+	public static final int WIDTH  = Config.symbolWidth;
+	public static final int HEIGHT = Config.symbolHeight;
 	Image image;
 	Image image_blurred;
 

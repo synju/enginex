@@ -25,8 +25,8 @@ public class ReelManager {
 		this.y = 194;
 		this.width = 700;
 		this.height = 380;
-		this.symbol_width = 140;
-		this.symbol_height = 95;
+		this.symbol_width = Config.symbolWidth;
+		this.symbol_height = Config.symbolHeight;
 
 		// Reel 0
 		reels.add(new Reel(game, this, x + (0 * Symbol.WIDTH), y + (0 * Symbol.HEIGHT)));
