@@ -45,6 +45,7 @@ public class EngineX implements Runnable {
 
 	private boolean visible = false;
 
+	public Point originalMousePosition;
 	public Point mousePosition;
 
 	protected EngineX() {
@@ -268,7 +269,7 @@ public class EngineX implements Runnable {
 	}
 
 	public void update() {
-		mousePosition = renderingEngine.getMousePosition();
+		mousePosition = getMousePosition();
 		stateMachine.update();
 	}
 
@@ -302,7 +303,17 @@ public class EngineX implements Runnable {
 	}
 
 	public Point getMousePosition() {
-		return renderingEngine.getMousePosition();
+		try {
+			Point mousePosition = renderingEngine.getMousePosition();
+			originalMousePosition = mousePosition;
+			return mousePosition;
+		}
+		catch(Exception e) {
+			// Hopefully safe to ignore
+			// e.printStackTrace();
+		}
+
+		return originalMousePosition;
 	}
 
 	public void hideDefaultCursor() {
