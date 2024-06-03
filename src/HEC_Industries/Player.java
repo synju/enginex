@@ -703,7 +703,7 @@ public class Player extends GameObject {
 			use();
 		if(lb_btn_just_pressed)
 			use();
-
+/
 		if(continuousInput) {
 			if(x_btn)
 				performAction();
