@@ -4,8 +4,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import Archive.spriteAnimation.Frame;
-
 public class Animation {
 	private int					frameCount;												// Counts ticks for change
 	private int					frameDelay;												// frame delay 1-12 (You will have to play around with this)
